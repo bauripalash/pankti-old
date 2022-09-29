@@ -1,0 +1,6 @@
+let age = 1;
+
+while (age <= 18){
+    show(age);
+    let age = age + 1;
+}
