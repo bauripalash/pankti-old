@@ -1,10 +1,15 @@
 package evaluator
 
 import (
+	"errors"
 	"fmt"
+	"io/fs"
+	"os"
 	"vabna/ast"
+	"vabna/lexer"
 	"vabna/number"
 	"vabna/object"
+	"vabna/parser"
 )
 
 var (
@@ -22,8 +27,8 @@ func Eval(node ast.Node, env *object.Env) object.Obj {
 		return Eval(node.Expr, env)
 	case *ast.Boolean:
 		return getBoolObj(node.Value)
-    case *ast.NumberLit:
-        return &object.Number{ Value: node.Value , IsInt: node.IsInt }
+	case *ast.NumberLit:
+		return &object.Number{Value: node.Value, IsInt: node.IsInt}
 	case *ast.PrefixExpr:
 		r := Eval(node.Right, env)
 		if isErr(r) {
@@ -42,8 +47,8 @@ func Eval(node ast.Node, env *object.Env) object.Obj {
 		return evalInfixExpr(node.Op, l, r)
 	case *ast.IfExpr:
 		return evalIfExpr(node, env)
-    case *ast.WhileExpr:
-        return evalWhileExpr(node , env)
+	case *ast.WhileExpr:
+		return evalWhileExpr(node, env)
 	case *ast.ReturnStmt:
 		val := Eval(node.ReturnVal, env)
 		if isErr(val) {
@@ -102,6 +107,18 @@ func Eval(node ast.Node, env *object.Env) object.Obj {
 		return evalIndexExpr(left, index)
 	case *ast.HashLit:
 		return evalHashLit(node, env)
+	case *ast.IncludeStmt:
+		//ImportMap.Env = *env
+		//fmt.Println(env)
+		newEnv,val := evalIncludeStmt(node, env)
+		//fmt.Println(env)
+        if val.Type() != object.ERR_OBJ{
+            *env = *newEnv
+        }else{
+            return val
+        }
+		//*env = *e
+		//env = copy(env, e)
 	}
 
 	return nil
@@ -173,15 +190,14 @@ func evalArrIndexExpr(arr, index object.Obj) object.Obj {
 	arrObj := arr.(*object.Array)
 	id := index.(*object.Number).Value
 
-    idx , noerr := number.GetAsInt(id)
+	idx, noerr := number.GetAsInt(id)
 
-    
-    if !noerr{
-        return NewErr("Arr Index Failed")
-    }
+	if !noerr {
+		return NewErr("Arr Index Failed")
+	}
 	max := int64(len(arrObj.Elms) - 1)
 
-	if idx < 0  || idx > max {
+	if idx < 0 || idx > max {
 		return NULL
 	}
 
@@ -218,6 +234,50 @@ func extendFuncEnv(fn *object.Function, args []object.Obj) *object.Env {
 	//}
 
 	return env
+}
+
+func evalIncludeStmt(in *ast.IncludeStmt, e *object.Env) (*object.Env , object.Obj) {
+	rawFilename := Eval(in.Filename, e)
+	enx := object.NewEnv()
+
+	if rawFilename.Type() != object.STRING_OBJ {
+		return enx, NewErr("include filename is invalid %s", rawFilename.Inspect())
+		
+	}
+
+	includeFilename := rawFilename.(*object.String).Value
+
+	_, err := os.Stat(includeFilename)
+
+	if errors.Is(err, fs.ErrNotExist) {
+		return enx, NewErr("%s include file doesnot exists", includeFilename)
+	
+	}
+
+	fdata, err := os.ReadFile(includeFilename)
+
+	if err != nil {
+		return enx, NewErr("Failed to read include file %s", includeFilename)
+		
+	}
+
+	l := lexer.NewLexer(string(fdata))
+	p := parser.NewParser(&l)
+	ex := object.NewEnv()
+	prog := p.ParseProg()
+    evd := Eval(prog, ex)
+    //fmt.Println(evd.Type())
+    
+    if len(p.GetErrors()) != 0{
+        for _,e := range p.GetErrors(){
+            fmt.Println(e.String())
+        }
+
+        return enx , NewErr("Include file contains parsing errors")
+    }
+
+	return ex , evd
+
 }
 
 func unwrapRValue(o object.Obj) object.Obj {
@@ -325,19 +385,19 @@ func evalIfExpr(iex *ast.IfExpr, env *object.Env) object.Obj {
 
 }
 
-func evalWhileExpr(wx *ast.WhileExpr , env *object.Env) object.Obj{
-    cond := Eval(wx.Cond , env)
-    var result object.Obj
-    if isErr(cond){
-        return cond
-    }
+func evalWhileExpr(wx *ast.WhileExpr, env *object.Env) object.Obj {
+	cond := Eval(wx.Cond, env)
+	var result object.Obj
+	if isErr(cond) {
+		return cond
+	}
 
-    for isTruthy(cond){
-        result = Eval(wx.StmtBlock , env)
-        cond = Eval(wx.Cond , env)
-    }
+	for isTruthy(cond) {
+		result = Eval(wx.StmtBlock, env)
+		cond = Eval(wx.Cond, env)
+	}
 
-    return result
+	return result
 }
 
 func isTruthy(obj object.Obj) bool {
@@ -354,13 +414,13 @@ func isTruthy(obj object.Obj) bool {
 }
 
 func evalInfixExpr(op string, l, r object.Obj) object.Obj {
-//fmt.Println(l.Type() , r.Type())
+	//fmt.Println(l.Type() , r.Type())
 	switch {
-    case l.Type() == object.NUM_OBJ && r.Type() == object.NUM_OBJ:
-        return evalNumInfixExpr(op , l , r)
-        //}
-        //fmt.Println("FI-> ", l , r)
-        //return NewErr("has Float")
+	case l.Type() == object.NUM_OBJ && r.Type() == object.NUM_OBJ:
+		return evalNumInfixExpr(op, l, r)
+		//}
+		//fmt.Println("FI-> ", l , r)
+		//return NewErr("has Float")
 	case l.Type() == object.STRING_OBJ && r.Type() == object.STRING_OBJ:
 		return evalStringInfixExpr(op, l, r)
 	case op == "==":
@@ -384,26 +444,23 @@ func evalStringInfixExpr(op string, l, r object.Obj) object.Obj {
 	return &object.String{Value: lval + rval}
 }
 
-func evalNumInfixExpr(op string , l,r object.Obj) object.Obj{
-    
+func evalNumInfixExpr(op string, l, r object.Obj) object.Obj {
 
-    lval := l.(*object.Number).Value
-    rval := r.(*object.Number).Value
-    
-    //fmt.Println(lval.GetType() , rval.GetType())
-     
-    val,cval,noerr := number.NumberOperation(op , lval , rval)
-    if val.Value != nil && noerr{
-        return &object.Number{ Value: val , IsInt: val.IsInt }
-    }else if val.Value == nil && noerr{
-       return getBoolObj(cval) 
-    }else{
-        return NewErr("Unknown Operator for Numbers %s" , op)
-    }
-     
+	lval := l.(*object.Number).Value
+	rval := r.(*object.Number).Value
+
+	//fmt.Println(lval.GetType() , rval.GetType())
+
+	val, cval, noerr := number.NumberOperation(op, lval, rval)
+	if val.Value != nil && noerr {
+		return &object.Number{Value: val, IsInt: val.IsInt}
+	} else if val.Value == nil && noerr {
+		return getBoolObj(cval)
+	} else {
+		return NewErr("Unknown Operator for Numbers %s", op)
+	}
+
 }
-
-
 
 func evalPrefixExpr(op string, right object.Obj) object.Obj {
 	switch op {
@@ -421,8 +478,8 @@ func evalMinusPrefOp(right object.Obj) object.Obj {
 	if right.Type() != object.NUM_OBJ {
 		return NewErr("unknown Operator : -%s", right.Type())
 	}
-    num := right.(*object.Number)
-    return &object.Number{ Value: number.MakeNeg(num.Value) , IsInt: num.IsInt}
+	num := right.(*object.Number)
+	return &object.Number{Value: number.MakeNeg(num.Value), IsInt: num.IsInt}
 }
 
 func evalBangOp(r object.Obj) object.Obj {

@@ -325,6 +325,8 @@ func (p *Parser) parseStmt() ast.Stmt {
 		return p.parseLetStmt()
 	case token.RETURN:
 		return p.parseReturnStmt()
+    case token.INCLUDE:
+        return p.parseIncludeStmt()
 	default:
 		return p.parseExprStmt()
 
@@ -345,6 +347,24 @@ func (p *Parser) parseReturnStmt() *ast.ReturnStmt {
 	log.Info(fmt.Sprintf("RETURN STMT => %v\n", stmt))
 
 	return stmt
+
+}
+
+func (p *Parser) parseIncludeStmt() *ast.IncludeStmt{
+    stmt := &ast.IncludeStmt{ Token: p.curTok }
+    p.nextToken()
+
+    stmt.Filename = p.parseExpr(LOWEST)
+
+
+    
+    if p.isPeekToken(token.SEMICOLON){
+        p.nextToken()
+    }
+
+    log.Info(fmt.Sprintf("INCLUDE => FNAME=>%s || FNAME_TYPE=>%s"  ,stmt.Filename , stmt ) )
+
+    return stmt
 }
 
 func (p *Parser) parseLetStmt() *ast.LetStmt {

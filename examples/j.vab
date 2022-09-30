@@ -1,0 +1,4 @@
+inc "examples/i.vab"
+let name = "Bauri"
+show(name)
+show(x)

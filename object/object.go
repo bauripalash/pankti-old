@@ -23,6 +23,7 @@ const (
 	ARRAY_OBJ      = "ARRAY"
 	HASH_OBJ       = "HASH"
     NUM_OBJ        = "NUM"
+    INCLUDE_OBJ    = "INCLUDE"
 )
 
 type BuiltInFunc func(args ...Obj) Obj
@@ -40,6 +41,15 @@ type Builtin struct {
 
 func (b *Builtin) Type() ObjType   { return BUILTIN_OBJ }
 func (b *Builtin) Inspect() string { return "builtin function" }
+
+// Include
+
+type IncludeObj struct{
+    Filename string
+}
+
+func (ib *IncludeObj) Type() ObjType { return INCLUDE_OBJ }
+func (ib *IncludeObj) Inspect() string { return fmt.Sprintf("include %s" , ib.Filename) }
 
 //Arrays
 

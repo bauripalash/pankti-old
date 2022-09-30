@@ -33,6 +33,7 @@ const (
 	FLOAT = "FLOAT"
 
     NUM = "NUMBER"
+    INCLUDE = "INCLUDE"
 
 	//Equal = sign; for assignment
 	EQ = "="
@@ -114,6 +115,7 @@ var Keywords = map[string]TokenType{
 	"tahole": TAHOLE,
     "jotokhon" : WHILE,
     "while" : WHILE,
+    "inc" : INCLUDE,
 }
 
 func LookupIdent(ident string) TokenType {

@@ -292,6 +292,15 @@ func (b *Boolean) exprNode()        {}
 func (b *Boolean) TokenLit() string { return b.Token.Literal }
 func (b *Boolean) String() string   { return b.Token.Literal }
 
+type IncludeStmt struct{
+    Token token.Token
+    Filename Expr
+}
+
+func (is *IncludeStmt) stmtNode(){}
+func (is *IncludeStmt) TokenLit() string { return is.Token.Literal }
+func (is *IncludeStmt) String() string { return is.Token.Literal }
+
 type BlockStmt struct {
 	Token token.Token
 	Stmts []Stmt
