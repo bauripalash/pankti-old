@@ -5,7 +5,6 @@ import (
 	"strings"
 	"vabna/number"
 	"vabna/token"
-
 )
 
 type Node interface {
@@ -177,7 +176,7 @@ func (r *ReturnStmt) String() string {
 	return out.String()
 }
 
-//Expression Statment
+//Expression Statement
 type ExprStmt struct {
 	Token token.Token
 	Expr  Expr
@@ -227,16 +226,15 @@ func (id *Identifier) String() string {
 	return id.Value
 }
 
-
-type NumberLit struct{
-    Token token.Token
-    Value number.Number
-    IsInt bool
+type NumberLit struct {
+	Token token.Token
+	Value number.Number
+	IsInt bool
 }
 
-func (nl *NumberLit) exprNode(){}
-func (nl *NumberLit) TokenLit() string{ return nl.Token.Literal }
-func (nl *NumberLit) String() string{ return nl.Token.Literal }
+func (nl *NumberLit) exprNode()        {}
+func (nl *NumberLit) TokenLit() string { return nl.Token.Literal }
+func (nl *NumberLit) String() string   { return nl.Token.Literal }
 
 // Prefix Expression
 
@@ -292,14 +290,14 @@ func (b *Boolean) exprNode()        {}
 func (b *Boolean) TokenLit() string { return b.Token.Literal }
 func (b *Boolean) String() string   { return b.Token.Literal }
 
-type IncludeStmt struct{
-    Token token.Token
-    Filename Expr
+type IncludeStmt struct {
+	Token    token.Token
+	Filename Expr
 }
 
-func (is *IncludeStmt) stmtNode(){}
+func (is *IncludeStmt) stmtNode()        {}
 func (is *IncludeStmt) TokenLit() string { return is.Token.Literal }
-func (is *IncludeStmt) String() string { return is.Token.Literal }
+func (is *IncludeStmt) String() string   { return is.Token.Literal }
 
 type BlockStmt struct {
 	Token token.Token
@@ -341,22 +339,22 @@ func (i *IfExpr) String() string {
 
 }
 
-type WhileExpr struct{
-    Token token.Token
-    Cond Expr
-    StmtBlock *BlockStmt
+type WhileExpr struct {
+	Token     token.Token
+	Cond      Expr
+	StmtBlock *BlockStmt
 }
 
-func (w *WhileExpr) exprNode() {}
+func (w *WhileExpr) exprNode()        {}
 func (w *WhileExpr) TokenLit() string { return w.Token.Literal }
-func (w *WhileExpr) String() string{
-    var out bytes.Buffer
-    out.WriteString("while")
-    out.WriteString(w.Cond.String())
-    out.WriteString(" ")
-    out.WriteString(w.StmtBlock.String())
+func (w *WhileExpr) String() string {
+	var out bytes.Buffer
+	out.WriteString("while")
+	out.WriteString(w.Cond.String())
+	out.WriteString(" ")
+	out.WriteString(w.StmtBlock.String())
 
-    return out.String()
+	return out.String()
 }
 
 type FunctionLit struct {

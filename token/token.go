@@ -32,8 +32,8 @@ const (
 
 	FLOAT = "FLOAT"
 
-    NUM = "NUMBER"
-    INCLUDE = "INCLUDE"
+	NUM     = "NUMBER"
+	INCLUDE = "INCLUDE"
 
 	//Equal = sign; for assignment
 	EQ = "="
@@ -70,7 +70,7 @@ const (
 	IF     = "IF"
 	ELSE   = "ELSE"
 	RETURN = "RETURN"
-    WHILE  = "WHILE"
+	WHILE  = "WHILE"
 )
 
 var HumanFriendly = map[string]string{
@@ -86,39 +86,38 @@ var HumanFriendly = map[string]string{
 	HOLO:   "holo",
 	EKTI:   "ekti",
 	TAHOLE: "tahole",
-    WHILE: "jotokhon",
+	WHILE:  "jotokhon",
 }
 
 var Keywords = map[string]TokenType{
 
-	"কাজ":    FUNC,
-	"kaj":    FUNC,
-	"fn":     FUNC,
-	"ধরি":    LET,
-	"dhori":  LET,
-	"let":    LET,
-	"সত্য":   TRUE,
-	"sotto":  TRUE,
-	"মিথ্যা": FALSE,
-	"mittha": FALSE,
-	"যদি":    IF,
-	"jodi":   IF,
-	"নাহলে":  ELSE,
-	"nahole": ELSE,
-	"ফেরাও":  RETURN,
-	"ferau":  RETURN,
-	"হল":     HOLO,
-	"holo":   HOLO,
-	"একটি":   EKTI,
-	"ekti":   EKTI,
-	"তাহলে":  TAHOLE,
-	"tahole": TAHOLE,
-    "jotokhon" : WHILE,
-    "while" : WHILE,
-    "include" : INCLUDE,
-    "anoyon" : INCLUDE,
-	"আনয়ন" : INCLUDE,
-
+	"কাজ":      FUNC,
+	"kaj":      FUNC,
+	"fn":       FUNC,
+	"ধরি":      LET,
+	"dhori":    LET,
+	"let":      LET,
+	"সত্য":     TRUE,
+	"sotto":    TRUE,
+	"মিথ্যা":   FALSE,
+	"mittha":   FALSE,
+	"যদি":      IF,
+	"jodi":     IF,
+	"নাহলে":    ELSE,
+	"nahole":   ELSE,
+	"ফেরাও":    RETURN,
+	"ferau":    RETURN,
+	"হল":       HOLO,
+	"holo":     HOLO,
+	"একটি":     EKTI,
+	"ekti":     EKTI,
+	"তাহলে":    TAHOLE,
+	"tahole":   TAHOLE,
+	"jotokhon": WHILE,
+	"while":    WHILE,
+	"include":  INCLUDE,
+	"anoyon":   INCLUDE,
+	"আনয়ন":     INCLUDE,
 }
 
 func LookupIdent(ident string) TokenType {

@@ -2,7 +2,6 @@ package lexer
 
 import (
 	"vabna/token"
-
 )
 
 type Lexer struct {
@@ -134,9 +133,9 @@ func (l *Lexer) NextToken() token.Token {
 		} else if isDigit(l.ch) {
 			lit, _ := l.readNum()
 
-            //fmt.Println(lit)
+			//fmt.Println(lit)
 			tk.Literal = lit
-            tk.Type = token.NUM
+			tk.Type = token.NUM
 			return tk
 		} else {
 			tk = NewToken(token.ILLEGAL, l.ch, l.line, l.column)
@@ -209,48 +208,48 @@ func (l *Lexer) readNum() (string, bool) {
 			l.readChar()
 		}
 	}
-    
-    //parseBengaliNum(l.input[pos:l.pos])
 
-    return string(parseBengaliNum(l.input[pos:l.pos])), isFloat
+	//parseBengaliNum(l.input[pos:l.pos])
+
+	return string(parseBengaliNum(l.input[pos:l.pos])), isFloat
 }
 
 func parseBengaliNum(inp []rune) []rune {
-    
-    var result []rune
 
-    for _, item := range inp{
-        
-        //fmt.Println(item)
+	var result []rune
 
-        switch item{
-            case '০' :
-                result = append(result, '0')
-            case '১':
-                result = append(result, '1')
-            case '২':
-                result = append(result, '2')
-            case '৩':
-                result = append(result, '3')
-            case '৪':
-                result = append(result, '4')
-            case '৫':
-                result = append(result, '5')
-            case '৬':
-                result = append(result, '6')
-            case '৭':
-                result = append(result, '7')
-            case '৮':
-                result = append(result, '8')
-            case '৯':
-                result = append(result, '9')
-            default:
-                result = append(result, item)
-        }
-    }
-    
-    //fmt.Println(string(result))
-    return result
+	for _, item := range inp {
+
+		//fmt.Println(item)
+
+		switch item {
+		case '০':
+			result = append(result, '0')
+		case '১':
+			result = append(result, '1')
+		case '২':
+			result = append(result, '2')
+		case '৩':
+			result = append(result, '3')
+		case '৪':
+			result = append(result, '4')
+		case '৫':
+			result = append(result, '5')
+		case '৬':
+			result = append(result, '6')
+		case '৭':
+			result = append(result, '7')
+		case '৮':
+			result = append(result, '8')
+		case '৯':
+			result = append(result, '9')
+		default:
+			result = append(result, item)
+		}
+	}
+
+	//fmt.Println(string(result))
+	return result
 }
 
 func (l *Lexer) peekChar() rune {
@@ -267,5 +266,5 @@ func isLetter(ch rune) bool {
 }
 
 func isDigit(ch rune) bool {
-    return '0' <= ch && ch <= '9' || '০' <= ch && ch <= '৯'
+	return '0' <= ch && ch <= '9' || '০' <= ch && ch <= '৯'
 }

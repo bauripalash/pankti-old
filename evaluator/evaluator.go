@@ -110,13 +110,13 @@ func Eval(node ast.Node, env *object.Env) object.Obj {
 	case *ast.IncludeStmt:
 		//ImportMap.Env = *env
 		//fmt.Println(env)
-		newEnv,val := evalIncludeStmt(node, env)
+		newEnv, val := evalIncludeStmt(node, env)
 		//fmt.Println(env)
-        if val.Type() != object.ERR_OBJ{
-            *env = *object.NewEnclosedEnv(newEnv)
-        }else{
-            return val
-        }
+		if val.Type() != object.ERR_OBJ {
+			*env = *object.NewEnclosedEnv(newEnv)
+		} else {
+			return val
+		}
 		//*env = *e
 		//env = copy(env, e)
 	}
@@ -236,13 +236,13 @@ func extendFuncEnv(fn *object.Function, args []object.Obj) *object.Env {
 	return env
 }
 
-func evalIncludeStmt(in *ast.IncludeStmt, e *object.Env) (*object.Env , object.Obj) {
+func evalIncludeStmt(in *ast.IncludeStmt, e *object.Env) (*object.Env, object.Obj) {
 	rawFilename := Eval(in.Filename, e)
 	enx := object.NewEnv()
 
 	if rawFilename.Type() != object.STRING_OBJ {
 		return enx, NewErr("include filename is invalid %s", rawFilename.Inspect())
-		
+
 	}
 
 	includeFilename := rawFilename.(*object.String).Value
@@ -251,32 +251,32 @@ func evalIncludeStmt(in *ast.IncludeStmt, e *object.Env) (*object.Env , object.O
 
 	if errors.Is(err, fs.ErrNotExist) {
 		return enx, NewErr("%s include file doesnot exists", includeFilename)
-	
+
 	}
 
 	fdata, err := os.ReadFile(includeFilename)
 
 	if err != nil {
 		return enx, NewErr("Failed to read include file %s", includeFilename)
-		
+
 	}
 
 	l := lexer.NewLexer(string(fdata))
 	p := parser.NewParser(&l)
 	ex := object.NewEnv()
 	prog := p.ParseProg()
-    Eval(prog, ex)
-    //fmt.Println(evd.Type())
-    
-    if len(p.GetErrors()) != 0{
-        for _,e := range p.GetErrors(){
-            fmt.Println(e.String())
-        }
+	Eval(prog, ex)
+	//fmt.Println(evd.Type())
 
-        return enx , NewErr("Include file contains parsing errors")
-    }
+	if len(p.GetErrors()) != 0 {
+		for _, e := range p.GetErrors() {
+			fmt.Println(e.String())
+		}
 
-	return ex , &object.Null{}
+		return enx, NewErr("Include file contains parsing errors")
+	}
+
+	return ex, &object.Null{}
 
 }
 

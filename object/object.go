@@ -7,7 +7,6 @@ import (
 	"strings"
 	"vabna/ast"
 	"vabna/number"
-
 )
 
 const (
@@ -22,8 +21,8 @@ const (
 	BUILTIN_OBJ    = "BUILTIN"
 	ARRAY_OBJ      = "ARRAY"
 	HASH_OBJ       = "HASH"
-    NUM_OBJ        = "NUM"
-    INCLUDE_OBJ    = "INCLUDE"
+	NUM_OBJ        = "NUM"
+	INCLUDE_OBJ    = "INCLUDE"
 )
 
 type BuiltInFunc func(args ...Obj) Obj
@@ -44,12 +43,12 @@ func (b *Builtin) Inspect() string { return "builtin function" }
 
 // Include
 
-type IncludeObj struct{
-    Filename string
+type IncludeObj struct {
+	Filename string
 }
 
-func (ib *IncludeObj) Type() ObjType { return INCLUDE_OBJ }
-func (ib *IncludeObj) Inspect() string { return fmt.Sprintf("include %s" , ib.Filename) }
+func (ib *IncludeObj) Type() ObjType   { return INCLUDE_OBJ }
+func (ib *IncludeObj) Inspect() string { return fmt.Sprintf("include %s", ib.Filename) }
 
 //Arrays
 
@@ -90,8 +89,6 @@ func (b *Boolean) HashKey() HashKey {
 	return HashKey{Type: b.Type(), Value: val}
 }
 
-
-
 func (s *String) HashKey() HashKey {
 
 	h := fnv.New64a()
@@ -100,20 +97,19 @@ func (s *String) HashKey() HashKey {
 	return HashKey{Type: s.Type(), Value: h.Sum64()}
 }
 
-func (n *Number) HashKey() HashKey{
-    h := fnv.New64a()
-    if n.Value.IsInt{
-        k := n.Value.Value.(*number.IntNumber).Value
-        h.Write(k.Bytes())
-        return HashKey{ Type: n.Type() , Value: h.Sum64() }
-    }else{
-        k := n.Value.Value.(*number.FloatNumber).Value
-        temp, _ := k.Int64()
-        h.Write([]byte(k.String() + fmt.Sprintf("%d" , temp) ))
-        return HashKey{ Type: n.Type() , Value: h.Sum64() } 
-//        h.Write()
-    }
-
+func (n *Number) HashKey() HashKey {
+	h := fnv.New64a()
+	if n.Value.IsInt {
+		k := n.Value.Value.(*number.IntNumber).Value
+		h.Write(k.Bytes())
+		return HashKey{Type: n.Type(), Value: h.Sum64()}
+	} else {
+		k := n.Value.Value.(*number.FloatNumber).Value
+		temp, _ := k.Int64()
+		h.Write([]byte(k.String() + fmt.Sprintf("%d", temp)))
+		return HashKey{Type: n.Type(), Value: h.Sum64()}
+		//        h.Write()
+	}
 
 }
 
@@ -159,22 +155,18 @@ type String struct {
 func (s *String) Type() ObjType   { return STRING_OBJ }
 func (s *String) Inspect() string { return s.Value }
 
-
-
-type Number struct{
-    Value number.Number
-    IsInt bool
+type Number struct {
+	Value number.Number
+	IsInt bool
 }
 
-func (num *Number) Type() ObjType{
-    return NUM_OBJ
+func (num *Number) Type() ObjType {
+	return NUM_OBJ
 }
 
-func (num *Number) Inspect() string{
-    return fmt.Sprintf("%s" , num.Value.Value.String())
+func (num *Number) Inspect() string {
+	return fmt.Sprintf("%s", num.Value.Value.String())
 }
-
-
 
 //Booleans true,false
 type Boolean struct {

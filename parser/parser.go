@@ -65,16 +65,16 @@ func NewParser(l *lexer.Lexer) *Parser {
 	//register prefix functions
 	p.prefixParseFns = make(map[token.TokenType]prefixParseFn)
 	p.regPrefix(token.IDENT, p.parseIdent)
-//	p.regPrefix(token.INT, p.parseIntegerLit)
-//	p.regPrefix(token.FLOAT, p.parseFloatLit)
-    p.regPrefix(token.NUM , p.parseNumLit)
+	//	p.regPrefix(token.INT, p.parseIntegerLit)
+	//	p.regPrefix(token.FLOAT, p.parseFloatLit)
+	p.regPrefix(token.NUM, p.parseNumLit)
 	p.regPrefix(token.MINUS, p.parsePrefixExpr)
 	p.regPrefix(token.EXC, p.parsePrefixExpr)
 	p.regPrefix(token.TRUE, p.parseBool)
 	p.regPrefix(token.FALSE, p.parseBool)
 	p.regPrefix(token.LPAREN, p.parseGroupedExpr)
 	p.regPrefix(token.IF, p.parseIfExpr)
-    p.regPrefix(token.WHILE , p.parseWhileExpr)
+	p.regPrefix(token.WHILE, p.parseWhileExpr)
 	p.regPrefix(token.EKTI, p.parseFunc)
 	p.regPrefix(token.STRING, p.parseStringLit)
 	p.regPrefix(token.LS_BRACKET, p.parseArrLit)
@@ -325,8 +325,8 @@ func (p *Parser) parseStmt() ast.Stmt {
 		return p.parseLetStmt()
 	case token.RETURN:
 		return p.parseReturnStmt()
-    case token.INCLUDE:
-        return p.parseIncludeStmt()
+	case token.INCLUDE:
+		return p.parseIncludeStmt()
 	default:
 		return p.parseExprStmt()
 
@@ -350,21 +350,19 @@ func (p *Parser) parseReturnStmt() *ast.ReturnStmt {
 
 }
 
-func (p *Parser) parseIncludeStmt() *ast.IncludeStmt{
-    stmt := &ast.IncludeStmt{ Token: p.curTok }
-    p.nextToken()
+func (p *Parser) parseIncludeStmt() *ast.IncludeStmt {
+	stmt := &ast.IncludeStmt{Token: p.curTok}
+	p.nextToken()
 
-    stmt.Filename = p.parseExpr(LOWEST)
+	stmt.Filename = p.parseExpr(LOWEST)
 
+	if p.isPeekToken(token.SEMICOLON) {
+		p.nextToken()
+	}
 
-    
-    if p.isPeekToken(token.SEMICOLON){
-        p.nextToken()
-    }
+	log.Info(fmt.Sprintf("INCLUDE => FNAME=>%s || FNAME_TYPE=>%s", stmt.Filename, stmt))
 
-    log.Info(fmt.Sprintf("INCLUDE => FNAME=>%s || FNAME_TYPE=>%s"  ,stmt.Filename , stmt ) )
-
-    return stmt
+	return stmt
 }
 
 func (p *Parser) parseLetStmt() *ast.LetStmt {
@@ -466,31 +464,27 @@ func (p *Parser) parseBool() ast.Expr {
 	return &ast.Boolean{Token: p.curTok, Value: p.isCurToken(token.TRUE)}
 }
 
+func (p *Parser) parseNumLit() ast.Expr {
+	lit := &ast.NumberLit{Token: p.curTok}
 
+	if number.IsFloat(p.curTok.Literal) {
+		v, _ := new(big.Float).SetString(p.curTok.Literal)
+		lit.Value = number.Number{Value: &number.FloatNumber{Value: *v}, IsInt: false}
+		lit.IsInt = false
+	} else {
+		v, _ := new(big.Int).SetString(p.curTok.Literal, 10)
+		lit.Value = number.Number{Value: &number.IntNumber{Value: *v}, IsInt: true}
+		lit.IsInt = true
+	}
 
+	//if err != nil{
+	//    return nil
+	//}
 
+	//lit.IsInt = value.IsInteger()
+	//lit.Value = value
 
-func (p *Parser) parseNumLit() ast.Expr{
-    lit := &ast.NumberLit{ Token: p.curTok }
-
-    if number.IsFloat( p.curTok.Literal ){
-        v,_ := new(big.Float).SetString( p.curTok.Literal )
-        lit.Value =  number.Number{ Value : &number.FloatNumber{ Value: *v } , IsInt: false}
-        lit.IsInt = false
-    }else{
-        v,_ := new(big.Int).SetString(p.curTok.Literal , 10)
-        lit.Value = number.Number{ Value: &number.IntNumber{ Value: *v } , IsInt: true }
-        lit.IsInt = true
-    }
-
-    //if err != nil{
-    //    return nil
-    //}
-
-    //lit.IsInt = value.IsInteger()
-    //lit.Value = value
-
-    return lit
+	return lit
 }
 
 func (p *Parser) parsePrefixExpr() ast.Expr {
@@ -566,22 +560,28 @@ func (p *Parser) parseIfExpr() ast.Expr {
 	return exp
 }
 
-func (p *Parser) parseWhileExpr() ast.Expr{
-    
-    exp := &ast.WhileExpr{ Token: p.curTok }
+func (p *Parser) parseWhileExpr() ast.Expr {
 
-    if !p.peek(token.LPAREN){ return nil }
+	exp := &ast.WhileExpr{Token: p.curTok}
 
-    p.nextToken()
-    exp.Cond = p.parseExpr(LOWEST)
+	if !p.peek(token.LPAREN) {
+		return nil
+	}
 
-    if !p.peek(token.RPAREN){ return nil }
+	p.nextToken()
+	exp.Cond = p.parseExpr(LOWEST)
 
-    if !p.peek(token.LBRACE){ return nil }
+	if !p.peek(token.RPAREN) {
+		return nil
+	}
 
-    exp.StmtBlock = p.parseBlockStmt()
+	if !p.peek(token.LBRACE) {
+		return nil
+	}
 
-    return exp
+	exp.StmtBlock = p.parseBlockStmt()
+
+	return exp
 
 }
 

@@ -27,16 +27,16 @@ func Repl(in io.Reader, out io.Writer) {
 
 		input := scanner.Text()
 		rlexer := lexer.NewLexer(input)
-        //fmt.Println(rlexer.)
-/*
-        for !rlexer.AtEOF(){
-            fmt.Println(rlexer.NextToken().Type)
-        }
-*/
+		//fmt.Println(rlexer.)
+		/*
+		   for !rlexer.AtEOF(){
+		       fmt.Println(rlexer.NextToken().Type)
+		   }
+		*/
 		p := parser.NewParser(&rlexer)
 
 		prog := p.ParseProg()
-        fmt.Println(prog.Stmts)
+		fmt.Println(prog.Stmts)
 
 		if len(p.GetErrors()) != 0 {
 			ShowParseErrors(out, p.GetErrors())
