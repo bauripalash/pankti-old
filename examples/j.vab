@@ -1,4 +1,3 @@
-inc "examples/i.vab"
-let name = "Bauri"
-show(name)
-show(x)
+আনয়ন "examples/i.vab"
+দেখাও(দৈর্ঘ্য)
+দেখাও(নাম)

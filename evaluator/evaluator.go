@@ -113,7 +113,7 @@ func Eval(node ast.Node, env *object.Env) object.Obj {
 		newEnv,val := evalIncludeStmt(node, env)
 		//fmt.Println(env)
         if val.Type() != object.ERR_OBJ{
-            *env = *newEnv
+            *env = *object.NewEnclosedEnv(newEnv)
         }else{
             return val
         }
@@ -265,7 +265,7 @@ func evalIncludeStmt(in *ast.IncludeStmt, e *object.Env) (*object.Env , object.O
 	p := parser.NewParser(&l)
 	ex := object.NewEnv()
 	prog := p.ParseProg()
-    evd := Eval(prog, ex)
+    Eval(prog, ex)
     //fmt.Println(evd.Type())
     
     if len(p.GetErrors()) != 0{
@@ -276,7 +276,7 @@ func evalIncludeStmt(in *ast.IncludeStmt, e *object.Env) (*object.Env , object.O
         return enx , NewErr("Include file contains parsing errors")
     }
 
-	return ex , evd
+	return ex , &object.Null{}
 
 }
 

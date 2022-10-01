@@ -115,7 +115,10 @@ var Keywords = map[string]TokenType{
 	"tahole": TAHOLE,
     "jotokhon" : WHILE,
     "while" : WHILE,
-    "inc" : INCLUDE,
+    "include" : INCLUDE,
+    "anoyon" : INCLUDE,
+	"আনয়ন" : INCLUDE,
+
 }
 
 func LookupIdent(ident string) TokenType {
