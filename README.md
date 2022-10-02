@@ -1,8 +1,8 @@
-![Vabna Programming Language](./images/vabna_cover.jpg)
+![Pankti Programming Language](./images/pankti_cover.jpg)
 
 ## Introduction
 
-Vabna is an interpreted dynamically typed programming language for programming in the Bengali language. Vabna is designed with Bengali in mind but can also be used with English. As matter of fact, the implementation is so easy to modify that it can be used to program in any language with very little change to the source code of the vabna interpreter. Vabna is a potential multilingual programming language
+Pankti is an interpreted dynamically typed programming language for programming in the Bengali language. Vabna is designed with Bengali in mind but can also be used with English. As matter of fact, the implementation is so easy to modify that it can be used to program in any language with very little change to the source code of the vabna interpreter. Vabna is a potential multilingual programming language
 
 ## Why
 My mother tongue is Bengali. Previously there have been few attempts to build a Bengali programming language but most of them have no practical usage, so I ventured into the dark world of language design.## Language Features
