@@ -2,9 +2,9 @@ package ast
 
 import (
 	"bytes"
+	"pankti/number"
+	"pankti/token"
 	"strings"
-	"vabna/number"
-	"vabna/token"
 )
 
 type Node interface {

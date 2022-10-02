@@ -4,11 +4,11 @@ import (
 	"bufio"
 	"fmt"
 	"io"
-	"vabna/errs"
-	"vabna/evaluator"
-	"vabna/lexer"
-	"vabna/object"
-	"vabna/parser"
+	"pankti/errs"
+	"pankti/evaluator"
+	"pankti/lexer"
+	"pankti/object"
+	"pankti/parser"
 )
 
 const PROMPT = "-> "

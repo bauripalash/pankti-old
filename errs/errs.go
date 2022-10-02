@@ -2,7 +2,7 @@ package errs
 
 import (
 	"fmt"
-	"vabna/token"
+	"pankti/token"
 )
 
 const (

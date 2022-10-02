@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"io/fs"
 	"os"
-	"vabna/ast"
-	"vabna/lexer"
-	"vabna/number"
-	"vabna/object"
-	"vabna/parser"
+	"pankti/ast"
+	"pankti/lexer"
+	"pankti/number"
+	"pankti/object"
+	"pankti/parser"
 )
 
 var (

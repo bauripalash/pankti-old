@@ -2,8 +2,8 @@ package stdlib
 
 import (
 	"fmt"
+	"pankti/object"
 	"time"
-	"vabna/object"
 )
 
 func UnixTimeFunc(args []object.Obj) object.Obj {

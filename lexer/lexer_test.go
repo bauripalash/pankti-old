@@ -1,8 +1,8 @@
 package lexer
 
 import (
+	"pankti/token"
 	"testing"
-	"vabna/token"
 )
 
 func TestNextToken(t *testing.T) {

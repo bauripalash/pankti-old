@@ -12,11 +12,11 @@ import (
 		"vabna/object"
 		"vabna/parser"
 	*/
-	"vabna/evaluator"
-	"vabna/lexer"
-	"vabna/object"
-	"vabna/parser"
-	"vabna/repl"
+	"pankti/evaluator"
+	"pankti/lexer"
+	"pankti/object"
+	"pankti/parser"
+	"pankti/repl"
 
 	log "github.com/sirupsen/logrus"
 )

@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"fmt"
 	"hash/fnv"
+	"pankti/ast"
+	"pankti/number"
 	"strings"
-	"vabna/ast"
-	"vabna/number"
 )
 
 const (

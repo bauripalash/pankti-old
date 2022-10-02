@@ -2,7 +2,7 @@ package number
 
 import (
 	"math/big"
-	"vabna/token"
+	"pankti/token"
 )
 
 func MakeInt(a int64) Number {

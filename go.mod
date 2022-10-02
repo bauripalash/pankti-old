@@ -1,4 +1,4 @@
-module vabna
+module pankti
 
 go 1.18
 

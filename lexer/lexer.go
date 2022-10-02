@@ -1,7 +1,7 @@
 package lexer
 
 import (
-	"vabna/token"
+	"pankti/token"
 )
 
 type Lexer struct {

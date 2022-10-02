@@ -3,11 +3,11 @@ package parser
 import (
 	"fmt"
 	"math/big"
-	"vabna/ast"
-	"vabna/errs"
-	"vabna/lexer"
-	"vabna/number"
-	"vabna/token"
+	"pankti/ast"
+	"pankti/errs"
+	"pankti/lexer"
+	"pankti/number"
+	"pankti/token"
 
 	log "github.com/sirupsen/logrus"
 )
