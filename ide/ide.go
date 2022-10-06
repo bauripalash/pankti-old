@@ -180,7 +180,7 @@ func RunIde() {
 
 	dlg := iup.Dialog(inf).SetAttributes(map[string]string{
 		"MENU":  "mymenu",
-		"TITLE": "Menu",
+		"TITLE": "Pankti IDE",
 		"SIZE":  "QUARTERxQUARTER",
 	})
 
