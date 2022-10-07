@@ -36,15 +36,14 @@ func SaveFile(filename string, content string, overwrite bool) error {
 	return nil
 }
 
-
-func ShowAboutMenu(){
-    iup.Message("About Pankti IDE" , "Pankti IDE is a basic Editor to quickly run and test Pankti Programs")
-    //iup.Popup(aboutDlg , iup.CENTER , iup.CENTER)
+func ShowAboutMenu() {
+	iup.Message("About Pankti IDE", "Pankti IDE is a basic Editor to quickly run and test Pankti Programs")
+	//iup.Popup(aboutDlg , iup.CENTER , iup.CENTER)
 
 }
 
-func ShowHelp(){
-    iup.Message("Help with Pankti IDE" , "TODO : Help")
+func ShowHelp() {
+	iup.Message("Help with Pankti IDE", "TODO : Help")
 }
 
 func RunFile(src string) string {
@@ -82,9 +81,6 @@ func OpenFile(filename string) (string, error) {
 	return string(content), nil
 }
 
-
-
-
 func RunIde() {
 	iup.Open()
 	defer iup.Close()
@@ -107,16 +103,15 @@ func RunIde() {
 	})
 	iup.SetGlobal("UTF8MODE", "YES")
 
-    
-    itemAbout := iup.Item("About").SetCallback("ACTION" , iup.ActionFunc(func(i iup.Ihandle) int {
-        ShowAboutMenu()
-        return iup.DEFAULT
-    }))
+	itemAbout := iup.Item("About").SetCallback("ACTION", iup.ActionFunc(func(i iup.Ihandle) int {
+		ShowAboutMenu()
+		return iup.DEFAULT
+	}))
 
-    itemHelp := iup.Item("Help").SetCallback("ACTION" , iup.ActionFunc(func(i iup.Ihandle) int {
-        ShowHelp()
-        return iup.DEFAULT
-    }))
+	itemHelp := iup.Item("Help").SetCallback("ACTION", iup.ActionFunc(func(i iup.Ihandle) int {
+		ShowHelp()
+		return iup.DEFAULT
+	}))
 
 	fd := iup.FileDlg().SetAttributes(map[string]string{
 		"TITLE": "Open File",
@@ -132,20 +127,10 @@ func RunIde() {
 
 	defer fopen.Destroy()
 
-
-    
-
-
-    
-   
-
-    
-    
-    helpMenu := iup.Menu(itemHelp , itemAbout)
-    helpSubmenu := iup.Submenu("Help" , helpMenu)
-	menu := iup.Menu(GetFileMenu() ,helpSubmenu)
+	helpMenu := iup.Menu(itemHelp, itemAbout)
+	helpSubmenu := iup.Submenu("Help", helpMenu)
+	menu := iup.Menu(GetFileMenu(), helpSubmenu)
 	menu.SetHandle("mymenu")
-
 
 	iup.GetHandle("menuOpen").SetCallback("ACTION", iup.ActionFunc(func(i iup.Ihandle) int {
 		iup.Popup(fd, iup.CENTER, iup.CENTER)
@@ -164,12 +149,12 @@ func RunIde() {
 
 		return iup.IGNORE
 	}))
-    
-    iup.GetHandle("menuExit").SetCallback( "ACTION" , iup.ActionFunc(func(i iup.Ihandle) int {
-       return iup.CLOSE 
-    }))
-    
-    iup.GetHandle("menuSave").SetCallback("ACTION", iup.ActionFunc(func(i iup.Ihandle) int {
+
+	iup.GetHandle("menuExit").SetCallback("ACTION", iup.ActionFunc(func(i iup.Ihandle) int {
+		return iup.CLOSE
+	}))
+
+	iup.GetHandle("menuSave").SetCallback("ACTION", iup.ActionFunc(func(i iup.Ihandle) int {
 		iup.Popup(fopen, iup.CENTER, iup.CENTER)
 		fopenStat := fopen.GetInt("STATUS")
 		if fopenStat == 1 {
@@ -191,7 +176,7 @@ func RunIde() {
 	}))
 
 	runBtn := iup.Button("/> Run ").SetAttribute("SIZE", "FIVExFIVE").SetAttribute("IMAGE", "gearimage")
-    topToolbar := iup.Vbox(runBtn)
+	topToolbar := iup.Vbox(runBtn)
 	outputBox := iup.MultiLine().SetAttributes(map[string]string{
 		"EXPAND":   "YES",
 		"BORDER":   "YES",
@@ -205,7 +190,7 @@ func RunIde() {
 	}))
 
 	inf := iup.Vbox(
-        topToolbar,
+		topToolbar,
 		editor,
 		outputBox,
 	)
