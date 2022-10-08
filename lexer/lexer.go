@@ -2,6 +2,7 @@ package lexer
 
 import (
 	"pankti/token"
+
 )
 
 type Lexer struct {
@@ -62,7 +63,7 @@ func (l *Lexer) NextToken() token.Token {
 	case '*':
 		tk = NewToken(token.MUL, l.ch, l.line, l.column)
 	case '/':
-		tk = NewToken(token.DIV, l.ch, l.line, l.column)
+		    tk = NewToken(token.DIV, l.ch, l.line, l.column)
 	case '=':
 		if l.peekChar() == '=' {
 			ch := l.ch
@@ -121,6 +122,10 @@ func (l *Lexer) NextToken() token.Token {
 		tk = NewToken(token.RS_BRACKET, l.ch, l.line, l.column)
 	case ':':
 		tk = NewToken(token.COLON, l.ch, l.line, l.column)
+        //TODO: case '#':
+        
+        //TODO: Comments l.eatSingleLineComment()
+        
 	case 0:
 		tk.Literal = ""
 		tk.Type = token.EOF
@@ -147,6 +152,22 @@ func (l *Lexer) NextToken() token.Token {
 	return tk
 
 }
+
+
+/*
+func (l *Lexer) eatSingleLineComment(){
+    
+    for l.ch != '\n' && !l.AtEOF(){
+        l.readChar()
+        //l.eatWhitespace()
+    }
+
+
+    //l.eatWhitespace()
+
+    log.Println("->" + string(l.ch) + "<-") 
+}
+*/
 
 func (l *Lexer) readString() string {
 	pos := l.pos + 1
