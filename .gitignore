@@ -1,4 +1,5 @@
 pankti
+dist/
 *.exe
 *.exe~
 *.dll
