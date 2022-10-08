@@ -1,3 +1,5 @@
+// +build !noide
+
 package cmd
 
 import (

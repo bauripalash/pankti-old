@@ -1,3 +1,5 @@
+// +build !noide
+
 package ide
 
 import "github.com/gen2brain/iup-go/iup"
