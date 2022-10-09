@@ -35,6 +35,8 @@ const (
 	NUM     = "NUMBER"
 	INCLUDE = "INCLUDE"
 
+	COMMENT = "COMMENT"
+
 	//Equal = sign; for assignment
 	EQ = "="
 

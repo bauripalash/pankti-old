@@ -147,7 +147,7 @@ type Hashable interface {
 	HashKey() HashKey
 }
 
-//Strings "I am a string"
+// Strings "I am a string"
 type String struct {
 	Value string
 }
@@ -168,7 +168,7 @@ func (num *Number) Inspect() string {
 	return fmt.Sprintf("%s", num.Value.Value.String())
 }
 
-//Booleans true,false
+// Booleans true,false
 type Boolean struct {
 	Value bool
 }
@@ -176,7 +176,7 @@ type Boolean struct {
 func (b *Boolean) Type() ObjType   { return BOOL_OBJ }
 func (b *Boolean) Inspect() string { return fmt.Sprintf("%t", b.Value) }
 
-//NULL_OBJ
+// NULL_OBJ
 type Null struct{}
 
 func (n *Null) Type() ObjType   { return NULL_OBJ }

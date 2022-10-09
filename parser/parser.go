@@ -305,6 +305,7 @@ func (p *Parser) ParseProg() *ast.Program {
 	prog.Stmts = []ast.Stmt{}
 
 	for p.curTok.Type != token.EOF {
+
 		//fmt.Println(p.curTok)
 		stmt := p.parseStmt()
 
@@ -327,10 +328,17 @@ func (p *Parser) parseStmt() ast.Stmt {
 		return p.parseReturnStmt()
 	case token.INCLUDE:
 		return p.parseIncludeStmt()
+	case token.COMMENT:
+		return p.parseComment()
 	default:
 		return p.parseExprStmt()
 
 	}
+}
+
+func (p *Parser) parseComment() ast.Stmt {
+
+	return &ast.Comment{Token: p.curTok, Value: p.curTok.Literal}
 }
 
 func (p *Parser) parseReturnStmt() *ast.ReturnStmt {
@@ -628,7 +636,7 @@ func (p *Parser) peek(t token.TokenType) bool {
 }
 
 // Check precedence of Peek Token
-//(Token after current token)
+// (Token after current token)
 func (p *Parser) peekPrec() int {
 	if p, ok := precedences[p.peekTok.Type]; ok {
 		return p
@@ -637,7 +645,7 @@ func (p *Parser) peekPrec() int {
 	return LOWEST
 }
 
-//Check precedence of Current Token
+// Check precedence of Current Token
 func (p *Parser) curPrec() int {
 	if p, ok := precedences[p.curTok.Type]; ok {
 		return p

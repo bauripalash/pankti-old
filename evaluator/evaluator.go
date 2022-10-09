@@ -435,20 +435,19 @@ func evalInfixExpr(op string, l, r object.Obj) object.Obj {
 }
 
 func evalStringInfixExpr(op string, l, r object.Obj) object.Obj {
-    lval := l.(*object.String).Value
-    rval := r.(*object.String).Value
-    switch op{
-        case "+":
-            return &object.String{ Value: lval + rval }
-        case "==":
-            return getBoolObj( lval == rval )
-        case "!=":
-            return getBoolObj(lval != rval)
-        default:
-		    return NewErr("Unknown Operator %s %s %s", l.Type(), op, r.Type())
+	lval := l.(*object.String).Value
+	rval := r.(*object.String).Value
+	switch op {
+	case "+":
+		return &object.String{Value: lval + rval}
+	case "==":
+		return getBoolObj(lval == rval)
+	case "!=":
+		return getBoolObj(lval != rval)
+	default:
+		return NewErr("Unknown Operator %s %s %s", l.Type(), op, r.Type())
 
-    }
-
+	}
 
 }
 
