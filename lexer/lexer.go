@@ -2,7 +2,6 @@ package lexer
 
 import (
 	"pankti/token"
-
 )
 
 type Lexer struct {
@@ -63,7 +62,7 @@ func (l *Lexer) NextToken() token.Token {
 	case '*':
 		tk = NewToken(token.MUL, l.ch, l.line, l.column)
 	case '/':
-		    tk = NewToken(token.DIV, l.ch, l.line, l.column)
+		tk = NewToken(token.DIV, l.ch, l.line, l.column)
 	case '=':
 		if l.peekChar() == '=' {
 			ch := l.ch
@@ -122,10 +121,31 @@ func (l *Lexer) NextToken() token.Token {
 		tk = NewToken(token.RS_BRACKET, l.ch, l.line, l.column)
 	case ':':
 		tk = NewToken(token.COLON, l.ch, l.line, l.column)
-        //TODO: case '#':
-        
-        //TODO: Comments l.eatSingleLineComment()
-        
+		//TODO: case '#':
+
+		//TODO: Comments l.eatSingleLineComment()
+	case '#':
+		pos := l.pos + 1
+
+		for {
+
+			l.readChar()
+
+			if l.ch == '\n' || l.ch == '\r' || l.ch == 0 {
+				break
+			}
+
+		}
+
+		tk = token.Token{Type: token.COMMENT, Literal: string(l.input[pos:l.pos]), LineNo: l.line, Column: l.column}
+
+		//l.eatWhitespace()
+		//log.Print("->")
+		//log.Print(l.ch)
+		//log.Println("<-")
+
+		//l.eatWhitespace()
+
 	case 0:
 		tk.Literal = ""
 		tk.Type = token.EOF
@@ -153,10 +173,9 @@ func (l *Lexer) NextToken() token.Token {
 
 }
 
-
 /*
 func (l *Lexer) eatSingleLineComment(){
-    
+
     for l.ch != '\n' && !l.AtEOF(){
         l.readChar()
         //l.eatWhitespace()
@@ -165,7 +184,7 @@ func (l *Lexer) eatSingleLineComment(){
 
     //l.eatWhitespace()
 
-    log.Println("->" + string(l.ch) + "<-") 
+    log.Println("->" + string(l.ch) + "<-")
 }
 */
 
@@ -183,12 +202,14 @@ func (l *Lexer) readString() string {
 }
 
 func (l *Lexer) eatWhitespace() {
-	for l.ch == ' ' || l.ch == '\t' || l.ch == '\n' || l.ch == '\r' {
+	for l.ch == rune(' ') || l.ch == '\t' || l.ch == '\n' || l.ch == '\r' {
 		if l.ch == '\n' {
 			l.line += 1
 			l.column = 1
 		}
 		l.readChar()
+		//log.Println(l.ch)
+
 	}
 }
 

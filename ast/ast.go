@@ -50,6 +50,15 @@ func (p *Program) String() string {
 
 }
 
+type Comment struct {
+	Token token.Token
+	Value string
+}
+
+func (s *Comment) stmtNode()        {}
+func (s *Comment) TokenLit() string { return s.Token.Literal }
+func (s *Comment) String() string   { return s.Token.Literal }
+
 type StringLit struct {
 	Token token.Token
 	Value string
@@ -59,7 +68,7 @@ func (s *StringLit) exprNode()        {}
 func (s *StringLit) TokenLit() string { return s.Token.Literal }
 func (s *StringLit) String() string   { return s.Token.Literal }
 
-//Arrays
+// Arrays
 type ArrLit struct {
 	Token token.Token
 	Elms  []Expr
@@ -176,7 +185,7 @@ func (r *ReturnStmt) String() string {
 	return out.String()
 }
 
-//Expression Statement
+// Expression Statement
 type ExprStmt struct {
 	Token token.Token
 	Expr  Expr
@@ -280,7 +289,7 @@ func (inf *InfixExpr) String() string {
 
 }
 
-//Boolean Expression
+// Boolean Expression
 type Boolean struct {
 	Token token.Token
 	Value bool
