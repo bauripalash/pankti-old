@@ -285,6 +285,8 @@ func (p *Parser) regInfix(tokenType token.TokenType, fn infixParseFn) {
 }
 
 func (p *Parser) peekErr(t token.TokenType) {
+    fmt.Println(p.curTok.Column , p.curTok.LineNo , p.curTok.Literal)
+    fmt.Println(p.lx.GetLine(p.curTok.LineNo))
 	expectedToken := t
 	if len(t) > 1 {
 		expectedToken = token.TokenType(token.HumanFriendly[string(t)])
@@ -412,6 +414,8 @@ func (p *Parser) parseExprStmt() *ast.ExprStmt {
 
 func (p *Parser) noPrefixFunctionErr(t token.TokenType) {
 	var msg errs.ParserError
+    fmt.Println(string(p.lx.GetLine(p.curTok.LineNo)[p.curTok.Column]))
+    //fmt.Println(p.curTok.Literal , " <-> " ,  p.lx.GetLine(p.curTok.LineNo))
 	if t == token.FUNC {
 		msg = &errs.NoEktiError{Type: t}
 	} else {

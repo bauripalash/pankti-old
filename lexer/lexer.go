@@ -2,6 +2,7 @@ package lexer
 
 import (
 	"pankti/token"
+	"strings"
 )
 
 type Lexer struct {
@@ -46,6 +47,28 @@ func (l *Lexer) readChar() {
 
 	l.readPos += 1
 	l.column += 1
+}
+
+func (l *Lexer) GetLine(ln int) string{
+    a:= strings.Split(string(l.input) , "\n")
+     
+
+    for idx,l := range a{
+        if idx == (ln-1){
+            return l
+        }
+        //fmt.Println(idx , l)
+    }
+    //b:= strings.Split(string(l.input) , "\n")
+
+    //if len(a) > len(b) {
+    //    fmt.Println("a->" , a[ln] , "<=>" )
+    //}else{
+       // fmt.Println("b->", a , "<=>" , len(a))
+    //}
+
+    //fmt.Println(a)
+    return ""
 }
 
 func (l *Lexer) NextToken() token.Token {
