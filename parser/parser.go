@@ -391,7 +391,7 @@ func MakeErrorLine(t token.Token, line string) string {
 
 	RIndex := t.Column + len(t.Literal) - 1
     
-    if (len(t.Literal) > 1){
+    if (len(t.Literal) <= 1){
         RIndex = Lindex + 1
     }
 
