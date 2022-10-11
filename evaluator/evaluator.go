@@ -116,31 +116,7 @@ func Eval(node ast.Node, env *object.Env, eh ErrorHelper) object.Obj {
 		if len(elms) == 1 && isErr(elms[0]) {
 			return elms[0]
 		}
-		/*
-		   func (p *Parser) parseCallArgs() []ast.Expr {
-		   	args := []ast.Expr{}
 
-		   	if p.isPeekToken(token.RPAREN) {
-		   		p.nextToken()
-		   		return args
-		   	}
-
-		   	p.nextToken()
-		   	args = append(args, p.parseExpr(LOWEST))
-
-		   	for p.isPeekToken(token.COMMA) {
-		   		p.nextToken()
-		   		p.nextToken()
-		   		args = append(args, p.parseExpr(LOWEST))
-		   	}
-
-		   	if !p.peek(token.RPAREN) {
-		   		return nil
-		   	}
-
-		   	return args
-		   }
-		*/
 		return &object.Array{Elms: elms, Token: node.Token}
 
 	case *ast.IndexExpr:
@@ -160,32 +136,7 @@ func Eval(node ast.Node, env *object.Env, eh ErrorHelper) object.Obj {
 	case *ast.IncludeStmt:
 		//ImportMap.Env = *env
 		//fmt.Println(env)
-		newEnv, val := evalIncludeStmt(node, env, &eh) /*
-			func (p *Parser) parseCallArgs() []ast.Expr {
-				args := []ast.Expr{}
-
-				if p.isPeekToken(token.RPAREN) {
-					p.nextToken()
-					return args
-				}
-
-				p.nextToken()
-				args = append(args, p.parseExpr(LOWEST))
-
-				for p.isPeekToken(token.COMMA) {
-					p.nextToken()
-					p.nextToken()
-					args = append(args, p.parseExpr(LOWEST))
-				}
-
-				if !p.peek(token.RPAREN) {
-					return nil
-				}
-
-				return args
-			}
-		*/
-		//fmt.Println(env)
+		newEnv, val := evalIncludeStmt(node, env, &eh)
 		if val.Type() != object.ERR_OBJ {
 			*env = *object.NewEnclosedEnv(newEnv)
 		} else {
@@ -316,7 +267,7 @@ func evalIncludeStmt(in *ast.IncludeStmt, e *object.Env, eh *ErrorHelper) (*obje
 	enx := object.NewEnv()
 
 	if rawFilename.Type() != object.STRING_OBJ {
-		return enx, NewBareErr("include filename is invalid %s", rawFilename.Inspect())
+		return enx, NewErr(rawFilename.GetToken(), eh, "include filename is invalid %s", rawFilename.Inspect())
 
 	}
 
@@ -332,7 +283,7 @@ func evalIncludeStmt(in *ast.IncludeStmt, e *object.Env, eh *ErrorHelper) (*obje
 	fdata, err := os.ReadFile(includeFilename)
 
 	if err != nil {
-		return enx, NewErr(in.Token, eh, "Failed to read include file %s", includeFilename)
+		return enx, NewErr(rawFilename.GetToken(), eh, "Failed to read include file %s", includeFilename)
 
 	}
 
@@ -348,7 +299,7 @@ func evalIncludeStmt(in *ast.IncludeStmt, e *object.Env, eh *ErrorHelper) (*obje
 			fmt.Println(e.String())
 		}
 
-		return enx, NewBareErr("Include file contains parsing errors")
+		return enx, NewErr(rawFilename.GetToken(), eh, "Include file contains parsing errors")
 	}
 
 	return ex, &object.Null{}
@@ -389,7 +340,7 @@ func evalId(node *ast.Identifier, env *object.Env, eh *ErrorHelper) object.Obj {
 		return builtin
 	}
 
-	return NewBareErr(eh.MakeErrorLine(node.Token) + "\n" + "id not found : " + node.Value)
+	return NewErr(node.Token, eh, "id not found : "+node.Value)
 	//	return val
 }
 
@@ -504,7 +455,7 @@ func evalInfixExpr(op string, l, r object.Obj, eh *ErrorHelper) object.Obj {
 	case op == "!=":
 		return getBoolObj(l != r)
 	case l.Type() != r.Type():
-		return NewBareErr("Type mismatch:  %s %s %s ", l.Type(), op, r.Type())
+		return NewErr(l.GetToken(), eh, "Type mismatch:  %s %s %s ", l.Type(), op, r.Type())
 	default:
 		return NewBareErr("unknown Operator : %s %s %s", l.Type(), op, r.Type())
 	}
