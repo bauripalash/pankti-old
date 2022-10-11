@@ -1,1 +1,4 @@
-""+""
+let name = ekti kaj(a) {
+	a
+};
+name();

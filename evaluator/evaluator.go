@@ -31,18 +31,18 @@ func (e *ErrorHelper) GetLine(t token.Token) string {
 
 func (e *ErrorHelper) MakeErrorLine(t token.Token, showHint bool) string {
 
-	if t.LineNo <= 0 {
+	if t.LineNo <= 0 { //if the token is virtual token; line can be zero
 		return ""
 	}
 
 	newLine := e.Source
-
+	xLine := e.GetLine(t)
 	if showHint {
 
-		xLine := e.GetLine(t)
+		//fmt.Println(xLine)
 
 		Lindex := t.Column - 1
-		if Lindex < 0 {
+		if Lindex < 0 { //In case of a virtual token
 			Lindex = 0
 		}
 
@@ -54,8 +54,10 @@ func (e *ErrorHelper) MakeErrorLine(t token.Token, showHint bool) string {
 
 		newL := xLine[:RIndex] + " <-- " + xLine[RIndex:]
 		newLine = newL[:Lindex] + " --> " + newL[Lindex:]
+
+		return strconv.Itoa(t.LineNo) + "| " + newLine
 	}
-	return strconv.Itoa(t.LineNo) + "| " + newLine
+	return strconv.Itoa(t.LineNo) + "| " + xLine
 }
 
 func Eval(node ast.Node, env *object.Env, eh ErrorHelper) object.Obj {
@@ -121,7 +123,7 @@ func Eval(node ast.Node, env *object.Env, eh ErrorHelper) object.Obj {
 			return args[0]
 		}
 
-		return applyFunc(fnc, args, &eh)
+		return applyFunc(fnc, node.Token, args, &eh)
 
 	case *ast.StringLit:
 		return &object.String{Value: node.Value, Token: node.Token}
@@ -244,7 +246,7 @@ func evalArrIndexExpr(arr, index object.Obj, eh *ErrorHelper) object.Obj {
 	return arrObj.Elms[idx]
 }
 
-func applyFunc(fn object.Obj, args []object.Obj, eh *ErrorHelper) object.Obj {
+func applyFunc(fn object.Obj, caller token.Token, args []object.Obj, eh *ErrorHelper) object.Obj {
 
 	switch fn := fn.(type) {
 	case *object.Function:
@@ -254,7 +256,7 @@ func applyFunc(fn object.Obj, args []object.Obj, eh *ErrorHelper) object.Obj {
 			return unwrapRValue(evd)
 		} else {
 
-			return NewErr(fn.GetToken(), eh, true, "Function call doesn't have required arguments provided; wanted = %d but got %d", len(fn.Params), len(args))
+			return NewErr(caller, eh, false, "Function call doesn't have required arguments provided; wanted = %d but got %d", len(fn.Params), len(args))
 		}
 	case *object.Builtin:
 		return fn.Fn(args...)
