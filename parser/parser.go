@@ -8,6 +8,7 @@ import (
 	"pankti/lexer"
 	"pankti/number"
 	"pankti/token"
+	"strconv"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -246,32 +247,6 @@ func (p *Parser) parseCallExpr(function ast.Expr) ast.Expr {
 	return exp
 }
 
-/*
-func (p *Parser) parseCallArgs() []ast.Expr {
-	args := []ast.Expr{}
-
-	if p.isPeekToken(token.RPAREN) {
-		p.nextToken()
-		return args
-	}
-
-	p.nextToken()
-	args = append(args, p.parseExpr(LOWEST))
-
-	for p.isPeekToken(token.COMMA) {
-		p.nextToken()
-		p.nextToken()
-		args = append(args, p.parseExpr(LOWEST))
-	}
-
-	if !p.peek(token.RPAREN) {
-		return nil
-	}
-
-	return args
-}
-*/
-
 func (p *Parser) GetErrors() []errs.ParserError {
 	return p.errs
 }
@@ -289,10 +264,8 @@ func (p *Parser) peekErr(t token.TokenType) {
 	if len(t) > 1 {
 		expectedToken = token.TokenType(token.HumanFriendly[string(t)])
 	}
-	//msg := fmt.Sprintf(errs.Errs["EXPECTED_GOT"], expectedToken, p.peekTok.Literal)
-	newerr := errs.PeekError{Expected: expectedToken, Got: p.peekTok}
+	newerr := errs.PeekError{Expected: expectedToken, Got: p.peekTok, ErrLine: MakeErrorLine(p.curTok, p.lx.GetLine(p.curTok.LineNo))}
 	p.errs = append(p.errs, &newerr)
-	//p.errs = append(p.errs, errs.NewParserError(errs.EXPECTED_GOT, p.peekTok))
 }
 
 func (p *Parser) nextToken() {
@@ -410,12 +383,29 @@ func (p *Parser) parseExprStmt() *ast.ExprStmt {
 	return stmt
 }
 
-func (p *Parser) noPrefixFunctionErr(t token.TokenType) {
+func MakeErrorLine(t token.Token, line string) string {
+	//    fmt.Println(t.LineNo , line)
+	Lindex := t.Column - 1
+
+	RIndex := t.Column + len(t.Literal) - 1
+
+	if len(t.Literal) <= 1 {
+		RIndex = Lindex + 1
+	}
+
+	newL := line[:RIndex] + " <-- " + line[RIndex:]
+	newLine := newL[:Lindex] + " --> " + newL[Lindex:]
+	return strconv.Itoa(t.LineNo) + "| " + newLine
+}
+
+func (p *Parser) noPrefixFunctionErr(t token.Token) {
 	var msg errs.ParserError
-	if t == token.FUNC {
-		msg = &errs.NoEktiError{Type: t}
+
+	if t.Type == token.FUNC {
+		msg = &errs.NoEktiError{Type: t.Type, ErrLine: MakeErrorLine(t, p.lx.GetLine(t.LineNo))}
 	} else {
-		msg = &errs.NoPrefixSuffixError{Type: t}
+		msg = &errs.NoPrefixSuffixError{Token: p.curTok, ErrLine: MakeErrorLine(t, p.lx.GetLine(t.LineNo))}
+
 	}
 	p.errs = append(p.errs, msg)
 }
@@ -435,7 +425,7 @@ func (p *Parser) parseGroupedExpr() ast.Expr {
 func (p *Parser) parseExpr(prec int) ast.Expr {
 	prefix := p.prefixParseFns[p.curTok.Type]
 	if prefix == nil {
-		p.noPrefixFunctionErr(p.curTok.Type)
+		p.noPrefixFunctionErr(p.curTok)
 		return nil
 	}
 

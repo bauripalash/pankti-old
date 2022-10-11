@@ -65,7 +65,8 @@ func RunFile(src string) string {
 		return strings.Join(tempErrs, " \n")
 	}
 	env := object.NewEnv()
-	evd := evaluator.Eval(prog, env)
+	eh := evaluator.ErrorHelper{Source: src}
+	evd := evaluator.Eval(prog, env, eh)
 
 	if evd != nil {
 		return evd.Inspect()

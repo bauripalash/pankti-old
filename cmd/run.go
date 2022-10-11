@@ -4,13 +4,14 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/spf13/cobra"
 	"os"
 	"pankti/evaluator"
 	"pankti/lexer"
 	"pankti/object"
 	"pankti/parser"
 	"pankti/repl"
+
+	"github.com/spf13/cobra"
 )
 
 // runCmd represents the run command
@@ -44,18 +45,30 @@ var runCmd = &cobra.Command{
 			//fmt.Println(string(f))
 
 			lx := lexer.NewLexer(string(f))
+			/*
+			   for !lx.AtEOF(){
+			       nt := lx.NextToken()
+			       fmt.Printf(` Lit-> %s
+			                   Line -> %d
+			                   Col -> %d
+			                   Type -> %s
+
+			       ` + "\n" , nt.Literal , nt.LineNo , nt.Column , nt.Type)
+			   }*/
 			ps := parser.NewParser(&lx)
 			at := ps.ParseProg()
 
 			if len(ps.GetErrors()) != 0 {
 				repl.ShowParseErrors(os.Stdin, ps.GetErrors())
 				fmt.Printf("fix above mentioned errors first!\n\n")
-			}
-			env := object.NewEnv()
-			evd := evaluator.Eval(at, env)
+			} else {
+				env := object.NewEnv()
+				eh := evaluator.ErrorHelper{Source: string(f)}
+				evd := evaluator.Eval(at, env, eh)
 
-			if evd != nil {
-				fmt.Println(evd.Inspect())
+				if evd != nil {
+					fmt.Println(evd.Inspect())
+				}
 			}
 
 			//fmt.Println(args[0])

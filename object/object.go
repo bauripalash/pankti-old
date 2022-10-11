@@ -6,6 +6,7 @@ import (
 	"hash/fnv"
 	"pankti/ast"
 	"pankti/number"
+	"pankti/token"
 	"strings"
 )
 
@@ -32,28 +33,34 @@ type ObjType string
 type Obj interface {
 	Type() ObjType
 	Inspect() string
+	GetToken() token.Token
 }
 
 type Builtin struct {
-	Fn BuiltInFunc
+	Fn    BuiltInFunc
+	Token token.Token
 }
 
-func (b *Builtin) Type() ObjType   { return BUILTIN_OBJ }
-func (b *Builtin) Inspect() string { return "builtin function" }
+func (b *Builtin) Type() ObjType         { return BUILTIN_OBJ }
+func (b *Builtin) Inspect() string       { return "builtin function" }
+func (b *Builtin) GetToken() token.Token { return b.Token }
 
 // Include
 
 type IncludeObj struct {
 	Filename string
+	Token    token.Token
 }
 
-func (ib *IncludeObj) Type() ObjType   { return INCLUDE_OBJ }
-func (ib *IncludeObj) Inspect() string { return fmt.Sprintf("include %s", ib.Filename) }
+func (ib *IncludeObj) Type() ObjType         { return INCLUDE_OBJ }
+func (ib *IncludeObj) Inspect() string       { return fmt.Sprintf("include %s", ib.Filename) }
+func (ib *IncludeObj) GetToken() token.Token { return ib.Token }
 
 //Arrays
 
 type Array struct {
-	Elms []Obj
+	Elms  []Obj
+	Token token.Token
 }
 
 func (a *Array) Type() ObjType { return ARRAY_OBJ }
@@ -70,11 +77,16 @@ func (a *Array) Inspect() string {
 	return out.String()
 }
 
+func (a *Array) GetToken() token.Token {
+	return a.Token
+}
+
 //Hash
 
 type HashKey struct {
 	Type  ObjType
 	Value uint64
+	Token token.Token
 }
 
 func (b *Boolean) HashKey() HashKey {
@@ -122,6 +134,7 @@ type HashPair struct {
 
 type Hash struct {
 	Pairs map[HashKey]HashPair
+	Token token.Token
 }
 
 func (h *Hash) Type() ObjType { return HASH_OBJ }
@@ -143,6 +156,10 @@ func (h *Hash) Inspect() string {
 	return out.String()
 }
 
+func (h *Hash) GetToken() token.Token {
+	return h.Token
+}
+
 type Hashable interface {
 	HashKey() HashKey
 }
@@ -150,14 +167,17 @@ type Hashable interface {
 // Strings "I am a string"
 type String struct {
 	Value string
+	Token token.Token
 }
 
-func (s *String) Type() ObjType   { return STRING_OBJ }
-func (s *String) Inspect() string { return s.Value }
+func (s *String) Type() ObjType         { return STRING_OBJ }
+func (s *String) Inspect() string       { return s.Value }
+func (s *String) GetToken() token.Token { return s.Token }
 
 type Number struct {
 	Value number.Number
 	IsInt bool
+	Token token.Token
 }
 
 func (num *Number) Type() ObjType {
@@ -168,38 +188,49 @@ func (num *Number) Inspect() string {
 	return fmt.Sprintf("%s", num.Value.Value.String())
 }
 
+func (num *Number) GetToken() token.Token {
+	return num.Token
+}
+
 // Booleans true,false
 type Boolean struct {
 	Value bool
+	Token token.Token
 }
 
-func (b *Boolean) Type() ObjType   { return BOOL_OBJ }
-func (b *Boolean) Inspect() string { return fmt.Sprintf("%t", b.Value) }
+func (b *Boolean) Type() ObjType         { return BOOL_OBJ }
+func (b *Boolean) Inspect() string       { return fmt.Sprintf("%t", b.Value) }
+func (b *Boolean) GetToken() token.Token { return b.Token }
 
 // NULL_OBJ
 type Null struct{}
 
-func (n *Null) Type() ObjType   { return NULL_OBJ }
-func (n *Null) Inspect() string { return "null" }
+func (n *Null) Type() ObjType         { return NULL_OBJ }
+func (n *Null) Inspect() string       { return "null" }
+func (n *Null) GetToken() token.Token { return token.Token{} }
 
 type ReturnValue struct {
 	Value Obj
+	Token token.Token
 }
 
-func (r *ReturnValue) Type() ObjType   { return RETURN_VAL_OBJ }
-func (r *ReturnValue) Inspect() string { return r.Value.Inspect() }
+func (r *ReturnValue) Type() ObjType         { return RETURN_VAL_OBJ }
+func (r *ReturnValue) Inspect() string       { return r.Value.Inspect() }
+func (r *ReturnValue) GetToken() token.Token { return r.Token }
 
 type Error struct {
 	Msg string
 }
 
-func (e *Error) Type() ObjType   { return ERR_OBJ }
-func (e *Error) Inspect() string { return "ERR : " + e.Msg }
+func (e *Error) Type() ObjType         { return ERR_OBJ }
+func (e *Error) Inspect() string       { return "ERR : " + e.Msg }
+func (e *Error) GetToken() token.Token { return token.Token{} }
 
 type Function struct {
 	Params []*ast.Identifier
 	Body   *ast.BlockStmt
 	Env    *Env
+	Token  token.Token
 }
 
 func (f *Function) Type() ObjType { return FUNC_OBJ }
@@ -220,4 +251,9 @@ func (f *Function) Inspect() string {
 	out.WriteString("\n}")
 
 	return out.String()
+}
+
+func (f *Function) GetToken() token.Token {
+
+	return f.Token
 }

@@ -2,6 +2,7 @@ package lexer
 
 import (
 	"pankti/token"
+	"strings"
 )
 
 type Lexer struct {
@@ -28,7 +29,7 @@ func getLen(inp string) int {
 */
 
 func NewLexer(input string) Lexer {
-	lexer := Lexer{input: []rune(input), line: 1}
+	lexer := Lexer{input: []rune(input), line: 1, column: 0}
 	lexer.readChar()
 	return lexer
 }
@@ -44,8 +45,29 @@ func (l *Lexer) readChar() {
 	//fmt.Printf("<-> %c >> %d >>  %d >> %d\n", l.ch, len(string(l.ch)), l.pos, l.readPos)
 	l.pos = l.readPos
 
-	l.readPos += 1
-	l.column += 1
+	l.readPos++
+	l.column++
+}
+
+func (l *Lexer) GetLine(ln int) string {
+	a := strings.Split(string(l.input), "\n")
+
+	for idx, l := range a {
+		if idx == (ln - 1) {
+			return l
+		}
+		//fmt.Println(idx , l)
+	}
+	//b:= strings.Split(string(l.input) , "\n")
+
+	//if len(a) > len(b) {
+	//    fmt.Println("a->" , a[ln] , "<=>" )
+	//}else{
+	// fmt.Println("b->", a , "<=>" , len(a))
+	//}
+
+	//fmt.Println(a)
+	return ""
 }
 
 func (l *Lexer) NextToken() token.Token {
@@ -114,6 +136,8 @@ func (l *Lexer) NextToken() token.Token {
 		}
 	case '"':
 		tk.Type = token.STRING
+		tk.LineNo = l.line
+		tk.Column = l.column
 		tk.Literal = l.readString()
 	case '[':
 		tk = NewToken(token.LS_BRACKET, l.ch, l.line, l.column)
@@ -126,6 +150,8 @@ func (l *Lexer) NextToken() token.Token {
 		//TODO: Comments l.eatSingleLineComment()
 	case '#':
 		pos := l.pos + 1
+		col := l.column
+		lin := l.line
 
 		for {
 
@@ -137,7 +163,7 @@ func (l *Lexer) NextToken() token.Token {
 
 		}
 
-		tk = token.Token{Type: token.COMMENT, Literal: string(l.input[pos:l.pos]), LineNo: l.line, Column: l.column}
+		tk = token.Token{Type: token.COMMENT, Literal: string(l.input[pos:l.pos]), LineNo: lin, Column: col}
 
 		//l.eatWhitespace()
 		//log.Print("->")
@@ -147,20 +173,28 @@ func (l *Lexer) NextToken() token.Token {
 		//l.eatWhitespace()
 
 	case 0:
+		tk.Column = l.column
+		tk.LineNo = l.line
 		tk.Literal = ""
 		tk.Type = token.EOF
 
 	default:
 		if isLetter(l.ch) {
+			tk.LineNo = l.line
+			tk.Column = l.column
 			tk.Literal = l.readIdent()
 			tk.Type = token.LookupIdent(tk.Literal)
+
 			return tk
 		} else if isDigit(l.ch) {
+			tk.LineNo = l.line
+			tk.Column = l.column
 			lit, _ := l.readNum()
 
 			//fmt.Println(lit)
 			tk.Literal = lit
 			tk.Type = token.NUM
+
 			return tk
 		} else {
 			tk = NewToken(token.ILLEGAL, l.ch, l.line, l.column)
@@ -204,8 +238,8 @@ func (l *Lexer) readString() string {
 func (l *Lexer) eatWhitespace() {
 	for l.ch == rune(' ') || l.ch == '\t' || l.ch == '\n' || l.ch == '\r' {
 		if l.ch == '\n' {
-			l.line += 1
-			l.column = 1
+			l.line++
+			l.column = 0
 		}
 		l.readChar()
 		//log.Println(l.ch)
