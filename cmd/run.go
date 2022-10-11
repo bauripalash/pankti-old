@@ -4,13 +4,14 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/spf13/cobra"
 	"os"
 	"pankti/evaluator"
 	"pankti/lexer"
 	"pankti/object"
 	"pankti/parser"
 	"pankti/repl"
+
+	"github.com/spf13/cobra"
 )
 
 // runCmd represents the run command
@@ -62,7 +63,8 @@ var runCmd = &cobra.Command{
 				fmt.Printf("fix above mentioned errors first!\n\n")
 			} else {
 				env := object.NewEnv()
-				evd := evaluator.Eval(at, env)
+				eh := evaluator.ErrorHelper{Source: string(f)}
+				evd := evaluator.Eval(at, env, eh)
 
 				if evd != nil {
 					fmt.Println(evd.Inspect())

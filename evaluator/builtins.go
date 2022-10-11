@@ -8,7 +8,7 @@ import (
 
 func lenFunc(args []object.Obj) object.Obj {
 	if len(args) != 1 {
-		return NewErr("wrong number of arguments. got %d but wanted 1", len(args))
+		return NewBareErr("wrong number of arguments. got %d but wanted 1", len(args))
 	}
 
 	switch arg := args[0].(type) {
@@ -17,18 +17,18 @@ func lenFunc(args []object.Obj) object.Obj {
 	case *object.Array:
 		return object.MakeIntNumber(int64(len(arg.Elms)))
 	default:
-		return NewErr("argument type %s to `len` is not supported", args[0].Type())
+		return NewBareErr("argument type %s to `len` is not supported", args[0].Type())
 	}
 }
 
 func firstFunc(args []object.Obj) object.Obj {
 
 	if len(args) != 1 {
-		return NewErr("wrong number of argument %d", len(args))
+		return NewBareErr("wrong number of argument %d", len(args))
 	}
 
 	if args[0].Type() != object.ARRAY_OBJ {
-		return NewErr("first cannot be used with %s", args[0].Type())
+		return NewBareErr("first cannot be used with %s", args[0].Type())
 	}
 
 	array := args[0].(*object.Array)
@@ -41,11 +41,11 @@ func firstFunc(args []object.Obj) object.Obj {
 func lastFunc(args []object.Obj) object.Obj {
 
 	if len(args) != 1 {
-		return NewErr("wrong number of argument %d", len(args))
+		return NewBareErr("wrong number of argument %d", len(args))
 	}
 
 	if args[0].Type() != object.ARRAY_OBJ {
-		return NewErr("last cannot be used with %s", args[0].Type())
+		return NewBareErr("last cannot be used with %s", args[0].Type())
 	}
 
 	array := args[0].(*object.Array)
@@ -59,11 +59,11 @@ func lastFunc(args []object.Obj) object.Obj {
 func restFunc(args []object.Obj) object.Obj {
 
 	if len(args) != 1 {
-		return NewErr("wrong number of argument %d", len(args))
+		return NewBareErr("wrong number of argument %d", len(args))
 	}
 
 	if args[0].Type() != object.ARRAY_OBJ {
-		return NewErr("rest cannot be used with %s", args[0].Type())
+		return NewBareErr("rest cannot be used with %s", args[0].Type())
 	}
 
 	array := args[0].(*object.Array)
@@ -79,11 +79,11 @@ func restFunc(args []object.Obj) object.Obj {
 func pushFunc(args []object.Obj) object.Obj {
 
 	if len(args) != 2 {
-		return NewErr("wrong number of argument %d", len(args))
+		return NewBareErr("wrong number of argument %d", len(args))
 	}
 
 	if args[0].Type() != object.ARRAY_OBJ {
-		return NewErr("push cannot be used with %s", args[0].Type())
+		return NewBareErr("push cannot be used with %s", args[0].Type())
 	}
 
 	arr := args[0].(*object.Array)

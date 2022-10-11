@@ -25,6 +25,7 @@ type Expr interface {
 //Program - main entry point
 
 type Program struct {
+    Source string
 	Stmts []Stmt
 }
 

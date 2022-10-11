@@ -42,7 +42,8 @@ func Repl(in io.Reader, out io.Writer) {
 			ShowParseErrors(out, p.GetErrors())
 			continue
 		}
-		evals := evaluator.Eval(prog, env)
+		eh := evaluator.ErrorHelper{Source: input}
+		evals := evaluator.Eval(prog, env, eh)
 		if evals != nil {
 			//fmt.Println(evals)
 			io.WriteString(out, evals.Inspect())
