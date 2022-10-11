@@ -22,7 +22,7 @@ type PeekError struct {
 	Msg      string
 	Expected token.TokenType
 	Got      token.Token
-    ErrLine string
+	ErrLine  string
 }
 
 func (pe *PeekError) GetMsg() string { return Errs[EXPECTED_GOT] }
@@ -30,7 +30,7 @@ func (pe *PeekError) GetMsg() string { return Errs[EXPECTED_GOT] }
 func (pe *PeekError) GetToken() token.Token { return pe.Got }
 
 func (pe *PeekError) String() string {
-	return  pe.ErrLine + "\n" + fmt.Sprintf(pe.GetMsg(), pe.Expected, pe.GetToken().Literal)
+	return pe.ErrLine + "\n" + fmt.Sprintf(pe.GetMsg(), pe.Expected, pe.GetToken().Literal)
 }
 
 type NoPrefixSuffixError struct {

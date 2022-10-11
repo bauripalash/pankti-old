@@ -69,7 +69,7 @@ func restFunc(args []object.Obj) object.Obj {
 	array := args[0].(*object.Array)
 	arrLen := len(array.Elms)
 	if arrLen > 0 {
-		newElms := make([]object.Obj, arrLen-1, arrLen-1)
+		newElms := make([]object.Obj, arrLen-1)
 		copy(newElms, array.Elms[1:arrLen])
 		return &object.Array{Elms: newElms}
 	}
@@ -89,7 +89,7 @@ func pushFunc(args []object.Obj) object.Obj {
 	arr := args[0].(*object.Array)
 	arrLen := len(arr.Elms)
 
-	newElms := make([]object.Obj, arrLen+1, arrLen+1)
+	newElms := make([]object.Obj, arrLen+1)
 	copy(newElms, arr.Elms)
 	newElms[arrLen] = args[1]
 	return &object.Array{Elms: newElms}

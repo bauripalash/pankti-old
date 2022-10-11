@@ -25,8 +25,8 @@ type Expr interface {
 //Program - main entry point
 
 type Program struct {
-    Source string
-	Stmts []Stmt
+	Source string
+	Stmts  []Stmt
 }
 
 func (p *Program) TokenLit() string {
