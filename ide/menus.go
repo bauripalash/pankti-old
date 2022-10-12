@@ -17,3 +17,20 @@ func GetFileMenu() iup.Ihandle {
 
 	return subMenu
 }
+
+func GetHelpMenu() iup.Ihandle {
+	itemAbout := iup.Item("About").SetCallback("ACTION", iup.ActionFunc(func(i iup.Ihandle) int {
+		ShowAboutMenu()
+		return iup.DEFAULT
+	}))
+
+	itemHelp := iup.Item("Help").SetCallback("ACTION", iup.ActionFunc(func(i iup.Ihandle) int {
+		ShowHelp()
+		return iup.DEFAULT
+	}))
+
+	helpMenu := iup.Menu(itemHelp, itemAbout)
+	helpSubmenu := iup.Submenu("Help", helpMenu)
+
+	return helpSubmenu
+}

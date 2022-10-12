@@ -2,6 +2,8 @@ package main
 
 import (
 	"os"
+	"runtime/debug"
+	"strings"
 
 	/*
 		"vabna/evaluator"
@@ -25,5 +27,17 @@ func init() {
 }
 
 func main() {
-	cmd.Execute()
+    is_noide := false
+    bi , noerr := debug.ReadBuildInfo()
+    if !noerr{
+        return
+    }
+    for _,item := range bi.Settings{
+        if item.Key == "-tags" && strings.Contains(item.Value , "noide"){
+            is_noide = true
+            break
+        }
+    }
+
+	cmd.Execute(is_noide)
 }

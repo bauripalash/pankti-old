@@ -8,12 +8,6 @@ import (
 	_ "embed"
 	"fmt"
 	"image/png"
-	"os"
-	"pankti/evaluator"
-	"pankti/lexer"
-	"pankti/object"
-	"pankti/parser"
-	"strings"
 
 	"github.com/gen2brain/iup-go/iup"
 )
@@ -21,69 +15,8 @@ import (
 //go:embed res/gear.png
 var gearImg []byte
 
-func SaveFile(filename string, content string, overwrite bool) error {
-	if overwrite {
-		err := os.WriteFile(filename, []byte(content), 0644)
-		return err
-	} else {
-		nf, err := os.Create(filename)
-		defer nf.Close()
-		if err != nil {
-			return err
-		}
-
-		nf.Write([]byte(content))
-		nf.Sync()
-	}
-
-	return nil
-}
-
-func ShowAboutMenu() {
-	iup.Message("About Pankti IDE", "Pankti IDE is a basic Editor to quickly run and test Pankti Programs")
-	//iup.Popup(aboutDlg , iup.CENTER , iup.CENTER)
-
-}
-
-func ShowHelp() {
-	iup.Message("Help with Pankti IDE", "TODO : Help")
-}
-
-func RunFile(src string) string {
-	l := lexer.NewLexer(src)
-	p := parser.NewParser(&l)
-
-	prog := p.ParseProg()
-
-	if len(p.GetErrors()) >= 1 {
-		tempErrs := []string{}
-
-		for _, item := range p.GetErrors() {
-			tempErrs = append(tempErrs, item.String())
-		}
-
-		return strings.Join(tempErrs, " \n")
-	}
-	env := object.NewEnv()
-	eh := evaluator.ErrorHelper{Source: src}
-	evd := evaluator.Eval(prog, env, eh)
-
-	if evd != nil {
-		return evd.Inspect()
-	} else {
-		return ""
-	}
-
-}
-
-func OpenFile(filename string) (string, error) {
-
-	content, err := os.ReadFile(filename)
-	if err != nil {
-		return "", err
-	}
-	return string(content), nil
-}
+//go:embed res/icon.png
+var iconImg []byte
 
 func RunIde() {
 	iup.Open()
@@ -94,7 +27,15 @@ func RunIde() {
 		return
 	}
 
+    iconImage , err := png.Decode(bytes.NewReader(iconImg))
+
+    if err != nil{
+        fmt.Println("Failed to read Icon Image")
+        return
+    }
+
 	iup.ImageFromImage(gearImage).SetHandle("gearimage")
+    iup.ImageFromImage(iconImage).SetHandle("iconimage")
 	editor := iup.MultiLine().SetCallback("ACTION", iup.TextActionFunc(func(ih iup.Ihandle, item int, text string) int {
 		if item == iup.K_g {
 			return iup.IGNORE
@@ -106,16 +47,6 @@ func RunIde() {
 		"BORDER": "YES",
 	})
 	iup.SetGlobal("UTF8MODE", "YES")
-
-	itemAbout := iup.Item("About").SetCallback("ACTION", iup.ActionFunc(func(i iup.Ihandle) int {
-		ShowAboutMenu()
-		return iup.DEFAULT
-	}))
-
-	itemHelp := iup.Item("Help").SetCallback("ACTION", iup.ActionFunc(func(i iup.Ihandle) int {
-		ShowHelp()
-		return iup.DEFAULT
-	}))
 
 	fd := iup.FileDlg().SetAttributes(map[string]string{
 		"TITLE": "Open File",
@@ -131,9 +62,7 @@ func RunIde() {
 
 	defer fopen.Destroy()
 
-	helpMenu := iup.Menu(itemHelp, itemAbout)
-	helpSubmenu := iup.Submenu("Help", helpMenu)
-	menu := iup.Menu(GetFileMenu(), helpSubmenu)
+	menu := iup.Menu(GetFileMenu(), GetHelpMenu())
 	menu.SetHandle("mymenu")
 
 	iup.GetHandle("menuOpen").SetCallback("ACTION", iup.ActionFunc(func(i iup.Ihandle) int {
@@ -203,6 +132,7 @@ func RunIde() {
 		"MENU":  "mymenu",
 		"TITLE": "Pankti IDE",
 		"SIZE":  "QUARTERxQUARTER",
+        "ICON": "iconimage",
 	})
 
 	iup.Show(dlg)
