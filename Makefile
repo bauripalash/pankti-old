@@ -4,6 +4,12 @@
 all:
 	go build
 
+wasm:
+	GOOS=js GOARCH=wasm go build -o wasm/res/pankti.wasm wasm/panktiWasm.go
+
+pyserver:
+	cd wasm/res/ && python -m http.server 8099
+
 win:
 	GOOS=windows GOARCH=amd64 go build -o dist/pankti_x86-64.exe --tags noide
 

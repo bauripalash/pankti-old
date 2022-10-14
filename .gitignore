@@ -1,5 +1,6 @@
 pankti
 dist/
+wasm/
 *.exe
 *.exe~
 *.dll
