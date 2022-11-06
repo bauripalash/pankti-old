@@ -1,4 +1,4 @@
-module pankti
+module bauri.palash/pankti
 
 go 1.18
 

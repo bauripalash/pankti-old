@@ -4,11 +4,11 @@ import (
 	"bufio"
 	"fmt"
 	"io"
-	"pankti/errs"
-	"pankti/evaluator"
-	"pankti/lexer"
-	"pankti/object"
-	"pankti/parser"
+	"bauri.palash/pankti/errs"
+	"bauri.palash/pankti/evaluator"
+	"bauri.palash/pankti/lexer"
+	"bauri.palash/pankti/object"
+	"bauri.palash/pankti/parser"
 )
 
 const PROMPT = "-> "

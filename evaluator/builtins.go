@@ -2,8 +2,8 @@ package evaluator
 
 import (
 	"fmt"
-	"pankti/object"
-	"pankti/stdlib"
+	"bauri.palash/pankti/object"
+	"bauri.palash/pankti/stdlib"
 )
 
 func lenFunc(args []object.Obj) object.Obj {

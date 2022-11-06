@@ -1,7 +1,7 @@
 package lexer
 
 import (
-	"pankti/token"
+	"bauri.palash/pankti/token"
 	"testing"
 )
 

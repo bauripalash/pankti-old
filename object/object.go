@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"fmt"
 	"hash/fnv"
-	"pankti/ast"
-	"pankti/number"
-	"pankti/token"
+	"bauri.palash/pankti/ast"
+	"bauri.palash/pankti/number"
+	"bauri.palash/pankti/token"
 	"strings"
 )
 

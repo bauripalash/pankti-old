@@ -2,7 +2,7 @@ package stdlib
 
 import (
 	"fmt"
-	"pankti/object"
+	"bauri.palash/pankti/object"
 	"time"
 )
 

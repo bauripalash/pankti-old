@@ -3,11 +3,11 @@ package parser
 import (
 	"fmt"
 	"math/big"
-	"pankti/ast"
-	"pankti/errs"
-	"pankti/lexer"
-	"pankti/number"
-	"pankti/token"
+	"bauri.palash/pankti/ast"
+	"bauri.palash/pankti/errs"
+	"bauri.palash/pankti/lexer"
+	"bauri.palash/pankti/number"
+	"bauri.palash/pankti/token"
 	"strconv"
 
 	log "github.com/sirupsen/logrus"

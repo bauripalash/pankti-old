@@ -5,11 +5,11 @@ import (
 	"fmt"
 
 	"os"
-	"pankti/evaluator"
-	"pankti/lexer"
-	"pankti/object"
-	"pankti/parser"
-	"pankti/repl"
+	"bauri.palash/pankti/evaluator"
+	"bauri.palash/pankti/lexer"
+	"bauri.palash/pankti/object"
+	"bauri.palash/pankti/parser"
+	"bauri.palash/pankti/repl"
 
 	"github.com/spf13/cobra"
 )

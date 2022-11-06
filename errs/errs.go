@@ -2,7 +2,7 @@ package errs
 
 import (
 	"fmt"
-	"pankti/token"
+	"bauri.palash/pankti/token"
 )
 
 const (

@@ -5,10 +5,10 @@ package ide
 
 import (
 	"os"
-	"pankti/evaluator"
-	"pankti/lexer"
-	"pankti/object"
-	"pankti/parser"
+	"bauri.palash/pankti/evaluator"
+	"bauri.palash/pankti/lexer"
+	"bauri.palash/pankti/object"
+	"bauri.palash/pankti/parser"
 	"strings"
 )
 

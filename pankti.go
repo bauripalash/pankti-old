@@ -11,7 +11,7 @@ import (
 		"vabna/object"
 		"vabna/parser"
 	*/
-	"pankti/cmd"
+    "bauri.palash/pankti/cmd"
 
 	log "github.com/sirupsen/logrus"
 )

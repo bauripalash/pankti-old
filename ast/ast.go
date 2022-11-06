@@ -2,8 +2,8 @@ package ast
 
 import (
 	"bytes"
-	"pankti/number"
-	"pankti/token"
+	"bauri.palash/pankti/number"
+	"bauri.palash/pankti/token"
 	"strings"
 )
 

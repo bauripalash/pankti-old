@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"os"
-	"pankti/repl"
+	"bauri.palash/pankti/repl"
 
 	"github.com/spf13/cobra"
 )
