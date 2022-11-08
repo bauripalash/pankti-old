@@ -38,6 +38,10 @@ Output: পলাশ বাউরি ঘুমোচ্ছে!
 ## Project Status:
 > **Alpha** (*Under Heavy Development*) 
 
+## Android API:
+
+[pkg:maven/in.palashbauri/panktijapi@0.1.0-alpha.1](https://central.sonatype.dev/artifact/in.palashbauri/panktijapi/0.1.0-alpha.1)
+
 ## License:
 > GNU GPL
 
