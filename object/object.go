@@ -24,6 +24,7 @@ const (
 	HASH_OBJ       = "HASH"
 	NUM_OBJ        = "NUM"
 	INCLUDE_OBJ    = "INCLUDE"
+    SHOW_OBJ       = "SHOW"
 )
 
 type BuiltInFunc func(args ...Obj) Obj
@@ -55,6 +56,22 @@ type IncludeObj struct {
 func (ib *IncludeObj) Type() ObjType         { return INCLUDE_OBJ }
 func (ib *IncludeObj) Inspect() string       { return fmt.Sprintf("include %s", ib.Filename) }
 func (ib *IncludeObj) GetToken() token.Token { return ib.Token }
+
+// Print Obj
+
+type ShowObj struct{
+    Value []string 
+    Token token.Token
+}
+
+func (so *ShowObj) Type() ObjType { return  SHOW_OBJ }
+func (so *ShowObj) Inspect() string { return strings.Join(so.Value, "\n") }
+func (so *ShowObj ) GetToken() token.Token {return so.Token  }
+func (so *ShowObj ) Print(b bytes.Buffer) {
+   b.WriteString(so.Inspect()) 
+   b.WriteString("\n")
+}
+
 
 //Arrays
 

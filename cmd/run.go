@@ -1,10 +1,13 @@
 package cmd
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
+	"io/ioutil"
 
 	"os"
+
 	"bauri.palash/pankti/evaluator"
 	"bauri.palash/pankti/lexer"
 	"bauri.palash/pankti/object"
@@ -21,7 +24,7 @@ var runCmd = &cobra.Command{
 	Long:  `Run a pankti source file providing as a argument to this command`,
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) < 1 {
-			return errors.New("Please provile a file to run")
+			return errors.New("please provide a file to run")
 		}
 
 		return nil
@@ -64,7 +67,19 @@ var runCmd = &cobra.Command{
 			} else {
 				env := object.NewEnv()
 				eh := evaluator.ErrorHelper{Source: string(f)}
-				evd := evaluator.Eval(at, env, eh)
+				printBuff := bytes.Buffer{}
+
+				evd := evaluator.Eval(at, env, eh, &printBuff)
+
+				//rd, _ := ioutil.ReadAll(&printBuff)
+				rd, err := ioutil.ReadAll(&printBuff)
+
+				printValue := ""
+
+				if err != nil {
+					printValue = string(rd[:])
+				}
+				fmt.Println(printValue)
 
 				if evd != nil {
 					fmt.Println(evd.Inspect())

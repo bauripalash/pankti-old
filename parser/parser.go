@@ -303,6 +303,8 @@ func (p *Parser) parseStmt() ast.Stmt {
 		return p.parseIncludeStmt()
 	case token.COMMENT:
 		return p.parseComment()
+    case token.SHOW:
+        return p.parseShowStmt()
 	default:
 		return p.parseExprStmt()
 
@@ -330,6 +332,21 @@ func (p *Parser) parseReturnStmt() *ast.ReturnStmt {
 	return stmt
 
 }
+
+func (p *Parser) parseShowStmt() *ast.ShowStmt{
+    stmt := &ast.ShowStmt{ Token: p.curTok }
+    p.nextToken()
+    stmt.Value = p.parseExprList(token.RPAREN)
+    //p.nextToken()
+    if p.isPeekToken(token.SEMICOLON){
+        p.nextToken()
+    }
+    
+    log.Info(fmt.Sprintf("SHOW STMT => %v\n" , stmt))
+
+    return stmt
+}
+
 
 func (p *Parser) parseIncludeStmt() *ast.IncludeStmt {
 	stmt := &ast.IncludeStmt{Token: p.curTok}

@@ -2,9 +2,10 @@ package ast
 
 import (
 	"bytes"
+	"strings"
+
 	"bauri.palash/pankti/number"
 	"bauri.palash/pankti/token"
-	"strings"
 )
 
 type Node interface {
@@ -184,6 +185,32 @@ func (r *ReturnStmt) String() string {
 	}
 	out.WriteString(";")
 	return out.String()
+}
+
+type ShowStmt struct{
+    Token token.Token
+    Value []Expr
+}
+
+func (s *ShowStmt) stmtNode() {}
+func (s *ShowStmt) TokenLit() string {
+    return s.Token.Literal
+}
+
+func (s *ShowStmt) String() string{
+    var out bytes.Buffer
+
+    out.WriteString(s.TokenLit() + " ")
+    if s.Value != nil{
+        for _,itme := range s.Value{
+            out.WriteString(itme.String())
+            out.WriteString(",")
+        }
+    }
+
+    out.WriteString(";")
+    return out.String()
+
 }
 
 // Expression Statement
@@ -412,3 +439,5 @@ func (ce *CallExpr) String() string {
 	out.WriteString(")")
 	return out.String()
 }
+
+

@@ -4,3 +4,5 @@ while (age <= 18){
     show(age);
     let age = age + 1;
 }
+age
+#show(age);

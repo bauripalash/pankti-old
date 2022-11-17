@@ -2,8 +2,10 @@ package repl
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
 	"io"
+
 	"bauri.palash/pankti/errs"
 	"bauri.palash/pankti/evaluator"
 	"bauri.palash/pankti/lexer"
@@ -13,6 +15,7 @@ import (
 
 const PROMPT = "-> "
 
+// Deprecated
 func Repl(in io.Reader, out io.Writer) {
 	scanner := bufio.NewScanner(in)
 	env := object.NewEnv()
@@ -43,7 +46,10 @@ func Repl(in io.Reader, out io.Writer) {
 			continue
 		}
 		eh := evaluator.ErrorHelper{Source: input}
-		evals := evaluator.Eval(prog, env, eh)
+
+		printBuff := bytes.Buffer{}
+		evals := evaluator.Eval(prog, env, eh, &printBuff)
+
 		if evals != nil {
 			//fmt.Println(evals)
 			io.WriteString(out, evals.Inspect())

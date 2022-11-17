@@ -1,7 +1,6 @@
 package evaluator
 
 import (
-	"fmt"
 	"bauri.palash/pankti/object"
 	"bauri.palash/pankti/stdlib"
 )
@@ -96,11 +95,12 @@ func pushFunc(args []object.Obj) object.Obj {
 }
 
 func showFunc(args []object.Obj) object.Obj {
-
+    output := []string{}
 	for _, arg := range args {
-		fmt.Println(arg.Inspect())
+		//fmt.Println(arg.Inspect())
+        output = append(output, arg.Inspect())
 	}
-	return NULL
+	return &object.ShowObj{ Value: output , Token: NULL.GetToken() }
 }
 
 var builtins = map[string]*object.Builtin{

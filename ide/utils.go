@@ -4,12 +4,15 @@
 package ide
 
 import (
+	"bytes"
+	"io/ioutil"
 	"os"
+	"strings"
+
 	"bauri.palash/pankti/evaluator"
 	"bauri.palash/pankti/lexer"
 	"bauri.palash/pankti/object"
 	"bauri.palash/pankti/parser"
-	"strings"
 )
 
 func OpenFile(filename string) (string, error) {
@@ -58,12 +61,21 @@ func RunFile(src string) string {
 
 	env := object.NewEnv()
 	eh := evaluator.ErrorHelper{Source: src}
-	evd := evaluator.Eval(prog, env, eh)
+	printBuff := bytes.Buffer{}
+	evd := evaluator.Eval(prog, env, eh, &printBuff)
+	//rd, _ := ioutil.ReadAll(&printBuff)
+	rd, err := ioutil.ReadAll(&printBuff)
+
+	printValue := ""
+
+	if err == nil {
+		printValue = string(rd[:])
+	}
 
 	if evd != nil {
-		return evd.Inspect()
+		return printValue + evd.Inspect()
 	} else {
-		return ""
+		return printValue
 	}
 
 }
