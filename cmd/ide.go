@@ -5,7 +5,7 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"bauri.palash/pankti/ide"
+	"go.cs.palashbauri.in/pankti/ide"
 )
 
 // ideCmd represents the ide command

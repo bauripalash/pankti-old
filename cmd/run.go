@@ -8,11 +8,11 @@ import (
 
 	"os"
 
-	"bauri.palash/pankti/evaluator"
-	"bauri.palash/pankti/lexer"
-	"bauri.palash/pankti/object"
-	"bauri.palash/pankti/parser"
-	"bauri.palash/pankti/repl"
+	"go.cs.palashbauri.in/pankti/evaluator"
+	"go.cs.palashbauri.in/pankti/lexer"
+	"go.cs.palashbauri.in/pankti/object"
+	"go.cs.palashbauri.in/pankti/parser"
+	"go.cs.palashbauri.in/pankti/repl"
 
 	"github.com/spf13/cobra"
 )

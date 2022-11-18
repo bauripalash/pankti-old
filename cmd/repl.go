@@ -2,7 +2,8 @@ package cmd
 
 import (
 	"os"
-	"bauri.palash/pankti/repl"
+
+	"go.cs.palashbauri.in/pankti/repl"
 
 	"github.com/spf13/cobra"
 )

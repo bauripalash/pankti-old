@@ -11,7 +11,7 @@ import (
 		"vabna/object"
 		"vabna/parser"
 	*/
-    "bauri.palash/pankti/cmd"
+	"go.cs.palashbauri.in/pankti/cmd"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -27,17 +27,17 @@ func init() {
 }
 
 func main() {
-    is_noide := false
-    bi , noerr := debug.ReadBuildInfo()
-    if !noerr{
-        return
-    }
-    for _,item := range bi.Settings{
-        if item.Key == "-tags" && strings.Contains(item.Value , "noide"){
-            is_noide = true
-            break
-        }
-    }
+	is_noide := false
+	bi, noerr := debug.ReadBuildInfo()
+	if !noerr {
+		return
+	}
+	for _, item := range bi.Settings {
+		if item.Key == "-tags" && strings.Contains(item.Value, "noide") {
+			is_noide = true
+			break
+		}
+	}
 
 	cmd.Execute(is_noide)
 }

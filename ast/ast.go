@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"strings"
 
-	"bauri.palash/pankti/number"
-	"bauri.palash/pankti/token"
+	"go.cs.palashbauri.in/pankti/number"
+	"go.cs.palashbauri.in/pankti/token"
 )
 
 type Node interface {
@@ -187,29 +187,29 @@ func (r *ReturnStmt) String() string {
 	return out.String()
 }
 
-type ShowStmt struct{
-    Token token.Token
-    Value []Expr
+type ShowStmt struct {
+	Token token.Token
+	Value []Expr
 }
 
 func (s *ShowStmt) stmtNode() {}
 func (s *ShowStmt) TokenLit() string {
-    return s.Token.Literal
+	return s.Token.Literal
 }
 
-func (s *ShowStmt) String() string{
-    var out bytes.Buffer
+func (s *ShowStmt) String() string {
+	var out bytes.Buffer
 
-    out.WriteString(s.TokenLit() + " ")
-    if s.Value != nil{
-        for _,itme := range s.Value{
-            out.WriteString(itme.String())
-            out.WriteString(",")
-        }
-    }
+	out.WriteString(s.TokenLit() + " ")
+	if s.Value != nil {
+		for _, itme := range s.Value {
+			out.WriteString(itme.String())
+			out.WriteString(",")
+		}
+	}
 
-    out.WriteString(";")
-    return out.String()
+	out.WriteString(";")
+	return out.String()
 
 }
 
@@ -439,5 +439,3 @@ func (ce *CallExpr) String() string {
 	out.WriteString(")")
 	return out.String()
 }
-
-

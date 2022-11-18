@@ -2,7 +2,8 @@ package number
 
 import (
 	"math/big"
-	"bauri.palash/pankti/token"
+
+	"go.cs.palashbauri.in/pankti/token"
 )
 
 func MakeInt(a int64) Number {

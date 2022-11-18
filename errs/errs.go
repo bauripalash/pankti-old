@@ -2,7 +2,8 @@ package errs
 
 import (
 	"fmt"
-	"bauri.palash/pankti/token"
+
+	"go.cs.palashbauri.in/pankti/token"
 )
 
 const (

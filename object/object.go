@@ -4,10 +4,11 @@ import (
 	"bytes"
 	"fmt"
 	"hash/fnv"
-	"bauri.palash/pankti/ast"
-	"bauri.palash/pankti/number"
-	"bauri.palash/pankti/token"
 	"strings"
+
+	"go.cs.palashbauri.in/pankti/ast"
+	"go.cs.palashbauri.in/pankti/number"
+	"go.cs.palashbauri.in/pankti/token"
 )
 
 const (
@@ -24,7 +25,7 @@ const (
 	HASH_OBJ       = "HASH"
 	NUM_OBJ        = "NUM"
 	INCLUDE_OBJ    = "INCLUDE"
-    SHOW_OBJ       = "SHOW"
+	SHOW_OBJ       = "SHOW"
 )
 
 type BuiltInFunc func(args ...Obj) Obj
@@ -59,19 +60,18 @@ func (ib *IncludeObj) GetToken() token.Token { return ib.Token }
 
 // Print Obj
 
-type ShowObj struct{
-    Value []string 
-    Token token.Token
+type ShowObj struct {
+	Value []string
+	Token token.Token
 }
 
-func (so *ShowObj) Type() ObjType { return  SHOW_OBJ }
-func (so *ShowObj) Inspect() string { return strings.Join(so.Value, "\n") }
-func (so *ShowObj ) GetToken() token.Token {return so.Token  }
-func (so *ShowObj ) Print(b bytes.Buffer) {
-   b.WriteString(so.Inspect()) 
-   b.WriteString("\n")
+func (so *ShowObj) Type() ObjType         { return SHOW_OBJ }
+func (so *ShowObj) Inspect() string       { return strings.Join(so.Value, "\n") }
+func (so *ShowObj) GetToken() token.Token { return so.Token }
+func (so *ShowObj) Print(b bytes.Buffer) {
+	b.WriteString(so.Inspect())
+	b.WriteString("\n")
 }
-
 
 //Arrays
 

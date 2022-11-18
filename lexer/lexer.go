@@ -1,8 +1,9 @@
 package lexer
 
 import (
-	"bauri.palash/pankti/token"
 	"strings"
+
+	"go.cs.palashbauri.in/pankti/token"
 )
 
 type Lexer struct {

@@ -1,8 +1,8 @@
 package evaluator
 
 import (
-	"bauri.palash/pankti/object"
-	"bauri.palash/pankti/stdlib"
+	"go.cs.palashbauri.in/pankti/object"
+	"go.cs.palashbauri.in/pankti/stdlib"
 )
 
 func lenFunc(args []object.Obj) object.Obj {
@@ -95,12 +95,12 @@ func pushFunc(args []object.Obj) object.Obj {
 }
 
 func showFunc(args []object.Obj) object.Obj {
-    output := []string{}
+	output := []string{}
 	for _, arg := range args {
 		//fmt.Println(arg.Inspect())
-        output = append(output, arg.Inspect())
+		output = append(output, arg.Inspect())
 	}
-	return &object.ShowObj{ Value: output , Token: NULL.GetToken() }
+	return &object.ShowObj{Value: output, Token: NULL.GetToken()}
 }
 
 var builtins = map[string]*object.Builtin{

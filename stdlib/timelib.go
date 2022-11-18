@@ -2,7 +2,7 @@ package stdlib
 
 import (
 	"fmt"
-	"bauri.palash/pankti/object"
+	"go.cs.palashbauri.in/pankti/object"
 	"time"
 )
 

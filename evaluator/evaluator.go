@@ -11,12 +11,12 @@ import (
 	"strconv"
 	"strings"
 
-	"bauri.palash/pankti/ast"
-	"bauri.palash/pankti/lexer"
-	"bauri.palash/pankti/number"
-	"bauri.palash/pankti/object"
-	"bauri.palash/pankti/parser"
-	"bauri.palash/pankti/token"
+	"go.cs.palashbauri.in/pankti/ast"
+	"go.cs.palashbauri.in/pankti/lexer"
+	"go.cs.palashbauri.in/pankti/number"
+	"go.cs.palashbauri.in/pankti/object"
+	"go.cs.palashbauri.in/pankti/parser"
+	"go.cs.palashbauri.in/pankti/token"
 )
 
 var (

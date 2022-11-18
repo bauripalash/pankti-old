@@ -3,12 +3,13 @@ package parser
 import (
 	"fmt"
 	"math/big"
-	"bauri.palash/pankti/ast"
-	"bauri.palash/pankti/errs"
-	"bauri.palash/pankti/lexer"
-	"bauri.palash/pankti/number"
-	"bauri.palash/pankti/token"
 	"strconv"
+
+	"go.cs.palashbauri.in/pankti/ast"
+	"go.cs.palashbauri.in/pankti/errs"
+	"go.cs.palashbauri.in/pankti/lexer"
+	"go.cs.palashbauri.in/pankti/number"
+	"go.cs.palashbauri.in/pankti/token"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -303,8 +304,8 @@ func (p *Parser) parseStmt() ast.Stmt {
 		return p.parseIncludeStmt()
 	case token.COMMENT:
 		return p.parseComment()
-    case token.SHOW:
-        return p.parseShowStmt()
+	case token.SHOW:
+		return p.parseShowStmt()
 	default:
 		return p.parseExprStmt()
 
@@ -333,20 +334,19 @@ func (p *Parser) parseReturnStmt() *ast.ReturnStmt {
 
 }
 
-func (p *Parser) parseShowStmt() *ast.ShowStmt{
-    stmt := &ast.ShowStmt{ Token: p.curTok }
-    p.nextToken()
-    stmt.Value = p.parseExprList(token.RPAREN)
-    //p.nextToken()
-    if p.isPeekToken(token.SEMICOLON){
-        p.nextToken()
-    }
-    
-    log.Info(fmt.Sprintf("SHOW STMT => %v\n" , stmt))
+func (p *Parser) parseShowStmt() *ast.ShowStmt {
+	stmt := &ast.ShowStmt{Token: p.curTok}
+	p.nextToken()
+	stmt.Value = p.parseExprList(token.RPAREN)
+	//p.nextToken()
+	if p.isPeekToken(token.SEMICOLON) {
+		p.nextToken()
+	}
 
-    return stmt
+	log.Info(fmt.Sprintf("SHOW STMT => %v\n", stmt))
+
+	return stmt
 }
-
 
 func (p *Parser) parseIncludeStmt() *ast.IncludeStmt {
 	stmt := &ast.IncludeStmt{Token: p.curTok}

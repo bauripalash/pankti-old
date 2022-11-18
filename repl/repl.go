@@ -6,11 +6,11 @@ import (
 	"fmt"
 	"io"
 
-	"bauri.palash/pankti/errs"
-	"bauri.palash/pankti/evaluator"
-	"bauri.palash/pankti/lexer"
-	"bauri.palash/pankti/object"
-	"bauri.palash/pankti/parser"
+	"go.cs.palashbauri.in/pankti/errs"
+	"go.cs.palashbauri.in/pankti/evaluator"
+	"go.cs.palashbauri.in/pankti/lexer"
+	"go.cs.palashbauri.in/pankti/object"
+	"go.cs.palashbauri.in/pankti/parser"
 )
 
 const PROMPT = "-> "

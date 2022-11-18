@@ -1,8 +1,9 @@
 package lexer
 
 import (
-	"bauri.palash/pankti/token"
 	"testing"
+
+	"go.cs.palashbauri.in/pankti/token"
 )
 
 func TestNextToken(t *testing.T) {
