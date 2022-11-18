@@ -19,15 +19,15 @@ var rootCmd = &cobra.Command{
 }
 
 func Execute(isNoIde bool) {
-    
-    if !isNoIde && len(os.Args) == 1{
-        args := append([]string{"ide"} , os.Args[1:]...)
-        rootCmd.SetArgs(args)
-    }else if len(os.Args) == 1{
-        rootCmd.SetArgs( append([]string{"-h"} , os.Args[0:]...) )
-    }
 
-    //fmt.Println(os.Args)
+	if !isNoIde && len(os.Args) == 1 {
+		args := append([]string{"ide"}, os.Args[1:]...)
+		rootCmd.SetArgs(args)
+	} else if len(os.Args) == 1 {
+		rootCmd.SetArgs(append([]string{"-h"}, os.Args[0:]...))
+	}
+
+	//fmt.Println(os.Args)
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)

@@ -37,7 +37,7 @@ func DoParse(i string) string {
 	env := object.NewEnv()
 	eh := evaluator.ErrorHelper{Source: i}
 	printBuff := bytes.Buffer{}
-	evd := evaluator.Eval(prog, env, eh, &printBuff)
+	evd := evaluator.Eval(prog, env, eh, &printBuff, true)
 	rd, err := ioutil.ReadAll(&printBuff)
 
 	printValue := ""

@@ -62,7 +62,7 @@ func RunFile(src string) string {
 	env := object.NewEnv()
 	eh := evaluator.ErrorHelper{Source: src}
 	printBuff := bytes.Buffer{}
-	evd := evaluator.Eval(prog, env, eh, &printBuff)
+	evd := evaluator.Eval(prog, env, eh, &printBuff, true)
 	//rd, _ := ioutil.ReadAll(&printBuff)
 	rd, err := ioutil.ReadAll(&printBuff)
 

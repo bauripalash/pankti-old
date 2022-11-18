@@ -48,7 +48,7 @@ func Repl(in io.Reader, out io.Writer) {
 		eh := evaluator.ErrorHelper{Source: input}
 
 		printBuff := bytes.Buffer{}
-		evals := evaluator.Eval(prog, env, eh, &printBuff)
+		evals := evaluator.Eval(prog, env, eh, &printBuff, false)
 
 		if evals != nil {
 			//fmt.Println(evals)

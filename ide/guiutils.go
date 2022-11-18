@@ -13,8 +13,8 @@ var AboutText string
 var HelpText string
 
 func ShowAboutMenu() {
-    
-    iup.Message("About Pankti IDE" , AboutText)
+
+	iup.Message("About Pankti IDE", AboutText)
 
 }
 

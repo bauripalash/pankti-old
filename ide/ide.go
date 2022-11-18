@@ -27,15 +27,15 @@ func RunIde() {
 		return
 	}
 
-    iconImage , err := png.Decode(bytes.NewReader(iconImg))
+	iconImage, err := png.Decode(bytes.NewReader(iconImg))
 
-    if err != nil{
-        fmt.Println("Failed to read Icon Image")
-        return
-    }
+	if err != nil {
+		fmt.Println("Failed to read Icon Image")
+		return
+	}
 
 	iup.ImageFromImage(gearImage).SetHandle("gearimage")
-    iup.ImageFromImage(iconImage).SetHandle("iconimage")
+	iup.ImageFromImage(iconImage).SetHandle("iconimage")
 	editor := iup.MultiLine().SetCallback("ACTION", iup.TextActionFunc(func(ih iup.Ihandle, item int, text string) int {
 		if item == iup.K_g {
 			return iup.IGNORE
@@ -132,7 +132,7 @@ func RunIde() {
 		"MENU":  "mymenu",
 		"TITLE": "Pankti IDE",
 		"SIZE":  "QUARTERxQUARTER",
-        "ICON": "iconimage",
+		"ICON":  "iconimage",
 	})
 
 	iup.Show(dlg)

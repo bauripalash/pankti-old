@@ -69,7 +69,7 @@ var runCmd = &cobra.Command{
 				eh := evaluator.ErrorHelper{Source: string(f)}
 				printBuff := bytes.Buffer{}
 
-				evd := evaluator.Eval(at, env, eh, &printBuff)
+				evd := evaluator.Eval(at, env, eh, &printBuff, false)
 
 				//rd, _ := ioutil.ReadAll(&printBuff)
 				rd, err := ioutil.ReadAll(&printBuff)

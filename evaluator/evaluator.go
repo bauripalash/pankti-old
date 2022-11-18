@@ -65,51 +65,51 @@ func (e *ErrorHelper) MakeErrorLine(t token.Token, showHint bool) string {
 	return strconv.Itoa(t.LineNo) + "| " + xLine
 }
 
-func Eval(node ast.Node, env *object.Env, eh ErrorHelper, printBuff *bytes.Buffer) object.Obj {
+func Eval(node ast.Node, env *object.Env, eh ErrorHelper, printBuff *bytes.Buffer, isGui bool) object.Obj {
 	switch node := node.(type) {
 	case *ast.Program:
-		return evalProg(node, env, &eh, printBuff)
+		return evalProg(node, env, &eh, printBuff, isGui)
 	case *ast.ExprStmt:
 		//fmt.Println("Eval Expr => ", node.Expr)
-		return Eval(node.Expr, env, eh, printBuff)
+		return Eval(node.Expr, env, eh, printBuff, isGui)
 	case *ast.Boolean:
 		return getBoolObj(node.Value)
 	case *ast.NumberLit:
 		return &object.Number{Value: node.Value, IsInt: node.IsInt, Token: node.Token}
 	case *ast.PrefixExpr:
-		r := Eval(node.Right, env, eh, printBuff)
+		r := Eval(node.Right, env, eh, printBuff, isGui)
 		if isErr(r) {
 			return r
 		}
 		return evalPrefixExpr(node.Op, r, &eh)
 	case *ast.InfixExpr:
-		l := Eval(node.Left, env, eh, printBuff)
+		l := Eval(node.Left, env, eh, printBuff, isGui)
 		if isErr(l) {
 			return l
 		}
-		r := Eval(node.Right, env, eh, printBuff)
+		r := Eval(node.Right, env, eh, printBuff, isGui)
 		if isErr(r) {
 			return r
 		}
 		return evalInfixExpr(node.Op, l, r, &eh)
 	case *ast.IfExpr:
-		return evalIfExpr(node, env, &eh, printBuff)
+		return evalIfExpr(node, env, &eh, printBuff, isGui)
 	case *ast.WhileExpr:
-		return evalWhileExpr(node, env, &eh, printBuff)
+		return evalWhileExpr(node, env, &eh, printBuff, isGui)
 	case *ast.ReturnStmt:
-		val := Eval(node.ReturnVal, env, eh, printBuff)
+		val := Eval(node.ReturnVal, env, eh, printBuff, isGui)
 		if isErr(val) {
 			return val
 		}
 		return &object.ReturnValue{Value: val}
 	case *ast.ShowStmt:
 		//b := bytes.Buffer{}
-		args := evalExprs(node.Value, env, &eh, printBuff)
-		return evalShowStmt(args, printBuff)
+		args := evalExprs(node.Value, env, &eh, printBuff, isGui)
+		return evalShowStmt(args, printBuff, isGui)
 	case *ast.BlockStmt:
-		return evalBlockStmt(node, env, &eh, printBuff)
+		return evalBlockStmt(node, env, &eh, printBuff, isGui)
 	case *ast.LetStmt:
-		val := Eval(node.Value, env, eh, printBuff)
+		val := Eval(node.Value, env, eh, printBuff, isGui)
 		if isErr(val) {
 			return val
 		}
@@ -122,22 +122,22 @@ func Eval(node ast.Node, env *object.Env, eh ErrorHelper, printBuff *bytes.Buffe
 		body := node.Body
 		return &object.Function{Params: pms, Body: body, Env: env, Token: node.Token}
 	case *ast.CallExpr:
-		fnc := Eval(node.Func, env, eh, printBuff)
+		fnc := Eval(node.Func, env, eh, printBuff, isGui)
 		if isErr(fnc) {
 			return fnc
 		}
 		//fmt.Println(node.Fun)
-		args := evalExprs(node.Args, env, &eh, printBuff)
+		args := evalExprs(node.Args, env, &eh, printBuff, isGui)
 		if len(args) == 1 && isErr(args[0]) {
 			return args[0]
 		}
 
-		return applyFunc(fnc, node.Token, args, &eh, printBuff)
+		return applyFunc(fnc, node.Token, args, &eh, printBuff, isGui)
 
 	case *ast.StringLit:
 		return &object.String{Value: node.Value, Token: node.Token}
 	case *ast.ArrLit:
-		elms := evalExprs(node.Elms, env, &eh, printBuff)
+		elms := evalExprs(node.Elms, env, &eh, printBuff, isGui)
 		if len(elms) == 1 && isErr(elms[0]) {
 			return elms[0]
 		}
@@ -145,23 +145,23 @@ func Eval(node ast.Node, env *object.Env, eh ErrorHelper, printBuff *bytes.Buffe
 		return &object.Array{Elms: elms, Token: node.Token}
 
 	case *ast.IndexExpr:
-		left := Eval(node.Left, env, eh, printBuff)
+		left := Eval(node.Left, env, eh, printBuff, isGui)
 		if isErr(left) {
 			return nil
 		}
 
-		index := Eval(node.Index, env, eh, printBuff)
+		index := Eval(node.Index, env, eh, printBuff, isGui)
 		if isErr(index) {
 			return index
 		}
 
 		return evalIndexExpr(left, index, &eh)
 	case *ast.HashLit:
-		return evalHashLit(node, env, &eh, printBuff)
+		return evalHashLit(node, env, &eh, printBuff, isGui)
 	case *ast.IncludeStmt:
 		//ImportMap.Env = *env
 		//fmt.Println(env)
-		newEnv, val := evalIncludeStmt(node, env, &eh, printBuff)
+		newEnv, val := evalIncludeStmt(node, env, &eh, printBuff, isGui)
 		if val.Type() != object.ERR_OBJ {
 			*env = *object.NewEnclosedEnv(newEnv)
 		} else {
@@ -174,12 +174,12 @@ func Eval(node ast.Node, env *object.Env, eh ErrorHelper, printBuff *bytes.Buffe
 	return nil
 }
 
-func evalHashLit(node *ast.HashLit, env *object.Env, eh *ErrorHelper, printBuff *bytes.Buffer) object.Obj {
+func evalHashLit(node *ast.HashLit, env *object.Env, eh *ErrorHelper, printBuff *bytes.Buffer, isGui bool) object.Obj {
 	pairs := make(map[object.HashKey]object.HashPair)
 
 	for kNode, vNode := range node.Pairs {
 
-		key := Eval(kNode, env, *eh, printBuff)
+		key := Eval(kNode, env, *eh, printBuff, isGui)
 
 		if isErr(key) {
 			return key
@@ -190,7 +190,7 @@ func evalHashLit(node *ast.HashLit, env *object.Env, eh *ErrorHelper, printBuff 
 			return NewErr(node.Token, eh, true, "object cannot be used as hash key %s", key.Type())
 		}
 
-		val := Eval(vNode, env, *eh, printBuff)
+		val := Eval(vNode, env, *eh, printBuff, isGui)
 
 		if isErr(val) {
 			return val
@@ -204,7 +204,7 @@ func evalHashLit(node *ast.HashLit, env *object.Env, eh *ErrorHelper, printBuff 
 	return &object.Hash{Pairs: pairs}
 }
 
-func evalShowStmt(args []object.Obj, printBuff *bytes.Buffer) object.Obj {
+func evalShowStmt(args []object.Obj, printBuff *bytes.Buffer, isGui bool) object.Obj {
 
 	output := []string{}
 
@@ -212,28 +212,33 @@ func evalShowStmt(args []object.Obj, printBuff *bytes.Buffer) object.Obj {
 		output = append(output, item.Inspect())
 		//buff.Write([]byte(item.Inspect()))
 	}
-	oldStdout := os.Stdout
-	r, w, err := os.Pipe()
-	if err != nil {
-		log.Fatalf(err.Error())
+
+	if isGui {
+		oldStdout := os.Stdout
+		r, w, err := os.Pipe()
+		if err != nil {
+			log.Fatalf(err.Error())
+		}
+
+		os.Stdout = w
+
+		outC := make(chan string)
+
+		go func() {
+			var buf bytes.Buffer
+			io.Copy(&buf, r)
+			outC <- buf.String()
+		}()
+
+		fmt.Println(strings.Join(output, ""))
+		w.Close()
+		os.Stdout = oldStdout
+		out := <-outC
+
+		printBuff.Write([]byte(out))
+	} else {
+		fmt.Println(strings.Join(output, ""))
 	}
-
-	os.Stdout = w
-
-	outC := make(chan string)
-
-	go func() {
-		var buf bytes.Buffer
-		io.Copy(&buf, r)
-		outC <- buf.String()
-	}()
-
-	fmt.Println(strings.Join(output, ""))
-	w.Close()
-	os.Stdout = oldStdout
-	out := <-outC
-
-	printBuff.Write([]byte(out))
 
 	//rd , _ := ioutil.ReadAll(&buf)
 	//fmt.Println(string(rd[:]))
@@ -293,13 +298,13 @@ func evalArrIndexExpr(arr, index object.Obj, eh *ErrorHelper) object.Obj {
 	return arrObj.Elms[idx]
 }
 
-func applyFunc(fn object.Obj, caller token.Token, args []object.Obj, eh *ErrorHelper, printBuff *bytes.Buffer) object.Obj {
+func applyFunc(fn object.Obj, caller token.Token, args []object.Obj, eh *ErrorHelper, printBuff *bytes.Buffer, isGui bool) object.Obj {
 
 	switch fn := fn.(type) {
 	case *object.Function:
 		if len(fn.Params) == len(args) {
 			eEnv := extendFuncEnv(fn, args)
-			evd := Eval(fn.Body, eEnv, *eh, printBuff)
+			evd := Eval(fn.Body, eEnv, *eh, printBuff, isGui)
 			return unwrapRValue(evd)
 		} else {
 
@@ -325,8 +330,8 @@ func extendFuncEnv(fn *object.Function, args []object.Obj) *object.Env {
 	return env
 }
 
-func evalIncludeStmt(in *ast.IncludeStmt, e *object.Env, eh *ErrorHelper, printBuff *bytes.Buffer) (*object.Env, object.Obj) {
-	rawFilename := Eval(in.Filename, e, *eh, printBuff)
+func evalIncludeStmt(in *ast.IncludeStmt, e *object.Env, eh *ErrorHelper, printBuff *bytes.Buffer, isGui bool) (*object.Env, object.Obj) {
+	rawFilename := Eval(in.Filename, e, *eh, printBuff, isGui)
 	enx := object.NewEnv()
 
 	if rawFilename.Type() != object.STRING_OBJ {
@@ -354,7 +359,7 @@ func evalIncludeStmt(in *ast.IncludeStmt, e *object.Env, eh *ErrorHelper, printB
 	p := parser.NewParser(&l)
 	ex := object.NewEnv()
 	prog := p.ParseProg()
-	Eval(prog, ex, *eh, printBuff)
+	Eval(prog, ex, *eh, printBuff, isGui)
 	//fmt.Println(evd.Type())
 
 	if len(p.GetErrors()) != 0 {
@@ -378,11 +383,11 @@ func unwrapRValue(o object.Obj) object.Obj {
 
 }
 
-func evalExprs(es []ast.Expr, env *object.Env, eh *ErrorHelper, printBuff *bytes.Buffer) []object.Obj {
+func evalExprs(es []ast.Expr, env *object.Env, eh *ErrorHelper, printBuff *bytes.Buffer, isGui bool) []object.Obj {
 	var res []object.Obj
 
 	for _, e := range es {
-		ev := Eval(e, env, *eh, printBuff)
+		ev := Eval(e, env, *eh, printBuff, isGui)
 
 		if isErr(ev) {
 			return []object.Obj{ev}
@@ -421,12 +426,12 @@ func isErr(obj object.Obj) bool {
 	return false
 }
 
-func evalBlockStmt(block *ast.BlockStmt, env *object.Env, eh *ErrorHelper, printBuff *bytes.Buffer) object.Obj {
+func evalBlockStmt(block *ast.BlockStmt, env *object.Env, eh *ErrorHelper, printBuff *bytes.Buffer, isGui bool) object.Obj {
 
 	var res object.Obj
 
 	for _, stmt := range block.Stmts {
-		res = Eval(stmt, env, *eh, printBuff)
+		res = Eval(stmt, env, *eh, printBuff, isGui)
 
 		//fmt.Println("E_BS=> " , res)
 
@@ -442,11 +447,11 @@ func evalBlockStmt(block *ast.BlockStmt, env *object.Env, eh *ErrorHelper, print
 	return res
 }
 
-func evalProg(prog *ast.Program, env *object.Env, eh *ErrorHelper, printBuff *bytes.Buffer) object.Obj {
+func evalProg(prog *ast.Program, env *object.Env, eh *ErrorHelper, printBuff *bytes.Buffer, isGui bool) object.Obj {
 	var res object.Obj
 
 	for _, stmt := range prog.Stmts {
-		res = Eval(stmt, env, *eh, printBuff)
+		res = Eval(stmt, env, *eh, printBuff, isGui)
 
 		switch res := res.(type) {
 		case *object.ReturnValue:
@@ -459,33 +464,33 @@ func evalProg(prog *ast.Program, env *object.Env, eh *ErrorHelper, printBuff *by
 	return res
 }
 
-func evalIfExpr(iex *ast.IfExpr, env *object.Env, eh *ErrorHelper, printBuff *bytes.Buffer) object.Obj {
-	cond := Eval(iex.Cond, env, *eh, printBuff)
+func evalIfExpr(iex *ast.IfExpr, env *object.Env, eh *ErrorHelper, printBuff *bytes.Buffer, isGui bool) object.Obj {
+	cond := Eval(iex.Cond, env, *eh, printBuff, isGui)
 
 	if isErr(cond) {
 		return cond
 	}
 
 	if isTruthy(cond) {
-		return Eval(iex.TrueBlock, env, *eh, printBuff)
+		return Eval(iex.TrueBlock, env, *eh, printBuff, isGui)
 	} else if iex.ElseBlock != nil {
-		return Eval(iex.ElseBlock, env, *eh, printBuff)
+		return Eval(iex.ElseBlock, env, *eh, printBuff, isGui)
 	} else {
 		return NULL
 	}
 
 }
 
-func evalWhileExpr(wx *ast.WhileExpr, env *object.Env, eh *ErrorHelper, printBuff *bytes.Buffer) object.Obj {
-	cond := Eval(wx.Cond, env, *eh, printBuff)
+func evalWhileExpr(wx *ast.WhileExpr, env *object.Env, eh *ErrorHelper, printBuff *bytes.Buffer, isGui bool) object.Obj {
+	cond := Eval(wx.Cond, env, *eh, printBuff, isGui)
 	var result object.Obj
 	if isErr(cond) {
 		return cond
 	}
 
 	for isTruthy(cond) {
-		result = Eval(wx.StmtBlock, env, *eh, printBuff)
-		cond = Eval(wx.Cond, env, *eh, printBuff)
+		result = Eval(wx.StmtBlock, env, *eh, printBuff, isGui)
+		cond = Eval(wx.Cond, env, *eh, printBuff, isGui)
 	}
 
 	return result
