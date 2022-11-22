@@ -21,4 +21,7 @@ linux:
 
 linux32:
 	GOOS=linux GOARCH=386 go build -o dist/pankti_x86 --tags noide 
- 
+
+winapi:
+	cd windows/
+	CGO_ENABLED=1 GOOS=windows GOARCH=amd64 go build -v -buildmode=c-archive --tags noide -o build/libpankti.a .
