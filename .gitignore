@@ -9,3 +9,4 @@ wasm/
 *.test
 *.out
 go.work
+windows/build/
