@@ -31,7 +31,7 @@ type Program struct {
 }
 
 func (p *Program) TokenLit() string {
-
+	
 	if len(p.Stmts) > 0 {
 		return p.Stmts[0].TokenLit()
 	} else {

@@ -1,8 +1,7 @@
 # Build Pankti
 #
 
-all:
-	go build
+all: linux_cli linux32_cli win_cli win32_cli
 
 wasm:
 	GOOS=js GOARCH=wasm go build -o wasm/res/pankti.wasm wasm/panktiWasm.go
@@ -10,18 +9,23 @@ wasm:
 pyserver:
 	cd wasm/res/ && python -m http.server 8099
 
-win:
+win_cli:
+	cp windows/versioninfo.json ./
+	GOOS=windows GOARCH=amd64 goversioninfo -64 -icon=windows/res/icon.ico -manifest=windows/res/pankti.exe.manifest
 	GOOS=windows GOARCH=amd64 go build -o dist/pankti_x86-64.exe --tags noide
+	rm versioninfo.json 
 
-win32:
+win32_cli:
+	cp windows/versioninfo.json ./
+	GOOS=windows GOARCH=386 goversioninfo -icon=windows/res/icon.ico -manifest=windows/res/pankti.exe.manifest
 	GOOS=windows GOARCH=386 go build -o dist/pankti_x86.exe --tags noide 
+	rm versioninfo.json
 
-linux:
+linux_cli:
 	GOOS=linux GOARCH=amd64 go build -o dist/pankti_x86-64 --tags noide
 
-linux32:
+linux32_cli:
 	GOOS=linux GOARCH=386 go build -o dist/pankti_x86 --tags noide 
 
-winapi:
-	cd windows/
-	CGO_ENABLED=1 GOOS=windows GOARCH=amd64 go build -v -buildmode=c-archive --tags noide -o build/libpankti.a .
+clean:
+	rm -rf dist/*

@@ -1,23 +1,13 @@
+//go:generate goversioninfo -64 -icon=res/icon.ico -manifest=res/pankti.exe.manifest
+//go:generatei goversioninfo -icon=res/icon.ico -manifest=res/pankti.exe.manifest
 package main
 
-// #import <stdlib.h>
-import "C"
-
 import (
-	"bytes"
-	"io/ioutil"
-	"strings"
-    "os"
-
+	"os" 
+	"go.cs.palashbauri.in/pankti/ide"
 	log "github.com/sirupsen/logrus"
-	"go.cs.palashbauri.in/pankti/evaluator"
-	"go.cs.palashbauri.in/pankti/lexer"
-	"go.cs.palashbauri.in/pankti/object"
-	"go.cs.palashbauri.in/pankti/parser"
 )
-
 func init() {
-    
 	log.SetLevel(log.ErrorLevel)
 	log.SetFormatter(&log.TextFormatter{
 		PadLevelText:  true,
@@ -27,41 +17,7 @@ func init() {
 	log.SetOutput(os.Stdout)
 }
 
+func main() {
+	ide.RunIde()
 
-//export DoParse
-func DoParse(src string) *C.char{
-    
-    lx := lexer.NewLexer(src)
-    p := parser.NewParser(&lx)
-    
-    prog := p.ParseProg()
-    
-    if len(p.GetErrors()) >= 1 {
-		tempErrs := []string{}
-
-		for _, item := range p.GetErrors() {
-			tempErrs = append(tempErrs, item.String())
-		}
-
-		return C.CString(strings.Join(tempErrs, " \n"))
-	}
-
-	env := object.NewEnv()
-	eh := evaluator.ErrorHelper{Source: src}
-	printBuff := bytes.Buffer{}
-	evd := evaluator.Eval(prog, env, eh, &printBuff, true)
-	rd, err := ioutil.ReadAll(&printBuff)
-    printValue := ""
-
-	if err == nil {
-		printValue = string(rd[:])
-	}
-
-	if evd != nil {
-		return C.CString(printValue + evd.Inspect())
-	} else {
-		return C.CString(printValue)
-	}
 }
-
-func main(){}

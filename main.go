@@ -1,3 +1,4 @@
+//go:generate goversioninfo -64 -icon=windows/res/icon.ico -manifest=windows/res/pankti.exe.manifest
 package main
 
 import (

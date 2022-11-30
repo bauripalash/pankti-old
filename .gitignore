@@ -10,3 +10,4 @@ wasm/
 *.out
 go.work
 windows/build/
+*.syso
