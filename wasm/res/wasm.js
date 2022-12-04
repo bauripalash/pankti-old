@@ -1,34 +1,39 @@
-'use strict';
-
 const WASM_URL = '/wasm.wasm';
 
 var wasm;
 
+
 function runSource(){
-	var src = document.getElementById("src_input").value;
-	document.getElementById("result").value = runner(src);
+	const res =  document.getElementById("result")
+
+	const src = document.getElementById("src_input").value;
+  //window.set_output(res)
+	res.value+= evs(src);
 }
 
-function init() {
-document.getElementById("runbtn").onclick = runSource;
-  const go = new Go();
-  if ('instantiateStreaming' in WebAssembly) {
-    WebAssembly.instantiateStreaming(fetch(WASM_URL), go.importObject).then(function (obj) {
-      wasm = obj.instance;
-      go.run(wasm);
-      runSource();
-    })
-  } else {
-    fetch(WASM_URL).then(resp =>
-      resp.arrayBuffer()
-    ).then(bytes =>
-      WebAssembly.instantiate(bytes, go.importObject).then(function (obj) {
-        wasm = obj.instance;
-        go.run(wasm);
-        runSource();
-      })
-    )
+(function() {
+ let oldconsole = console.log;
+  var logger = document.getElementById("result");
+  console.log = function(msg){
+    logger.value += msg + `
+`;
   }
-}
 
-init();
+
+
+  document.getElementById("runbtn").onclick = function(){
+	  console.log(evs(document.getElementById("src_input").value));
+  }
+
+  document.getElementById("clearbtn").onclick = function(){
+    document.getElementById("result").value = "";
+  }
+
+
+
+   const go = new Go();
+  WebAssembly.instantiateStreaming(fetch("/wasm.wasm"), go.importObject).then((result) => {
+    
+    go.run(result.instance);
+});
+}());

@@ -1,17 +1,30 @@
 <!DOCTYPE html>
+
+
 <html>
 	
 	<head>
 		<meta charset="utf-8">
 		<title>Pankti on Web</title>
+		<link rel="stylesheet" href="style.css">
+		<meta name="viewport" content="width=device-width">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	</head>
 
 	<body>
-		<script src="wasm_exec.js" defer></script>
-		<script src="wasm.js" defer></script>
-	</body>
-	<input type="text" id="src_input" />
+
+	<textarea name="text" id="src_input" cols="30" rows="10"></textarea>
+
 	<button id="runbtn">Run</button>
-	<input type="text" id="result"/>
+	<button id="clearbtn">Clear</button>
+
+	<textarea name="text" id="result" cols="30" rows="10"></textarea>
+		
+	</body>
+
+	
+	
+	<script src="wasm_exec.js" defer></script>
+	<script src="wasm.js" defer></script>
 
 </html>

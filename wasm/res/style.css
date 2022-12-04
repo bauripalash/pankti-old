@@ -1,0 +1,22 @@
+*{
+    box-sizing: border-box;
+}
+
+textarea{
+    width: 100%;
+    height: auto;
+    padding: 12px 20px;
+    border: 2px solid black;
+	border-radius: 10px;
+    background-color: whitesmoke;
+    font-size: 16px;
+    resize: none;
+}
+
+button{
+	padding: 10px;
+	margin: 5px;
+	background-color: wheat;
+	border: 2px solid blue;
+	border-radius: 10px;
+}
