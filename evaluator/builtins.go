@@ -217,4 +217,10 @@ var builtins = map[string]*object.Builtin{
 			return stdlib.UnixTimeFunc(args)
 		},
 	},
+
+	"isonow" : {
+		Fn: func(args ...object.Obj) object.Obj {
+            return stdlib.UtcDateISO(args)
+		},	
+	},
 }
