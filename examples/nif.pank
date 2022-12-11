@@ -10,3 +10,7 @@ dhori ami = ekti kaj()
 sesh
 
 ami();
+
+jotokhon (1 < 2)
+	dekhau("1<2");
+sesh

@@ -592,9 +592,9 @@ func (p *Parser) parseWhileExpr() ast.Expr {
 		return nil
 	}
 
-	if !p.peek(token.LBRACE) {
-		return nil
-	}
+	//if !p.peek(token.LBRACE) {
+	//	return nil
+	//}
 
 	exp.StmtBlock = p.parseBlockStmt()
 
