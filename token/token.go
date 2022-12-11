@@ -74,6 +74,7 @@ const (
 	RETURN = "RETURN"
 	WHILE  = "WHILE"
 	SHOW   = "SHOW"
+	END    = "END"
 )
 
 var HumanFriendly = map[string]string{
@@ -91,6 +92,7 @@ var HumanFriendly = map[string]string{
 	TAHOLE: "tahole",
 	WHILE:  "jotokhon",
 	SHOW:   "dekhau",
+	END: 	"end",
 }
 
 var Keywords = map[string]TokenType{
@@ -124,6 +126,8 @@ var Keywords = map[string]TokenType{
 	"আনয়ন":     INCLUDE,
 	"dekhau":   SHOW,
 	"show":     SHOW,
+	"sesh": 	END,
+	"end" : END,
 }
 
 func LookupIdent(ident string) TokenType {

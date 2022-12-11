@@ -203,9 +203,9 @@ func (p *Parser) parseFunc() ast.Expr {
 
 	fl.Params = p.parseFuncParams()
 
-	if !p.peek(token.LBRACE) {
-		return nil
-	}
+	//if !p.peek(token.LBRACE) {
+	//	return nil
+	//}
 
 	fl.Body = p.parseBlockStmt()
 
@@ -549,17 +549,19 @@ func (p *Parser) parseIfExpr() ast.Expr {
 	if !p.peek(token.TAHOLE) {
 		return nil
 	}
-
-	if !p.peek(token.LBRACE) {
+    
+	/*
+	if !p.peek(token.TAHOLE) {
 		return nil
 	}
+	*/
 
 	exp.TrueBlock = p.parseBlockStmt()
 
 	if p.isPeekToken(token.ELSE) {
 		p.nextToken()
 
-		if !p.peek(token.LBRACE) {
+		if !p.peek(token.END) {
 			return nil
 		}
 		has_else = true
@@ -607,7 +609,7 @@ func (p *Parser) parseBlockStmt() *ast.BlockStmt {
 
 	p.nextToken()
 
-	for !p.isCurToken(token.RBRACE) && !p.isCurToken(token.EOF) {
+	for !p.isCurToken(token.END) && !p.isCurToken(token.EOF) {
 		s := p.parseStmt()
 		if s != nil {
 			bs.Stmts = append(bs.Stmts, s)

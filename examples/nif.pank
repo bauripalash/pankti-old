@@ -1,0 +1,12 @@
+jodi ( 1 < 3 ) tahole 
+	dekhau("inside 1<3")
+	jodi (1 < 2) tahole
+		dekhau("inside 1<2");
+	sesh
+sesh
+
+dhori ami = ekti kaj()
+	dekhau("amar nam palash") 
+sesh
+
+ami();
