@@ -1,0 +1,9 @@
+dhori a = 5 
+jodi (a < 2) tahole
+	dekhau("SMALL")
+nahole jodi (a > 10) tahole
+		dekhau("BIG")
+	nahole 
+		dekhau("MID")
+	sesh
+sesh

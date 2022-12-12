@@ -207,7 +207,7 @@ func (p *Parser) parseFunc() ast.Expr {
 	//	return nil
 	//}
 
-	fl.Body = p.parseBlockStmt()
+	fl.Body = p.parseBlockStmt(token.END)
 
 	log.Info("FN EXPR => ", fl.Body.String())
 
@@ -540,7 +540,6 @@ func (p *Parser) parseIfExpr() ast.Expr {
 	}
 	p.nextToken()
 	exp.Cond = p.parseExpr(LOWEST)
-	//fmt.Println(exp.Cond)
 
 	if !p.peek(token.RPAREN) {
 		return nil
@@ -549,24 +548,37 @@ func (p *Parser) parseIfExpr() ast.Expr {
 	if !p.peek(token.TAHOLE) {
 		return nil
 	}
-    
-	/*
-	if !p.peek(token.TAHOLE) {
-		return nil
-	}
-	*/
+	p.nextToken()
+	tb := &ast.BlockStmt{ Token: p.curTok , Stmts: []ast.Stmt{} }
+	eb := &ast.BlockStmt{ Token: p.curTok , Stmts: []ast.Stmt{} }
 
-	exp.TrueBlock = p.parseBlockStmt()
 
-	if p.isPeekToken(token.ELSE) {
-		p.nextToken()
-
-		if !p.peek(token.END) {
-			return nil
+	for !p.isCurToken(token.ELSE) && !p.isCurToken(token.EOF){
+		s := p.parseStmt()
+		if s!=nil{
+			tb.Stmts = append(tb.Stmts, s)
 		}
-		has_else = true
-		exp.ElseBlock = p.parseBlockStmt()
+		p.nextToken()	
 	}
+	
+	p.nextToken()
+
+	if !p.isCurToken(token.END) && !p.isCurToken(token.EOF){
+		s := p.parseStmt()
+		if s!= nil{
+			eb.Stmts = append(eb.Stmts, s)
+		}
+		p.nextToken()
+	}
+
+	exp.TrueBlock = tb
+	exp.ElseBlock = eb
+
+
+	//p.nextToken()
+	//exp.TrueBlock = p.parseBlockStmt(token.ELSE)
+	//p.nextToken()
+	//exp.ElseBlock = p.parseBlockStmt(token.END)
 
 	if has_else {
 		log.Info("IF ELSE Expr => ", exp.Cond, exp.TrueBlock.String(), exp.ElseBlock.String())
@@ -596,20 +608,22 @@ func (p *Parser) parseWhileExpr() ast.Expr {
 	//	return nil
 	//}
 
-	exp.StmtBlock = p.parseBlockStmt()
+	exp.StmtBlock = p.parseBlockStmt(token.END)
 
 	return exp
 
 }
 
-func (p *Parser) parseBlockStmt() *ast.BlockStmt {
-	bs := &ast.BlockStmt{Token: p.curTok}
+func (p *Parser) parseBlockStmt(eT token.TokenType) *ast.BlockStmt {
+	bs := &ast.BlockStmt{Token: p.curTok , Stmts: []ast.Stmt{}}
 
-	bs.Stmts = []ast.Stmt{}
+//	bs.Stmts = []ast.Stmt{}
 
 	p.nextToken()
+	
 
-	for !p.isCurToken(token.END) && !p.isCurToken(token.EOF) {
+
+	for !p.isCurToken(eT) && !p.isCurToken(token.EOF) {
 		s := p.parseStmt()
 		if s != nil {
 			bs.Stmts = append(bs.Stmts, s)

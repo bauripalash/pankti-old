@@ -1,0 +1,12 @@
+dhori age = 18
+
+dhori nam = ekti kaj(y)
+	jotokhon (age != 0)
+		dhori age = age - 1
+		dekhau(age)
+	sesh
+sesh 
+
+dekhau("fUN->")
+nam(age)
+dekhau("<--eND")
