@@ -41,17 +41,32 @@ here and the current new syntax version of pankti would be mentioned as
 At the first prototype of pankti had many different syntax than current
 iteration of pankti. 
 
-**P0** Used to have this type of `IF` syntax
+**P0** Used to have this type of `IF..ELSE` syntax
 ```go
 jodi (true) tahole{
     return true
 }
 ```
 
-But now **P1** has this type of `IF` syntax
+```go
+jodi (true) tahole{
+    return true
+}else{
+    return false
+}
+```
+
+But now **P1** has this type of `IF..ELSE` syntax
 ```go
 jodi (true) tahole 
     return true
 nahole sesh
 ```
 
+```go
+jodi (true) tahole 
+    return true
+nahole 
+    return false
+sesh
+```
