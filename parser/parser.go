@@ -549,23 +549,22 @@ func (p *Parser) parseIfExpr() ast.Expr {
 		return nil
 	}
 	p.nextToken()
-	tb := &ast.BlockStmt{ Token: p.curTok , Stmts: []ast.Stmt{} }
-	eb := &ast.BlockStmt{ Token: p.curTok , Stmts: []ast.Stmt{} }
+	tb := &ast.BlockStmt{Token: p.curTok, Stmts: []ast.Stmt{}}
+	eb := &ast.BlockStmt{Token: p.curTok, Stmts: []ast.Stmt{}}
 
-
-	for !p.isCurToken(token.ELSE) && !p.isCurToken(token.EOF){
+	for !p.isCurToken(token.ELSE) && !p.isCurToken(token.EOF) {
 		s := p.parseStmt()
-		if s!=nil{
+		if s != nil {
 			tb.Stmts = append(tb.Stmts, s)
 		}
-		p.nextToken()	
+		p.nextToken()
 	}
-	
+
 	p.nextToken()
 
-	if !p.isCurToken(token.END) && !p.isCurToken(token.EOF){
+	if !p.isCurToken(token.END) && !p.isCurToken(token.EOF) {
 		s := p.parseStmt()
-		if s!= nil{
+		if s != nil {
 			eb.Stmts = append(eb.Stmts, s)
 		}
 		p.nextToken()
@@ -573,7 +572,6 @@ func (p *Parser) parseIfExpr() ast.Expr {
 
 	exp.TrueBlock = tb
 	exp.ElseBlock = eb
-
 
 	//p.nextToken()
 	//exp.TrueBlock = p.parseBlockStmt(token.ELSE)
@@ -615,13 +613,11 @@ func (p *Parser) parseWhileExpr() ast.Expr {
 }
 
 func (p *Parser) parseBlockStmt(eT token.TokenType) *ast.BlockStmt {
-	bs := &ast.BlockStmt{Token: p.curTok , Stmts: []ast.Stmt{}}
+	bs := &ast.BlockStmt{Token: p.curTok, Stmts: []ast.Stmt{}}
 
-//	bs.Stmts = []ast.Stmt{}
+	//	bs.Stmts = []ast.Stmt{}
 
 	p.nextToken()
-	
-
 
 	for !p.isCurToken(eT) && !p.isCurToken(token.EOF) {
 		s := p.parseStmt()

@@ -3,10 +3,11 @@
 package main
 
 import (
-	"os" 
-	"go.cs.palashbauri.in/pankti/ide"
 	log "github.com/sirupsen/logrus"
+	"go.cs.palashbauri.in/pankti/ide"
+	"os"
 )
+
 func init() {
 	log.SetLevel(log.ErrorLevel)
 	log.SetFormatter(&log.TextFormatter{

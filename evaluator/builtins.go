@@ -218,9 +218,9 @@ var builtins = map[string]*object.Builtin{
 		},
 	},
 
-	"isonow" : {
+	"isonow": {
 		Fn: func(args ...object.Obj) object.Obj {
-            return stdlib.UtcDateISO(args)
-		},	
+			return stdlib.UtcDateISO(args)
+		},
 	},
 }
