@@ -31,7 +31,11 @@ func (pe *PeekError) GetMsg() string { return Errs[EXPECTED_GOT] }
 func (pe *PeekError) GetToken() token.Token { return pe.Got }
 
 func (pe *PeekError) String() string {
-	return pe.ErrLine + "\n" + fmt.Sprintf(pe.GetMsg(), pe.Expected, pe.GetToken().Literal)
+	return pe.ErrLine + "\n" + fmt.Sprintf(
+		pe.GetMsg(),
+		pe.Expected,
+		pe.GetToken().Literal,
+	)
 }
 
 type NoPrefixSuffixError struct {
@@ -50,7 +54,10 @@ func (spe *NoPrefixSuffixError) GetToken() token.Token {
 
 func (spe *NoPrefixSuffixError) String() string {
 	//fmt.Println()
-	return spe.ErrLine + "\n" + fmt.Sprintf(spe.GetMsg(), spe.Token.Literal)
+	return spe.ErrLine + "\n" + fmt.Sprintf(
+		spe.GetMsg(),
+		spe.Token.Literal,
+	)
 
 }
 
@@ -64,7 +71,10 @@ func (nee *NoEktiError) GetMsg() string { return Errs[NO_EKTI_BEFORE_FN] }
 func (nee *NoEktiError) GetToken() token.Token { return token.Token{} }
 
 func (nee *NoEktiError) String() string {
-	return nee.ErrLine + "\n" + fmt.Sprintf(Errs[NO_EKTI_BEFORE_FN], nee.Type)
+	return nee.ErrLine + "\n" + fmt.Sprintf(
+		Errs[NO_EKTI_BEFORE_FN],
+		nee.Type,
+	)
 }
 
 type IntegerParseError struct {

@@ -36,16 +36,18 @@ func RunIde() {
 
 	iup.ImageFromImage(gearImage).SetHandle("gearimage")
 	iup.ImageFromImage(iconImage).SetHandle("iconimage")
-	editor := iup.MultiLine().SetCallback("ACTION", iup.TextActionFunc(func(ih iup.Ihandle, item int, text string) int {
-		if item == iup.K_g {
-			return iup.IGNORE
-		}
+	editor := iup.MultiLine().
+		SetCallback("ACTION", iup.TextActionFunc(func(ih iup.Ihandle, item int, text string) int {
+			if item == iup.K_g {
+				return iup.IGNORE
+			}
 
-		return iup.DEFAULT
-	})).SetAttributes(map[string]string{
-		"EXPAND": "YES",
-		"BORDER": "YES",
-	})
+			return iup.DEFAULT
+		})).
+		SetAttributes(map[string]string{
+			"EXPAND": "YES",
+			"BORDER": "YES",
+		})
 	iup.SetGlobal("UTF8MODE", "YES")
 
 	fd := iup.FileDlg().SetAttributes(map[string]string{
@@ -65,50 +67,59 @@ func RunIde() {
 	menu := iup.Menu(GetFileMenu(), GetHelpMenu())
 	menu.SetHandle("mymenu")
 
-	iup.GetHandle("menuOpen").SetCallback("ACTION", iup.ActionFunc(func(i iup.Ihandle) int {
-		iup.Popup(fd, iup.CENTER, iup.CENTER)
+	iup.GetHandle("menuOpen").
+		SetCallback("ACTION", iup.ActionFunc(func(i iup.Ihandle) int {
+			iup.Popup(fd, iup.CENTER, iup.CENTER)
 
-		if fd.GetInt("STATUS") == 0 {
-			f, err := OpenFile(fd.GetAttribute("VALUE"))
-			if err != nil {
-				iup.Message("Error!", err.Error())
-				return iup.IGNORE
+			if fd.GetInt("STATUS") == 0 {
+				f, err := OpenFile(fd.GetAttribute("VALUE"))
+				if err != nil {
+					iup.Message("Error!", err.Error())
+					return iup.IGNORE
+				}
+				editor.SetAttribute("VALUE", f)
+
+			} else {
+				fmt.Println(fd.GetInt("STATUS"))
 			}
-			editor.SetAttribute("VALUE", f)
 
-		} else {
-			fmt.Println(fd.GetInt("STATUS"))
-		}
+			return iup.IGNORE
+		}))
 
-		return iup.IGNORE
-	}))
+	iup.GetHandle("menuExit").
+		SetCallback("ACTION", iup.ActionFunc(func(i iup.Ihandle) int {
+			return iup.CLOSE
+		}))
 
-	iup.GetHandle("menuExit").SetCallback("ACTION", iup.ActionFunc(func(i iup.Ihandle) int {
-		return iup.CLOSE
-	}))
+	iup.GetHandle("menuSave").
+		SetCallback("ACTION", iup.ActionFunc(func(i iup.Ihandle) int {
+			iup.Popup(fopen, iup.CENTER, iup.CENTER)
+			fopenStat := fopen.GetInt("STATUS")
+			if fopenStat == 1 {
+				err := SaveFile(
+					fopen.GetAttribute("VALUE"),
+					editor.GetAttribute("VALUE"),
+					false,
+				)
+				if err != nil {
+					fmt.Println("Failed to save file")
 
-	iup.GetHandle("menuSave").SetCallback("ACTION", iup.ActionFunc(func(i iup.Ihandle) int {
-		iup.Popup(fopen, iup.CENTER, iup.CENTER)
-		fopenStat := fopen.GetInt("STATUS")
-		if fopenStat == 1 {
-			err := SaveFile(fopen.GetAttribute("VALUE"), editor.GetAttribute("VALUE"), false)
-			if err != nil {
-				fmt.Println("Failed to save file")
-
+				}
+			} else if fopenStat == 0 {
+				switch iup.Alarm("Overwrite File?", "overwrite file "+editor.GetAttribute("VALUE")+" ?", "Okay", "No", "Cancel") {
+				case 1:
+					SaveFile(fopen.GetAttribute("VALUE"), editor.GetAttribute("VALUE"), true)
+				default:
+					iup.Message("File not Saved", "File not Overwritten")
+				}
+				//iup.Message("Save File" , "File was overwriten")
 			}
-		} else if fopenStat == 0 {
-			switch iup.Alarm("Overwrite File?", "overwrite file "+editor.GetAttribute("VALUE")+" ?", "Okay", "No", "Cancel") {
-			case 1:
-				SaveFile(fopen.GetAttribute("VALUE"), editor.GetAttribute("VALUE"), true)
-			default:
-				iup.Message("File not Saved", "File not Overwritten")
-			}
-			//iup.Message("Save File" , "File was overwriten")
-		}
-		return iup.IGNORE
-	}))
+			return iup.IGNORE
+		}))
 
-	runBtn := iup.Button("/> Run ").SetAttribute("SIZE", "FIVExFIVE").SetAttribute("IMAGE", "gearimage")
+	runBtn := iup.Button("/> Run ").
+		SetAttribute("SIZE", "FIVExFIVE").
+		SetAttribute("IMAGE", "gearimage")
 	topToolbar := iup.Vbox(runBtn)
 	outputBox := iup.MultiLine().SetAttributes(map[string]string{
 		"EXPAND":   "YES",
@@ -118,7 +129,10 @@ func RunIde() {
 	})
 
 	runBtn.SetCallback("ACTION", iup.ActionFunc(func(i iup.Ihandle) int {
-		outputBox.SetAttribute("VALUE", RunFile(editor.GetAttribute("VALUE")))
+		outputBox.SetAttribute(
+			"VALUE",
+			RunFile(editor.GetAttribute("VALUE")),
+		)
 		return iup.IGNORE
 	}))
 

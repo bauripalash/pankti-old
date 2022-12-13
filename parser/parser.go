@@ -265,7 +265,11 @@ func (p *Parser) peekErr(t token.TokenType) {
 	if len(t) > 1 {
 		expectedToken = token.TokenType(token.HumanFriendly[string(t)])
 	}
-	newerr := errs.PeekError{Expected: expectedToken, Got: p.peekTok, ErrLine: MakeErrorLine(p.curTok, p.lx.GetLine(p.curTok.LineNo))}
+	newerr := errs.PeekError{
+		Expected: expectedToken,
+		Got:      p.peekTok,
+		ErrLine:  MakeErrorLine(p.curTok, p.lx.GetLine(p.curTok.LineNo)),
+	}
 	p.errs = append(p.errs, &newerr)
 }
 
@@ -314,7 +318,10 @@ func (p *Parser) parseStmt() ast.Stmt {
 
 func (p *Parser) parseComment() ast.Stmt {
 
-	return &ast.Comment{Token: p.curTok, Value: p.curTok.Literal}
+	return &ast.Comment{
+		Token: p.curTok,
+		Value: p.curTok.Literal,
+	}
 }
 
 func (p *Parser) parseReturnStmt() *ast.ReturnStmt {
@@ -358,7 +365,13 @@ func (p *Parser) parseIncludeStmt() *ast.IncludeStmt {
 		p.nextToken()
 	}
 
-	log.Info(fmt.Sprintf("INCLUDE => FNAME=>%s || FNAME_TYPE=>%s", stmt.Filename, stmt))
+	log.Info(
+		fmt.Sprintf(
+			"INCLUDE => FNAME=>%s || FNAME_TYPE=>%s",
+			stmt.Filename,
+			stmt,
+		),
+	)
 
 	return stmt
 }
@@ -371,7 +384,11 @@ func (p *Parser) parseLetStmt() *ast.LetStmt {
 		return nil
 	}
 
-	stmt.Name = ast.Identifier{Token: p.curTok, Value: p.curTok.Literal}
+	stmt.Name = ast.Identifier{
+		Token: p.curTok,
+		Value: p.curTok.Literal,
+	}
+
 	if !p.peek(token.EQ) {
 		return nil
 	}
@@ -419,9 +436,15 @@ func (p *Parser) noPrefixFunctionErr(t token.Token) {
 	var msg errs.ParserError
 
 	if t.Type == token.FUNC {
-		msg = &errs.NoEktiError{Type: t.Type, ErrLine: MakeErrorLine(t, p.lx.GetLine(t.LineNo))}
+		msg = &errs.NoEktiError{
+			Type:    t.Type,
+			ErrLine: MakeErrorLine(t, p.lx.GetLine(t.LineNo)),
+		}
 	} else {
-		msg = &errs.NoPrefixSuffixError{Token: p.curTok, ErrLine: MakeErrorLine(t, p.lx.GetLine(t.LineNo))}
+		msg = &errs.NoPrefixSuffixError{
+			Token:   p.curTok,
+			ErrLine: MakeErrorLine(t, p.lx.GetLine(t.LineNo)),
+		}
 
 	}
 	p.errs = append(p.errs, msg)
@@ -476,7 +499,10 @@ func (p *Parser) parseIdent() ast.Expr {
 
 func (p *Parser) parseBool() ast.Expr {
 	log.Info("BOOL EXPR => ", p.curTok)
-	return &ast.Boolean{Token: p.curTok, Value: p.isCurToken(token.TRUE)}
+	return &ast.Boolean{
+		Token: p.curTok,
+		Value: p.isCurToken(token.TRUE),
+	}
 }
 
 func (p *Parser) parseNumLit() ast.Expr {
@@ -484,11 +510,17 @@ func (p *Parser) parseNumLit() ast.Expr {
 
 	if number.IsFloat(p.curTok.Literal) {
 		v, _ := new(big.Float).SetString(p.curTok.Literal)
-		lit.Value = number.Number{Value: &number.FloatNumber{Value: *v}, IsInt: false}
+		lit.Value = number.Number{
+			Value: &number.FloatNumber{Value: *v},
+			IsInt: false,
+		}
 		lit.IsInt = false
 	} else {
 		v, _ := new(big.Int).SetString(p.curTok.Literal, 10)
-		lit.Value = number.Number{Value: &number.IntNumber{Value: *v}, IsInt: true}
+		lit.Value = number.Number{
+			Value: &number.IntNumber{Value: *v},
+			IsInt: true,
+		}
 		lit.IsInt = true
 	}
 
@@ -579,7 +611,12 @@ func (p *Parser) parseIfExpr() ast.Expr {
 	//exp.ElseBlock = p.parseBlockStmt(token.END)
 
 	if has_else {
-		log.Info("IF ELSE Expr => ", exp.Cond, exp.TrueBlock.String(), exp.ElseBlock.String())
+		log.Info(
+			"IF ELSE Expr => ",
+			exp.Cond,
+			exp.TrueBlock.String(),
+			exp.ElseBlock.String(),
+		)
 	} else {
 		log.Info("IF Expr => ", exp.Cond, exp.TrueBlock.String())
 	}

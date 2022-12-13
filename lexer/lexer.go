@@ -91,7 +91,12 @@ func (l *Lexer) NextToken() token.Token {
 			ch := l.ch
 			l.readChar()
 			lit := string(ch) + string(l.ch)
-			tk = token.Token{Type: token.EQEQ, Literal: lit, LineNo: l.line, Column: l.column}
+			tk = token.Token{
+				Type:    token.EQEQ,
+				Literal: lit,
+				LineNo:  l.line,
+				Column:  l.column,
+			}
 		} else {
 			tk = NewToken(token.EQ, l.ch, l.line, l.column)
 		}
@@ -104,7 +109,12 @@ func (l *Lexer) NextToken() token.Token {
 			ch := l.ch
 			l.readChar()
 			lit := string(ch) + string(l.ch)
-			tk = token.Token{Type: token.LTE, Literal: lit, LineNo: l.line, Column: l.column}
+			tk = token.Token{
+				Type:    token.LTE,
+				Literal: lit,
+				LineNo:  l.line,
+				Column:  l.column,
+			}
 		} else {
 			tk = NewToken(token.LT, l.ch, l.line, l.column)
 		}
@@ -113,7 +123,12 @@ func (l *Lexer) NextToken() token.Token {
 			ch := l.ch
 			l.readChar()
 			lit := string(ch) + string(l.ch)
-			tk = token.Token{Type: token.GTE, Literal: lit, LineNo: l.line, Column: l.column}
+			tk = token.Token{
+				Type:    token.GTE,
+				Literal: lit,
+				LineNo:  l.line,
+				Column:  l.column,
+			}
 			//fmt.Println(tk)
 		} else {
 			tk = NewToken(token.GT, l.ch, l.line, l.column)
@@ -131,7 +146,12 @@ func (l *Lexer) NextToken() token.Token {
 			ch := l.ch
 			l.readChar()
 			lit := string(ch) + string(l.ch)
-			tk = token.Token{Type: token.NOT_EQ, Literal: lit, LineNo: l.line, Column: l.column}
+			tk = token.Token{
+				Type:    token.NOT_EQ,
+				Literal: lit,
+				LineNo:  l.line,
+				Column:  l.column,
+			}
 		} else {
 			tk = NewToken(token.EXC, l.ch, l.line, l.column)
 		}
@@ -164,7 +184,12 @@ func (l *Lexer) NextToken() token.Token {
 
 		}
 
-		tk = token.Token{Type: token.COMMENT, Literal: string(l.input[pos:l.pos]), LineNo: lin, Column: col}
+		tk = token.Token{
+			Type:    token.COMMENT,
+			Literal: string(l.input[pos:l.pos]),
+			LineNo:  lin,
+			Column:  col,
+		}
 
 		//l.eatWhitespace()
 		//log.Print("->")
@@ -248,7 +273,12 @@ func (l *Lexer) eatWhitespace() {
 	}
 }
 
-func NewToken(tokType token.TokenType, ch rune, line int, col int) token.Token {
+func NewToken(
+	tokType token.TokenType,
+	ch rune,
+	line int,
+	col int,
+) token.Token {
 
 	return token.Token{
 		Type:    tokType,
@@ -339,7 +369,9 @@ func (l *Lexer) peekChar() rune {
 }
 
 func isLetter(ch rune) bool {
-	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_' || 'ঀ' <= ch && ch <= 'ৡ' || 'ৰ' <= ch && ch <= '৽'
+	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_' ||
+		'ঀ' <= ch && ch <= 'ৡ' ||
+		'ৰ' <= ch && ch <= '৽'
 }
 
 func isDigit(ch rune) bool {

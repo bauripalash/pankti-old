@@ -159,12 +159,19 @@ func NumberOperation(op string, n Number, x Number) (Number, bool, bool) {
 		case token.LTE:
 			return Number{}, FloatFloatCompare(token.LTE, *fa, *fb), true
 		case token.NOT_EQ:
-			return Number{}, FloatFloatCompare(token.NOT_EQ, *fa, *fb), true
+			return Number{}, FloatFloatCompare(
+				token.NOT_EQ,
+				*fa,
+				*fb,
+			), true
 		case token.EQEQ:
 			return Number{}, FloatFloatCompare(token.EQEQ, *fa, *fb), true
 
 		}
-		return Number{Value: &FloatNumber{Value: *val}, IsInt: false}, false, true
+		return Number{
+			Value: &FloatNumber{Value: *val},
+			IsInt: false,
+		}, false, true
 	case "INT":
 		ia := n.Value.(*IntNumber).Value
 
@@ -195,7 +202,10 @@ func NumberOperation(op string, n Number, x Number) (Number, bool, bool) {
 
 			}
 
-			return Number{Value: &IntNumber{Value: *val}, IsInt: true}, false, true
+			return Number{
+				Value: &IntNumber{Value: *val},
+				IsInt: true,
+			}, false, true
 
 		}
 
@@ -219,12 +229,19 @@ func NumberOperation(op string, n Number, x Number) (Number, bool, bool) {
 		case token.LTE:
 			return Number{}, FloatFloatCompare(token.LTE, *fa, *fb), true
 		case token.NOT_EQ:
-			return Number{}, FloatFloatCompare(token.NOT_EQ, *fa, *fb), true
+			return Number{}, FloatFloatCompare(
+				token.NOT_EQ,
+				*fa,
+				*fb,
+			), true
 		case token.EQEQ:
 			return Number{}, FloatFloatCompare(token.EQEQ, *fa, *fb), true
 
 		}
-		return Number{Value: &FloatNumber{Value: *val}, IsInt: false}, false, true
+		return Number{
+			Value: &FloatNumber{Value: *val},
+			IsInt: false,
+		}, false, true
 	default:
 		return Number{}, false, false
 	}

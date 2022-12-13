@@ -54,8 +54,12 @@ type IncludeObj struct {
 	Token    token.Token
 }
 
-func (ib *IncludeObj) Type() ObjType         { return INCLUDE_OBJ }
-func (ib *IncludeObj) Inspect() string       { return fmt.Sprintf("include %s", ib.Filename) }
+func (ib *IncludeObj) Type() ObjType { return INCLUDE_OBJ }
+
+func (ib *IncludeObj) Inspect() string {
+	return fmt.Sprintf("include %s", ib.Filename)
+}
+
 func (ib *IncludeObj) GetToken() token.Token { return ib.Token }
 
 // Print Obj
@@ -65,8 +69,12 @@ type ShowObj struct {
 	Token token.Token
 }
 
-func (so *ShowObj) Type() ObjType         { return SHOW_OBJ }
-func (so *ShowObj) Inspect() string       { return strings.Join(so.Value, "\n") }
+func (so *ShowObj) Type() ObjType { return SHOW_OBJ }
+
+func (so *ShowObj) Inspect() string {
+	return strings.Join(so.Value, "\n")
+}
+
 func (so *ShowObj) GetToken() token.Token { return so.Token }
 func (so *ShowObj) Print(b bytes.Buffer) {
 	b.WriteString(so.Inspect())
@@ -162,7 +170,10 @@ func (h *Hash) Inspect() string {
 	pairs := []string{}
 
 	for _, p := range h.Pairs {
-		pairs = append(pairs, fmt.Sprintf("%s : %s", p.Key.Inspect(), p.Value.Inspect()))
+		pairs = append(
+			pairs,
+			fmt.Sprintf("%s : %s", p.Key.Inspect(), p.Value.Inspect()),
+		)
 
 	}
 
@@ -215,7 +226,8 @@ type Boolean struct {
 	Token token.Token
 }
 
-func (b *Boolean) Type() ObjType         { return BOOL_OBJ }
+func (b *Boolean) Type() ObjType { return BOOL_OBJ }
+
 func (b *Boolean) Inspect() string       { return fmt.Sprintf("%t", b.Value) }
 func (b *Boolean) GetToken() token.Token { return b.Token }
 

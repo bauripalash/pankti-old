@@ -65,7 +65,13 @@ func (e *ErrorHelper) MakeErrorLine(t token.Token, showHint bool) string {
 	return strconv.Itoa(t.LineNo) + "| " + xLine
 }
 
-func Eval(node ast.Node, env *object.Env, eh ErrorHelper, printBuff *bytes.Buffer, isGui bool) object.Obj {
+func Eval(
+	node ast.Node,
+	env *object.Env,
+	eh ErrorHelper,
+	printBuff *bytes.Buffer,
+	isGui bool,
+) object.Obj {
 	switch node := node.(type) {
 	case *ast.Program:
 		return evalProg(node, env, &eh, printBuff, isGui)
@@ -174,7 +180,13 @@ func Eval(node ast.Node, env *object.Env, eh ErrorHelper, printBuff *bytes.Buffe
 	return nil
 }
 
-func evalHashLit(node *ast.HashLit, env *object.Env, eh *ErrorHelper, printBuff *bytes.Buffer, isGui bool) object.Obj {
+func evalHashLit(
+	node *ast.HashLit,
+	env *object.Env,
+	eh *ErrorHelper,
+	printBuff *bytes.Buffer,
+	isGui bool,
+) object.Obj {
 	pairs := make(map[object.HashKey]object.HashPair)
 
 	for kNode, vNode := range node.Pairs {
@@ -187,7 +199,13 @@ func evalHashLit(node *ast.HashLit, env *object.Env, eh *ErrorHelper, printBuff 
 		hashkey, ok := key.(object.Hashable)
 
 		if !ok {
-			return NewErr(node.Token, eh, true, "object cannot be used as hash key %s", key.Type())
+			return NewErr(
+				node.Token,
+				eh,
+				true,
+				"object cannot be used as hash key %s",
+				key.Type(),
+			)
 		}
 
 		val := Eval(vNode, env, *eh, printBuff, isGui)
@@ -204,7 +222,11 @@ func evalHashLit(node *ast.HashLit, env *object.Env, eh *ErrorHelper, printBuff 
 	return &object.Hash{Pairs: pairs}
 }
 
-func evalShowStmt(args []object.Obj, printBuff *bytes.Buffer, isGui bool) object.Obj {
+func evalShowStmt(
+	args []object.Obj,
+	printBuff *bytes.Buffer,
+	isGui bool,
+) object.Obj {
 
 	output := []string{}
 
@@ -256,19 +278,34 @@ func evalIndexExpr(left, index object.Obj, eh *ErrorHelper) object.Obj {
 		return evalHashIndexExpr(left, index, eh)
 
 	default:
-		return NewErr(left.GetToken(), eh, true, "Unsupported Index Operator %s ", left.Type())
+		return NewErr(
+			left.GetToken(),
+			eh,
+			true,
+			"Unsupported Index Operator %s ",
+			left.Type(),
+		)
 	}
 
 }
 
-func evalHashIndexExpr(hash, index object.Obj, eh *ErrorHelper) object.Obj {
+func evalHashIndexExpr(
+	hash, index object.Obj,
+	eh *ErrorHelper,
+) object.Obj {
 
 	hashO := hash.(*object.Hash)
 
 	key, ok := index.(object.Hashable)
 
 	if !ok {
-		return NewErr(index.GetToken(), eh, true, "This cannot be used as hash key %s", index.Type())
+		return NewErr(
+			index.GetToken(),
+			eh,
+			true,
+			"This cannot be used as hash key %s",
+			index.Type(),
+		)
 	}
 
 	pair, ok := hashO.Pairs[key.HashKey()]
@@ -298,7 +335,14 @@ func evalArrIndexExpr(arr, index object.Obj, eh *ErrorHelper) object.Obj {
 	return arrObj.Elms[idx]
 }
 
-func applyFunc(fn object.Obj, caller token.Token, args []object.Obj, eh *ErrorHelper, printBuff *bytes.Buffer, isGui bool) object.Obj {
+func applyFunc(
+	fn object.Obj,
+	caller token.Token,
+	args []object.Obj,
+	eh *ErrorHelper,
+	printBuff *bytes.Buffer,
+	isGui bool,
+) object.Obj {
 
 	switch fn := fn.(type) {
 	case *object.Function:
@@ -330,12 +374,24 @@ func extendFuncEnv(fn *object.Function, args []object.Obj) *object.Env {
 	return env
 }
 
-func evalIncludeStmt(in *ast.IncludeStmt, e *object.Env, eh *ErrorHelper, printBuff *bytes.Buffer, isGui bool) (*object.Env, object.Obj) {
+func evalIncludeStmt(
+	in *ast.IncludeStmt,
+	e *object.Env,
+	eh *ErrorHelper,
+	printBuff *bytes.Buffer,
+	isGui bool,
+) (*object.Env, object.Obj) {
 	rawFilename := Eval(in.Filename, e, *eh, printBuff, isGui)
 	enx := object.NewEnv()
 
 	if rawFilename.Type() != object.STRING_OBJ {
-		return enx, NewErr(rawFilename.GetToken(), eh, true, "include filename is invalid %s", rawFilename.Inspect())
+		return enx, NewErr(
+			rawFilename.GetToken(),
+			eh,
+			true,
+			"include filename is invalid %s",
+			rawFilename.Inspect(),
+		)
 
 	}
 
@@ -344,14 +400,26 @@ func evalIncludeStmt(in *ast.IncludeStmt, e *object.Env, eh *ErrorHelper, printB
 	_, err := os.Stat(includeFilename)
 
 	if errors.Is(err, fs.ErrNotExist) {
-		return enx, NewErr(in.Token, eh, true, "%s include file doesnot exists", includeFilename)
+		return enx, NewErr(
+			in.Token,
+			eh,
+			true,
+			"%s include file doesnot exists",
+			includeFilename,
+		)
 
 	}
 
 	fdata, err := os.ReadFile(includeFilename)
 
 	if err != nil {
-		return enx, NewErr(rawFilename.GetToken(), eh, true, "Failed to read include file %s", includeFilename)
+		return enx, NewErr(
+			rawFilename.GetToken(),
+			eh,
+			true,
+			"Failed to read include file %s",
+			includeFilename,
+		)
 
 	}
 
@@ -367,7 +435,12 @@ func evalIncludeStmt(in *ast.IncludeStmt, e *object.Env, eh *ErrorHelper, printB
 			fmt.Println(e.String())
 		}
 
-		return enx, NewErr(rawFilename.GetToken(), eh, true, "Include file contains parsing errors")
+		return enx, NewErr(
+			rawFilename.GetToken(),
+			eh,
+			true,
+			"Include file contains parsing errors",
+		)
 	}
 
 	return ex, &object.Null{}
@@ -383,7 +456,13 @@ func unwrapRValue(o object.Obj) object.Obj {
 
 }
 
-func evalExprs(es []ast.Expr, env *object.Env, eh *ErrorHelper, printBuff *bytes.Buffer, isGui bool) []object.Obj {
+func evalExprs(
+	es []ast.Expr,
+	env *object.Env,
+	eh *ErrorHelper,
+	printBuff *bytes.Buffer,
+	isGui bool,
+) []object.Obj {
 	var res []object.Obj
 
 	for _, e := range es {
@@ -399,7 +478,11 @@ func evalExprs(es []ast.Expr, env *object.Env, eh *ErrorHelper, printBuff *bytes
 	return res
 }
 
-func evalId(node *ast.Identifier, env *object.Env, eh *ErrorHelper) object.Obj {
+func evalId(
+	node *ast.Identifier,
+	env *object.Env,
+	eh *ErrorHelper,
+) object.Obj {
 	if val, ok := env.Get(node.Value); ok {
 		return val
 	}
@@ -412,9 +495,20 @@ func evalId(node *ast.Identifier, env *object.Env, eh *ErrorHelper) object.Obj {
 	//	return val
 }
 
-func NewErr(token token.Token, eh *ErrorHelper, showHint bool, format string, a ...interface{}) *object.Error {
+func NewErr(
+	token token.Token,
+	eh *ErrorHelper,
+	showHint bool,
+	format string,
+	a ...interface{},
+) *object.Error {
 
-	errMsg := eh.MakeErrorLine(token, showHint) + "\n" + fmt.Sprintf(format, a...)
+	errMsg := eh.MakeErrorLine(
+		token,
+		showHint,
+	) + "\n" + fmt.Sprintf(
+		format,
+		a...)
 	return &object.Error{Msg: errMsg}
 }
 
@@ -426,7 +520,13 @@ func isErr(obj object.Obj) bool {
 	return false
 }
 
-func evalBlockStmt(block *ast.BlockStmt, env *object.Env, eh *ErrorHelper, printBuff *bytes.Buffer, isGui bool) object.Obj {
+func evalBlockStmt(
+	block *ast.BlockStmt,
+	env *object.Env,
+	eh *ErrorHelper,
+	printBuff *bytes.Buffer,
+	isGui bool,
+) object.Obj {
 
 	var res object.Obj
 
@@ -447,7 +547,13 @@ func evalBlockStmt(block *ast.BlockStmt, env *object.Env, eh *ErrorHelper, print
 	return res
 }
 
-func evalProg(prog *ast.Program, env *object.Env, eh *ErrorHelper, printBuff *bytes.Buffer, isGui bool) object.Obj {
+func evalProg(
+	prog *ast.Program,
+	env *object.Env,
+	eh *ErrorHelper,
+	printBuff *bytes.Buffer,
+	isGui bool,
+) object.Obj {
 	var res object.Obj
 
 	for _, stmt := range prog.Stmts {
@@ -464,7 +570,13 @@ func evalProg(prog *ast.Program, env *object.Env, eh *ErrorHelper, printBuff *by
 	return res
 }
 
-func evalIfExpr(iex *ast.IfExpr, env *object.Env, eh *ErrorHelper, printBuff *bytes.Buffer, isGui bool) object.Obj {
+func evalIfExpr(
+	iex *ast.IfExpr,
+	env *object.Env,
+	eh *ErrorHelper,
+	printBuff *bytes.Buffer,
+	isGui bool,
+) object.Obj {
 	cond := Eval(iex.Cond, env, *eh, printBuff, isGui)
 
 	if isErr(cond) {
@@ -481,7 +593,13 @@ func evalIfExpr(iex *ast.IfExpr, env *object.Env, eh *ErrorHelper, printBuff *by
 
 }
 
-func evalWhileExpr(wx *ast.WhileExpr, env *object.Env, eh *ErrorHelper, printBuff *bytes.Buffer, isGui bool) object.Obj {
+func evalWhileExpr(
+	wx *ast.WhileExpr,
+	env *object.Env,
+	eh *ErrorHelper,
+	printBuff *bytes.Buffer,
+	isGui bool,
+) object.Obj {
 	cond := Eval(wx.Cond, env, *eh, printBuff, isGui)
 	var result object.Obj
 	if isErr(cond) {
@@ -509,7 +627,11 @@ func isTruthy(obj object.Obj) bool {
 	}
 }
 
-func evalInfixExpr(op string, l, r object.Obj, eh *ErrorHelper) object.Obj {
+func evalInfixExpr(
+	op string,
+	l, r object.Obj,
+	eh *ErrorHelper,
+) object.Obj {
 	//fmt.Println(l.GetToken(), r.Type())
 	switch {
 	case l.Type() == object.NUM_OBJ && r.Type() == object.NUM_OBJ:
@@ -524,13 +646,33 @@ func evalInfixExpr(op string, l, r object.Obj, eh *ErrorHelper) object.Obj {
 	case op == "!=":
 		return getBoolObj(l != r)
 	case l.Type() != r.Type():
-		return NewErr(l.GetToken(), eh, false, "Type mismatch:  %s %s %s ", l.Type(), op, r.Type())
+		return NewErr(
+			l.GetToken(),
+			eh,
+			false,
+			"Type mismatch:  %s %s %s ",
+			l.Type(),
+			op,
+			r.Type(),
+		)
 	default:
-		return NewErr(l.GetToken(), eh, false, "unknown Operator : %s %s %s", l.Type(), op, r.Type())
+		return NewErr(
+			l.GetToken(),
+			eh,
+			false,
+			"unknown Operator : %s %s %s",
+			l.Type(),
+			op,
+			r.Type(),
+		)
 	}
 }
 
-func evalStringInfixExpr(op string, l, r object.Obj, eh *ErrorHelper) object.Obj {
+func evalStringInfixExpr(
+	op string,
+	l, r object.Obj,
+	eh *ErrorHelper,
+) object.Obj {
 	lval := l.(*object.String).Value
 	rval := r.(*object.String).Value
 	switch op {
@@ -541,13 +683,25 @@ func evalStringInfixExpr(op string, l, r object.Obj, eh *ErrorHelper) object.Obj
 	case "!=":
 		return getBoolObj(lval != rval)
 	default:
-		return NewErr(l.GetToken(), eh, false, "Unknown Operator %s %s %s", l.Type(), op, r.Type())
+		return NewErr(
+			l.GetToken(),
+			eh,
+			false,
+			"Unknown Operator %s %s %s",
+			l.Type(),
+			op,
+			r.Type(),
+		)
 
 	}
 
 }
 
-func evalNumInfixExpr(op string, l, r object.Obj, eh *ErrorHelper) object.Obj {
+func evalNumInfixExpr(
+	op string,
+	l, r object.Obj,
+	eh *ErrorHelper,
+) object.Obj {
 
 	lval := l.(*object.Number).Value
 	rval := r.(*object.Number).Value
@@ -565,7 +719,11 @@ func evalNumInfixExpr(op string, l, r object.Obj, eh *ErrorHelper) object.Obj {
 
 }
 
-func evalPrefixExpr(op string, right object.Obj, eh *ErrorHelper) object.Obj {
+func evalPrefixExpr(
+	op string,
+	right object.Obj,
+	eh *ErrorHelper,
+) object.Obj {
 	switch op {
 	case "!":
 		return evalBangOp(right)
@@ -582,7 +740,10 @@ func evalMinusPrefOp(right object.Obj, eh *ErrorHelper) object.Obj {
 		return NewBareErr("unknown Operator : -%s", right.Type())
 	}
 	num := right.(*object.Number)
-	return &object.Number{Value: number.MakeNeg(num.Value), IsInt: num.IsInt}
+	return &object.Number{
+		Value: number.MakeNeg(num.Value),
+		IsInt: num.IsInt,
+	}
 }
 
 func evalBangOp(r object.Obj) object.Obj {

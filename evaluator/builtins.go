@@ -7,7 +7,10 @@ import (
 
 func lenFunc(args []object.Obj) object.Obj {
 	if len(args) != 1 {
-		return NewBareErr("wrong number of arguments. got %d but wanted 1", len(args))
+		return NewBareErr(
+			"wrong number of arguments. got %d but wanted 1",
+			len(args),
+		)
 	}
 
 	switch arg := args[0].(type) {
