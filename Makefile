@@ -1,7 +1,7 @@
 # Build Pankti
 #
 
-all: linux_cli linux32_cli win_cli win32_cli
+all: linux_cli
 
 wasm:
 	GOOS=js GOARCH=wasm go build -o wasm/res/pankti.wasm wasm/panktiWasm.go
