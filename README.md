@@ -19,9 +19,9 @@ My mother tongue is Bengali. Previously there have been few attempts to build a 
 ### Functions:
 * Example: 
 ```go
-ধরি ঘুমানো = একটি কাজ(নায়ক){
-    দেখাও(নায়ক + " ঘুমোচ্ছে!");
-}; 
+ধরি ঘুমানো = একটি কাজ(নায়ক)
+    দেখাও(নায়ক + " ঘুমোচ্ছে!")
+কাজ শেষ
 
 ঘুমানো("পলাশ বাউরি")
 ```
@@ -31,21 +31,19 @@ Output: পলাশ বাউরি ঘুমোচ্ছে!
 ### Assignments:
 * Examples:
 ```go
-ধরি মাস = "বৈশাখ";
-ধরি আজ_কি_ছুটি = মিথ্যা; 
+ধরি মাস = "বৈশাখ"
+ধরি আজ_কি_ছুটি = মিথ্যা
 ```
 
 ## Project Status:
-> **Alpha** (*Under Heavy Development*) 
+> *Under Heavy Development*
 
 ## Android API:
 
-[pkg:maven/in.palashbauri/panktijapi@0.1.0-alpha.1](https://central.sonatype.dev/artifact/in.palashbauri/panktijapi/0.1.0-alpha.1)
+[![Maven Central](https://img.shields.io/maven-central/v/in.palashbauri/panktijapi)](https://central.sonatype.dev/artifact/in.palashbauri/panktijapi/0.1.1-alpha.1)
 
 ## License:
 > GNU GPL
 
 ## Special Thanks,
-* Thorsten Ball for writing this amazing book "
-Writing An Interpreter In Go
-"
+* Thorsten Ball for writing this amazing book "Writing An Interpreter In Go"
