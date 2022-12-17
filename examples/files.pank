@@ -1,0 +1,3 @@
+dekhau(readfile("./main.gox"))
+dekhau(exists("./main.go"))
+dekhau(exists("./not_main.go"))

@@ -226,4 +226,28 @@ var builtins = map[string]*object.Builtin{
 			return stdlib.UtcDateISO(args)
 		},
 	},
+
+	"osname": {
+		Fn: func(args ...object.Obj) object.Obj {
+			return stdlib.GetOS(args)
+		},
+	},
+
+	"osarch": {
+		Fn: func(args ...object.Obj) object.Obj {
+			return stdlib.GetArch(args)
+		},
+	},
+
+	"readfile": {
+		Fn: func(args ...object.Obj) object.Obj {
+			return stdlib.ReadFile(args)
+		},
+	},
+
+	"exists": {
+		Fn: func(args ...object.Obj) object.Obj {
+			return stdlib.FileDirExists(args)
+		},
+	},
 }
