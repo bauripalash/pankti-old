@@ -21,7 +21,7 @@ My mother tongue is Bengali. Previously there have been few attempts to build a 
 ```go
 ধরি ঘুমানো = একটি কাজ(নায়ক)
     দেখাও(নায়ক + " ঘুমোচ্ছে!")
-কাজ শেষ
+শেষ
 
 ঘুমানো("পলাশ বাউরি")
 ```
