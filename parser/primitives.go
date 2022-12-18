@@ -2,6 +2,7 @@ package parser
 
 import (
 	"math/big"
+	"strings"
 
 	log "github.com/sirupsen/logrus"
 	"go.cs.palashbauri.in/pankti/ast"
@@ -15,10 +16,20 @@ func (p *Parser) parseStringLit() ast.Expr {
 	return &ast.StringLit{Token: p.curTok, Value: p.curTok.Literal}
 }
 func (p *Parser) parseIdent() ast.Expr {
+	isModID := len(strings.Split(p.curTok.Literal, ".")) == 2
+	//fmt.Println(p.curTok.Literal , " -> " , isModID)
+
+	//if isModID{
+	//	return &ast.IncludeId{
+	//		Token: p.curTok,
+	//		Value: p.curTok.Literal,
+	//	}
+	//}
 
 	log.Info("IDENT EXPR =>", p.curTok)
 	return &ast.Identifier{
 		Token: p.curTok,
+		IsMod: isModID,
 		Value: p.curTok.Literal,
 	}
 

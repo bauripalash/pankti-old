@@ -2,10 +2,17 @@ package evaluator
 
 import (
 	"bytes"
+	"errors"
+	"fmt"
+	"io/fs"
+	"os"
+	"strings"
 
 	"go.cs.palashbauri.in/pankti/ast"
+	"go.cs.palashbauri.in/pankti/lexer"
 	"go.cs.palashbauri.in/pankti/number"
 	"go.cs.palashbauri.in/pankti/object"
+	"go.cs.palashbauri.in/pankti/parser"
 )
 
 var (
@@ -16,7 +23,7 @@ var (
 
 func Eval(
 	node ast.Node,
-	env *object.Env,
+	env *object.EnvMap,
 	eh ErrorHelper,
 	printBuff *bytes.Buffer,
 	isGui bool,
@@ -74,26 +81,27 @@ func Eval(
 	case *ast.BlockStmt:
 		return evalBlockStmt(node, env, &eh, printBuff, isGui)
 	case *ast.LetStmt:
-		val := Eval(node.Value, env, eh, printBuff, isGui)
-		if isErr(val) {
-			return val
-		}
-
-		env.Set(node.Name.Value, val)
+		return evalLetStmt(node, env, &eh, printBuff, isGui)
 	case *ast.Identifier:
 		return evalId(node, env, &eh)
+	//case *ast.IncludeId:
+	//	return evalIncludeId(node, env, &eh)
 	case *ast.FunctionLit:
 		// Function Declaration
 		// dhori X = ekti kaj() ...... sesh
 		pms := node.Params
 		body := node.Body
-		return &object.Function{Params: pms, Body: body, Env: env, Token: node.Token}
+		e, _ := env.GetDefaultEnv()
+		return &object.Function{Params: pms, Body: body, Env: &e, Token: node.Token}
 	case *ast.CallExpr:
 		//
 		// Function Call
 		// function()
 		//
+		isMod := len(strings.Split(node.Func.String(), ".")) == 2
+
 		fnc := Eval(node.Func, env, eh, printBuff, isGui)
+		//fmt.Println(isMod)
 		if isErr(fnc) {
 			return fnc
 		}
@@ -102,7 +110,7 @@ func Eval(
 			return args[0]
 		}
 
-		return applyFunc(fnc, node.Token, args, &eh, printBuff, isGui)
+		return applyFunc(fnc, node.Token, args, isMod, env, &eh, printBuff, isGui)
 
 	case *ast.StringLit:
 		return &object.String{Value: node.Value, Token: node.Token}
@@ -129,13 +137,8 @@ func Eval(
 		return evalIndexExpr(left, index, &eh)
 	case *ast.HashLit:
 		return evalHashLit(node, env, &eh, printBuff, isGui)
-	case *ast.IncludeStmt:
-		newEnv, val := evalIncludeStmt(node, env, &eh, printBuff, isGui)
-		if val.Type() != object.ERR_OBJ {
-			*env = *object.NewEnclosedEnv(newEnv)
-		} else {
-			return val
-		}
+	case *ast.IncludeExpr:
+		return &object.IncludeObj{Filename: node.Filename.String()}
 	}
 
 	return nil
@@ -143,11 +146,20 @@ func Eval(
 
 func evalId(
 	node *ast.Identifier,
-	env *object.Env,
+	env *object.EnvMap,
 	eh *ErrorHelper,
 ) object.Obj {
-	if val, ok := env.Get(node.Value); ok {
+	if val, ok := env.GetFromDefault(node.Value); ok {
 		return val
+	}
+
+	if node.IsMod {
+		keys := strings.Split(node.Value, ".")
+		envName := keys[0]
+		envId := keys[1]
+		if val, ok := env.GetFrom(envName, envId); ok {
+			return val
+		}
 	}
 
 	if builtin, ok := builtins[node.Value]; ok {
@@ -160,7 +172,7 @@ func evalId(
 
 func evalProg(
 	prog *ast.Program,
-	env *object.Env,
+	env *object.EnvMap,
 	eh *ErrorHelper,
 	printBuff *bytes.Buffer,
 	isGui bool,
@@ -179,6 +191,65 @@ func evalProg(
 	}
 
 	return res
+}
+
+func evalLetStmt(
+	node *ast.LetStmt,
+	env *object.EnvMap,
+	eh *ErrorHelper,
+	printBuff *bytes.Buffer,
+	isGui bool,
+) object.Obj {
+
+	if node.Name.IsMod {
+		return NewBareErr("Dot notation can not be used directly")
+	}
+
+	val := Eval(node.Value, env, *eh, printBuff, isGui)
+
+	if val.Type() == object.INCLUDE_OBJ {
+		//fmt.Println(val.Inspect())
+		iobj := val.(*object.IncludeObj)
+		evaluateInclude(env, eh, printBuff, isGui, node.Name.Value, iobj.Filename)
+
+		val = &object.String{Value: iobj.Filename}
+	}
+
+	//fmt.Println(node.Value.String())
+	if isErr(val) {
+		return val
+	}
+
+	env.SetToDefault(node.Name.Value, val)
+	return &object.Null{}
+}
+
+func evaluateInclude(env *object.EnvMap,
+	eh *ErrorHelper,
+	printBuff *bytes.Buffer,
+	isGui bool,
+	key string, filename string) {
+	//e := object.NewEnv()
+
+	_, err := os.Stat(filename)
+
+	if errors.Is(err, fs.ErrNotExist) {
+
+		fmt.Println("Not exists file")
+
+	}
+
+	fdata, _ := os.ReadFile(filename)
+
+	l := lexer.NewLexer(string(fdata))
+	p := parser.NewParser(&l)
+	ex := object.NewEnvMap()
+	prog := p.ParseProg()
+	Eval(prog, ex, *eh, printBuff, isGui)
+	x, _ := ex.GetDefaultEnv()
+
+	env.MergeEnv(key, &x)
+	//fmt.Println(key, filename)
 }
 
 func evalMinusPrefOp(right object.Obj, eh *ErrorHelper) object.Obj {

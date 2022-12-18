@@ -34,7 +34,7 @@ func DoParse(i string) string {
 		return strings.Join(tempErrs, " \n")
 	}
 
-	env := object.NewEnv()
+	env := object.NewEnvMap()
 	eh := evaluator.ErrorHelper{Source: i}
 	printBuff := bytes.Buffer{}
 	evd := evaluator.Eval(prog, env, eh, &printBuff, true)

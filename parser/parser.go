@@ -72,6 +72,7 @@ func NewParser(l *lexer.Lexer) *Parser {
 	p.regPrefix(token.STRING, p.parseStringLit)
 	p.regPrefix(token.LS_BRACKET, p.parseArrLit)
 	p.regPrefix(token.LBRACE, p.parseHashLit)
+	p.regPrefix(token.INCLUDE, p.parseIncludeExpr)
 
 	p.infixParseFns = make(map[token.TokenType]infixParseFn)
 	p.regInfix(token.PLUS, p.parseInfixExpr)
@@ -133,8 +134,8 @@ func (p *Parser) parseStmt() ast.Stmt {
 		return p.parseLetStmt()
 	case token.RETURN:
 		return p.parseReturnStmt()
-	case token.INCLUDE:
-		return p.parseIncludeStmt()
+	//case token.INCLUDE:
+	//	return p.parseIncludeStmt()
 	case token.COMMENT:
 		return p.parseComment()
 	case token.SHOW:

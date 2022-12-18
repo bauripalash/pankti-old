@@ -65,7 +65,7 @@ var runCmd = &cobra.Command{
 				repl.ShowParseErrors(os.Stdin, ps.GetErrors())
 				fmt.Printf("fix above mentioned errors first!\n\n")
 			} else {
-				env := object.NewEnv()
+				env := object.NewEnvMap()
 				eh := evaluator.ErrorHelper{Source: string(f)}
 				printBuff := bytes.Buffer{}
 

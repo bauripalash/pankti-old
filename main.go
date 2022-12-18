@@ -18,6 +18,7 @@ import (
 )
 
 func init() {
+	//log.SetLevel(log.DebugLevel)
 	log.SetLevel(log.ErrorLevel)
 	log.SetFormatter(&log.TextFormatter{
 		PadLevelText:  true,
