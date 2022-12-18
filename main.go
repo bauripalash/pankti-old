@@ -2,20 +2,21 @@
 package main
 
 import (
+	"go.cs.palashbauri.in/pankti/cmd"
+	"go.cs.palashbauri.in/pankti/constants"
 	"os"
+	"path"
+	"runtime"
 	"runtime/debug"
 	"strings"
 
-	/*
-		"vabna/evaluator"
-		"vabna/lexer"
-		"vabna/object"
-		"vabna/parser"
-	*/
-	"go.cs.palashbauri.in/pankti/cmd"
-
 	log "github.com/sirupsen/logrus"
 )
+
+const DEBUG = true
+const IMPORT_PATH_ENV = constants.IMPORT_PATH_ENV
+const WINDOWS_IMPORT_PATH = "??" //TODO: Test on Windows
+const LINUX_IMPORT_PATH = ".pankti/stdlib/"
 
 func init() {
 	//log.SetLevel(log.DebugLevel)
@@ -26,9 +27,41 @@ func init() {
 	})
 
 	log.SetOutput(os.Stdout)
+
+	setImportPathEnv()
+}
+
+func setImportPathEnv() {
+	custom_import_path := os.Getenv(IMPORT_PATH_ENV)
+
+	if len(custom_import_path) < 1 && !DEBUG {
+
+		if runtime.GOOS == "linux" {
+			p, err := os.UserHomeDir()
+			if err != nil {
+				return
+			}
+
+			os.Setenv(IMPORT_PATH_ENV, path.Join(p, LINUX_IMPORT_PATH))
+
+		} else if runtime.GOOS == "windows" {
+
+			p, err := os.UserHomeDir()
+			if err != nil {
+				return
+			}
+			os.Setenv(IMPORT_PATH_ENV, path.Join(p, WINDOWS_IMPORT_PATH))
+
+		}
+
+	} else {
+		curdir, _ := os.Getwd()
+		os.Setenv(IMPORT_PATH_ENV, path.Join(curdir, "/stdlib/x/"))
+	}
 }
 
 func main() {
+	//fmt.Println(os.Getenv(IMPORT_PATH_ENV))
 	is_noide := false
 	bi, noerr := debug.ReadBuildInfo()
 	if !noerr {

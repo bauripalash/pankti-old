@@ -6,9 +6,11 @@ import (
 	"fmt"
 	"io/fs"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"go.cs.palashbauri.in/pankti/ast"
+	"go.cs.palashbauri.in/pankti/constants"
 	"go.cs.palashbauri.in/pankti/lexer"
 	"go.cs.palashbauri.in/pankti/number"
 	"go.cs.palashbauri.in/pankti/object"
@@ -230,8 +232,27 @@ func evaluateInclude(env *object.EnvMap,
 	isGui bool,
 	key string, filename string) {
 	//e := object.NewEnv()
+	fname := filename
+	if filepath.IsAbs(filename) {
+		fname = filename
+	} else {
+		cwd, _ := os.Getwd()
+		p := filepath.Join(cwd, filename)
+		if _, err := os.Stat(p); !errors.Is(err, fs.ErrNotExist) {
+			fname = p
+		}
 
-	_, err := os.Stat(filename)
+		import_env := os.Getenv(constants.IMPORT_PATH_ENV)
+		if len(import_env) >= 1 && fname != p {
+			if _, err := os.Stat(filepath.Join(import_env, filename)); !errors.Is(err, fs.ErrNotExist) {
+				fname = filepath.Join(import_env, filename)
+			}
+		}
+
+	}
+
+	//fmt.Println("IP=>>" + fname)
+	_, err := os.Stat(fname)
 
 	if errors.Is(err, fs.ErrNotExist) {
 
@@ -239,7 +260,7 @@ func evaluateInclude(env *object.EnvMap,
 
 	}
 
-	fdata, _ := os.ReadFile(filename)
+	fdata, _ := os.ReadFile(fname)
 
 	l := lexer.NewLexer(string(fdata))
 	p := parser.NewParser(&l)
