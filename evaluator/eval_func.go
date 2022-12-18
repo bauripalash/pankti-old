@@ -11,16 +11,25 @@ func applyFunc(
 	fn object.Obj,
 	caller token.Token,
 	args []object.Obj,
+	isMod bool,
+	env *object.EnvMap,
 	eh *ErrorHelper,
 	printBuff *bytes.Buffer,
 	isGui bool,
 ) object.Obj {
 
+	//fmt.Println(caller)
+
 	switch fn := fn.(type) {
 	case *object.Function:
 		if len(fn.Params) == len(args) {
 			eEnv := extendFuncEnv(fn, args)
-			evd := Eval(fn.Body, eEnv, *eh, printBuff, isGui)
+
+			eX := object.NewEnvMap()
+
+			eX.Envs[object.DEFKEY] = *object.NewEnclosedEnv(eEnv)
+
+			evd := Eval(fn.Body, eX, *eh, printBuff, isGui)
 			return unwrapReturnValue(evd)
 		} else {
 

@@ -1,0 +1,8 @@
+dhori y = {
+	"n" : "pal",
+	"age" : 20
+}
+
+dhori x = ekti kaj(name)
+	dekhau(name + " is kaj")
+sesh

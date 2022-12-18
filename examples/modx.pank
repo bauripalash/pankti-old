@@ -1,0 +1,3 @@
+let p.nam = "Pal"
+dekhau(p.nam)
+let x = include("x.go")

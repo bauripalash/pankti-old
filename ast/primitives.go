@@ -21,6 +21,7 @@ func (s *StringLit) String() string   { return s.Token.Literal }
 // ================= Identifier ================================
 type Identifier struct {
 	Token token.Token
+	IsMod bool
 	Value string
 }
 
@@ -33,6 +34,26 @@ func (id *Identifier) String() string {
 
 	return id.Value
 }
+
+type IncludeId struct {
+	Token token.Token
+	Value string
+}
+
+func (ii *IncludeId) exprNode()        {}
+func (ii *IncludeId) TokenLit() string { return ii.Token.Literal }
+func (ii *IncludeId) String() string {
+	return ii.Value
+}
+
+type IncludeExpr struct {
+	Token    token.Token
+	Filename Expr
+}
+
+func (ix *IncludeExpr) exprNode()        {}
+func (ix *IncludeExpr) TokenLit() string { return ix.Token.Literal }
+func (ix *IncludeExpr) String() string   { return ix.Token.Literal }
 
 // =============================================================
 

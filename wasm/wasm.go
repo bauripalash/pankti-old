@@ -40,7 +40,7 @@ func DoRun(src string) string {
 		return strings.Join(tempErrs, " \n")
 	}
 
-	env := object.NewEnv()
+	env := object.NewEnvMap()
 	eh := evaluator.ErrorHelper{Source: src}
 	printBuff := bytes.Buffer{}
 	evd := evaluator.Eval(prog, env, eh, &printBuff, false)

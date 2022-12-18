@@ -9,7 +9,7 @@ import (
 
 func evalIfExpr(
 	iex *ast.IfExpr,
-	env *object.Env,
+	env *object.EnvMap,
 	eh *ErrorHelper,
 	printBuff *bytes.Buffer,
 	isGui bool,
@@ -33,7 +33,7 @@ func evalIfExpr(
 
 func evalWhileExpr(
 	wx *ast.WhileExpr,
-	env *object.Env,
+	env *object.EnvMap,
 	eh *ErrorHelper,
 	printBuff *bytes.Buffer,
 	isGui bool,

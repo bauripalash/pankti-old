@@ -2,18 +2,14 @@ package evaluator
 
 import (
 	"bytes"
-	"errors"
 	"fmt"
 	"io"
-	"io/fs"
 	"os"
 	"strings"
 
 	log "github.com/sirupsen/logrus"
 	"go.cs.palashbauri.in/pankti/ast"
-	"go.cs.palashbauri.in/pankti/lexer"
 	"go.cs.palashbauri.in/pankti/object"
-	"go.cs.palashbauri.in/pankti/parser"
 )
 
 func evalShowStmt(
@@ -59,82 +55,9 @@ func evalShowStmt(
 	return NULL
 }
 
-func evalIncludeStmt(
-	in *ast.IncludeStmt,
-	e *object.Env,
-	eh *ErrorHelper,
-	printBuff *bytes.Buffer,
-	isGui bool,
-) (*object.Env, object.Obj) {
-	rawFilename := Eval(in.Filename, e, *eh, printBuff, isGui)
-	enx := object.NewEnv()
-
-	if rawFilename.Type() != object.STRING_OBJ {
-		return enx, NewErr(
-			rawFilename.GetToken(),
-			eh,
-			true,
-			"include filename is invalid %s",
-			rawFilename.Inspect(),
-		)
-
-	}
-
-	includeFilename := rawFilename.(*object.String).Value
-
-	_, err := os.Stat(includeFilename)
-
-	if errors.Is(err, fs.ErrNotExist) {
-		return enx, NewErr(
-			in.Token,
-			eh,
-			true,
-			"%s include file doesnot exists",
-			includeFilename,
-		)
-
-	}
-
-	fdata, err := os.ReadFile(includeFilename)
-
-	if err != nil {
-		return enx, NewErr(
-			rawFilename.GetToken(),
-			eh,
-			true,
-			"Failed to read include file %s",
-			includeFilename,
-		)
-
-	}
-
-	l := lexer.NewLexer(string(fdata))
-	p := parser.NewParser(&l)
-	ex := object.NewEnv()
-	prog := p.ParseProg()
-	Eval(prog, ex, *eh, printBuff, isGui)
-	//fmt.Println(evd.Type())
-
-	if len(p.GetErrors()) != 0 {
-		for _, e := range p.GetErrors() {
-			fmt.Println(e.String())
-		}
-
-		return enx, NewErr(
-			rawFilename.GetToken(),
-			eh,
-			true,
-			"Include file contains parsing errors",
-		)
-	}
-
-	return ex, &object.Null{}
-
-}
-
 func evalBlockStmt(
 	block *ast.BlockStmt,
-	env *object.Env,
+	env *object.EnvMap,
 	eh *ErrorHelper,
 	printBuff *bytes.Buffer,
 	isGui bool,

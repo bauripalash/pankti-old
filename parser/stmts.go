@@ -2,6 +2,7 @@ package parser
 
 import (
 	"fmt"
+	"strings"
 
 	log "github.com/sirupsen/logrus"
 	"go.cs.palashbauri.in/pankti/ast"
@@ -44,6 +45,19 @@ func (p *Parser) parseIncludeStmt() *ast.IncludeStmt {
 	return stmt
 }
 
+func (p *Parser) parseIncludeExpr() ast.Expr {
+	exp := &ast.IncludeExpr{Token: p.curTok}
+	p.nextToken()
+
+	exp.Filename = p.parseExpr(LOWEST)
+	log.Info(fmt.Sprintf(
+		"INCLUDE EXPR => FNAME->%s",
+		exp.Filename,
+	))
+
+	return exp
+}
+
 func (p *Parser) parseLetStmt() *ast.LetStmt {
 	//LET <IDENTIFIER> <EQUAL_SIGN> <EXPRESSION>
 	stmt := &ast.LetStmt{Token: p.curTok}
@@ -51,9 +65,11 @@ func (p *Parser) parseLetStmt() *ast.LetStmt {
 	if !p.peek(token.IDENT) {
 		return nil
 	}
+	isModId := len(strings.Split(p.curTok.Literal, ".")) == 2
 
 	stmt.Name = ast.Identifier{
 		Token: p.curTok,
+		IsMod: isModId,
 		Value: p.curTok.Literal,
 	}
 

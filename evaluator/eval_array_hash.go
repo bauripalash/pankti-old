@@ -10,7 +10,7 @@ import (
 
 func evalHashLit(
 	node *ast.HashLit,
-	env *object.Env,
+	env *object.EnvMap,
 	eh *ErrorHelper,
 	printBuff *bytes.Buffer,
 	isGui bool,

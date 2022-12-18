@@ -67,7 +67,7 @@ func evalPrefixExpr(
 
 func evalExprs(
 	es []ast.Expr,
-	env *object.Env,
+	env *object.EnvMap,
 	eh *ErrorHelper,
 	printBuff *bytes.Buffer,
 	isGui bool,

@@ -208,7 +208,8 @@ func (l *Lexer) NextToken() token.Token {
 		if isLetter(l.ch) {
 			tk.LineNo = l.line
 			tk.Column = l.column
-			tk.Literal = l.readIdent()
+			lit, _ := l.readIdent()
+			tk.Literal = lit
 			tk.Type = token.LookupIdent(tk.Literal)
 
 			return tk
@@ -289,14 +290,22 @@ func NewToken(
 
 }
 
-func (l *Lexer) readIdent() string {
+func (l *Lexer) readIdent() (string, bool) {
 
 	pos := l.pos
-
+	isModId := false
 	for isLetter(l.ch) {
 		l.readChar()
 	}
-	return string(l.input[pos:l.pos])
+
+	if l.ch == '.' {
+		isModId = true
+		l.readChar()
+		for isLetter(l.ch) {
+			l.readChar()
+		}
+	}
+	return string(l.input[pos:l.pos]), isModId
 
 }
 

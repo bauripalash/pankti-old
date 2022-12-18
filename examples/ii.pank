@@ -1,0 +1,3 @@
+dhori c = include("/home/palash/e/pankti/examples/i2.pank")
+
+dekhau(c)

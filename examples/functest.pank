@@ -1,0 +1,10 @@
+dhori nam = "Palash Bauri"
+
+dhori say = ekti kaj(a)
+	dekhau(nam + " says " + a)
+	dhori nam = "PalBau"
+	dekhau("")
+sesh
+dekhau(nam)
+say("Hello")
+dekhau(nam)
