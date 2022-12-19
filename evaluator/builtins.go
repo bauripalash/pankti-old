@@ -108,91 +108,31 @@ func showFunc(args []object.Obj) object.Obj {
 
 var builtins = map[string]*object.Builtin{
 
-	"len": {
+	"__len": {
 		Fn: func(args ...object.Obj) object.Obj {
 			return lenFunc(args)
 		},
 	},
 
-	"আয়তন": {
-		Fn: func(args ...object.Obj) object.Obj {
-			return lenFunc(args)
-		},
-	},
-
-	"ayoton": {
-		Fn: func(args ...object.Obj) object.Obj {
-			return lenFunc(args)
-		},
-	},
-
-	"প্রথম": {
+	"__first": {
 		Fn: func(args ...object.Obj) object.Obj {
 			return firstFunc(args)
 		},
 	},
 
-	"first": {
-		Fn: func(args ...object.Obj) object.Obj {
-			return firstFunc(args)
-		},
-	},
-
-	"prothom": {
-		Fn: func(args ...object.Obj) object.Obj {
-			return firstFunc(args)
-		},
-	},
-
-	"শেষ": {
+	"__last": {
 		Fn: func(args ...object.Obj) object.Obj {
 			return lastFunc(args)
 		},
 	},
 
-	"last": {
-		Fn: func(args ...object.Obj) object.Obj {
-			return lastFunc(args)
-		},
-	},
-
-	"sesh": {
-		Fn: func(args ...object.Obj) object.Obj {
-			return lastFunc(args)
-		},
-	},
-
-	"বাদবাকি": {
+	"__res": {
 		Fn: func(args ...object.Obj) object.Obj {
 			return restFunc(args)
 		},
 	},
 
-	"rest": {
-		Fn: func(args ...object.Obj) object.Obj {
-			return restFunc(args)
-		},
-	},
-
-	"badbaki": {
-		Fn: func(args ...object.Obj) object.Obj {
-			return restFunc(args)
-		},
-	},
-
-	"যোগ": {
-		Fn: func(args ...object.Obj) object.Obj {
-			return pushFunc(args)
-		},
-	},
-
-	"push": {
-		Fn: func(args ...object.Obj) object.Obj {
-			return pushFunc(args)
-		},
-	},
-
-	"jog": {
+	"__push": {
 		Fn: func(args ...object.Obj) object.Obj {
 			return pushFunc(args)
 		},
@@ -215,39 +155,65 @@ var builtins = map[string]*object.Builtin{
 			return showFunc(args)
 		},
 	},
-	"ইপচ": {
+	"__epoch": {
 		Fn: func(args ...object.Obj) object.Obj {
 			return stdlib.UnixTimeFunc(args)
 		},
 	},
 
-	"isonow": {
+	"__isonow": {
 		Fn: func(args ...object.Obj) object.Obj {
 			return stdlib.UtcDateISO(args)
 		},
 	},
 
-	"osname": {
+	"__osname": {
 		Fn: func(args ...object.Obj) object.Obj {
 			return stdlib.GetOS(args)
 		},
 	},
 
-	"osarch": {
+	"__osarch": {
 		Fn: func(args ...object.Obj) object.Obj {
 			return stdlib.GetArch(args)
 		},
 	},
 
-	"readfile": {
+	"__readfile": {
 		Fn: func(args ...object.Obj) object.Obj {
 			return stdlib.ReadFile(args)
 		},
 	},
 
-	"exists": {
+	"__exists": {
 		Fn: func(args ...object.Obj) object.Obj {
 			return stdlib.FileDirExists(args)
+		},
+	},
+
+	"__create_empty": {
+		Fn: func(args ...object.Obj) object.Obj {
+			return stdlib.CreateEmptyFile(args)
+		},
+	},
+
+	"__write_file": {
+		Fn: func(args ...object.Obj) object.Obj {
+			return stdlib.WriteToFile(args)
+		},
+	},
+
+	// Maths
+
+	"__sqrt": {
+		Fn: func(args ...object.Obj) object.Obj {
+			return stdlib.DoSqrt(args)
+		},
+	},
+
+	"__log_ten": {
+		Fn: func(args ...object.Obj) object.Obj {
+			return stdlib.Log10(args)
 		},
 	},
 }

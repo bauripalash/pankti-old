@@ -48,6 +48,24 @@ func GetAsInt(a Number) (int64, bool) {
 
 }
 
+func (n *Number) GetAsFloat() (float64, bool) {
+	if n.IsInt {
+		ia := n.Value.(*IntNumber).Value
+
+		bigF := new(big.Float).SetInt(&ia)
+		fv, _ := bigF.Float64()
+		return fv, true
+
+	} else {
+		fa := n.Value.(*FloatNumber).Value
+		fv, _ := fa.Float64()
+		return fv, true
+	}
+
+	//	return float64(0) , false
+
+}
+
 func FloatFloatCompare(op string, a big.Float, b big.Float) bool {
 	switch op {
 	case ">":

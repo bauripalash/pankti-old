@@ -239,11 +239,18 @@ func evaluateInclude(env *object.EnvMap,
 		cwd, _ := os.Getwd()
 		p := filepath.Join(cwd, filename)
 		if _, err := os.Stat(p); !errors.Is(err, fs.ErrNotExist) {
+			//fmt.Println("xx->" , p)
 			fname = p
 		}
 
 		import_env := os.Getenv(constants.IMPORT_PATH_ENV)
+		//fmt.Println(import_env , filename)
 		if len(import_env) >= 1 && fname != p {
+			enName, ok := constants.GetStdName(filename)
+			if ok {
+				filename = enName
+			}
+			//fmt.Println(os.Stat(filepath.Join(import_env, filename)))
 			if _, err := os.Stat(filepath.Join(import_env, filename)); !errors.Is(err, fs.ErrNotExist) {
 				fname = filepath.Join(import_env, filename)
 			}
