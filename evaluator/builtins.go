@@ -216,4 +216,105 @@ var builtins = map[string]*object.Builtin{
 			return stdlib.Log10(args)
 		},
 	},
+	"__list_sum": {
+		Fn: func(args ...object.Obj) object.Obj {
+			return stdlib.DoListSum(args)
+		},
+	},
+
+	"__gcd": {
+		Fn: func(args ...object.Obj) object.Obj {
+			return stdlib.GetGCD(args)
+		},
+	},
+
+	"__lcm": {
+		Fn: func(args ...object.Obj) object.Obj {
+			return stdlib.GetLCM(args)
+		},
+	},
+
+	"__pow": {
+		Fn: func(args ...object.Obj) object.Obj {
+			return stdlib.DoPow(args)
+		},
+	},
+
+	"__log_e": {
+		Fn: func(args ...object.Obj) object.Obj {
+			return stdlib.LogE(args)
+		},
+	},
+
+	"__log_x": {
+		Fn: func(args ...object.Obj) object.Obj {
+			return stdlib.LogX(args)
+		},
+	},
+
+	"__cosine": {
+		Fn: func(args ...object.Obj) object.Obj {
+			return stdlib.Cosine(args)
+		},
+	},
+
+	"__sine": {
+		Fn: func(args ...object.Obj) object.Obj {
+			return stdlib.Sine(args)
+		},
+	},
+
+	"__acos": {
+		Fn: func(args ...object.Obj) object.Obj {
+			return stdlib.Acos(args)
+		},
+	},
+
+	"__asin": {
+		Fn: func(args ...object.Obj) object.Obj {
+			return stdlib.Asin(args)
+		},
+	},
+
+	"__tan": {
+		Fn: func(args ...object.Obj) object.Obj {
+			return stdlib.Tangent(args)
+		},
+	},
+
+	"__atan": {
+		Fn: func(args ...object.Obj) object.Obj {
+			return stdlib.Atan(args)
+		},
+	},
+
+	"__atan_two": {
+		Fn: func(args ...object.Obj) object.Obj {
+			return stdlib.Atan2(args)
+		},
+	},
+
+	"__to_deg": {
+		Fn: func(args ...object.Obj) object.Obj {
+			return stdlib.ToDegree(args)
+		},
+	},
+
+	"__to_rad": {
+		Fn: func(args ...object.Obj) object.Obj {
+			return stdlib.ToRadians(args)
+		},
+	},
+
+	"__get_pi": {
+		Fn: func(args ...object.Obj) object.Obj {
+			return stdlib.GetPI(args)
+		},
+	},
+
+	"__get_e": {
+		Fn: func(args ...object.Obj) object.Obj {
+			return stdlib.GetE(args)
+		},
+	},
 }
