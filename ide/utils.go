@@ -60,7 +60,7 @@ func RunFile(src string) string {
 	}
 
 	env := object.NewEnvMap()
-	eh := evaluator.ErrorHelper{Source: src}
+	eh := object.ErrorHelper{Source: src}
 	printBuff := bytes.Buffer{}
 	evd := evaluator.Eval(prog, env, eh, &printBuff, true)
 	//rd, _ := ioutil.ReadAll(&printBuff)

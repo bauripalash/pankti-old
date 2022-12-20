@@ -10,14 +10,14 @@ import (
 func evalIfExpr(
 	iex *ast.IfExpr,
 	env *object.EnvMap,
-	eh *ErrorHelper,
+	eh *object.ErrorHelper,
 	printBuff *bytes.Buffer,
 	isGui bool,
 ) object.Obj {
 
 	cond := Eval(iex.Cond, env, *eh, printBuff, isGui)
 
-	if isErr(cond) {
+	if object.IsErr(cond) {
 		return cond
 	}
 
@@ -34,13 +34,13 @@ func evalIfExpr(
 func evalWhileExpr(
 	wx *ast.WhileExpr,
 	env *object.EnvMap,
-	eh *ErrorHelper,
+	eh *object.ErrorHelper,
 	printBuff *bytes.Buffer,
 	isGui bool,
 ) object.Obj {
 	cond := Eval(wx.Cond, env, *eh, printBuff, isGui)
 	var result object.Obj
-	if isErr(cond) {
+	if object.IsErr(cond) {
 		return cond
 	}
 

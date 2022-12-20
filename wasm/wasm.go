@@ -41,7 +41,7 @@ func DoRun(src string) string {
 	}
 
 	env := object.NewEnvMap()
-	eh := evaluator.ErrorHelper{Source: src}
+	eh := object.ErrorHelper{Source: src}
 	printBuff := bytes.Buffer{}
 	evd := evaluator.Eval(prog, env, eh, &printBuff, false)
 	rd, err := ioutil.ReadAll(&printBuff)

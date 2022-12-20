@@ -11,7 +11,7 @@ import (
 func evalHashLit(
 	node *ast.HashLit,
 	env *object.EnvMap,
-	eh *ErrorHelper,
+	eh *object.ErrorHelper,
 	printBuff *bytes.Buffer,
 	isGui bool,
 ) object.Obj {
@@ -22,13 +22,13 @@ func evalHashLit(
 
 		key := Eval(kNode, env, *eh, printBuff, isGui)
 
-		if isErr(key) {
+		if object.IsErr(key) {
 			return key
 		}
 		hashkey, ok := key.(object.Hashable)
 
 		if !ok {
-			return NewErr(
+			return object.NewErr(
 				node.Token,
 				eh,
 				true,
@@ -39,7 +39,7 @@ func evalHashLit(
 
 		val := Eval(vNode, env, *eh, printBuff, isGui)
 
-		if isErr(val) {
+		if object.IsErr(val) {
 			return val
 		}
 
@@ -51,7 +51,7 @@ func evalHashLit(
 	return &object.Hash{Pairs: pairs}
 }
 
-func evalIndexExpr(left, index object.Obj, eh *ErrorHelper) object.Obj {
+func evalIndexExpr(left, index object.Obj, eh *object.ErrorHelper) object.Obj {
 
 	switch {
 	case left.Type() == object.ARRAY_OBJ && index.Type() == object.NUM_OBJ:
@@ -60,7 +60,7 @@ func evalIndexExpr(left, index object.Obj, eh *ErrorHelper) object.Obj {
 		return evalHashIndexExpr(left, index, eh)
 
 	default:
-		return NewErr(
+		return object.NewErr(
 			left.GetToken(),
 			eh,
 			true,
@@ -73,7 +73,7 @@ func evalIndexExpr(left, index object.Obj, eh *ErrorHelper) object.Obj {
 
 func evalHashIndexExpr(
 	hash, index object.Obj,
-	eh *ErrorHelper,
+	eh *object.ErrorHelper,
 ) object.Obj {
 
 	hashO := hash.(*object.Hash)
@@ -81,7 +81,7 @@ func evalHashIndexExpr(
 	key, ok := index.(object.Hashable)
 
 	if !ok {
-		return NewErr(
+		return object.NewErr(
 			index.GetToken(),
 			eh,
 			true,
@@ -99,14 +99,14 @@ func evalHashIndexExpr(
 	return pair.Value
 }
 
-func evalArrIndexExpr(arr, index object.Obj, eh *ErrorHelper) object.Obj {
+func evalArrIndexExpr(arr, index object.Obj, eh *object.ErrorHelper) object.Obj {
 	arrObj := arr.(*object.Array)
 	id := index.(*object.Number).Value
 
 	idx, noerr := number.GetAsInt(id)
 
 	if !noerr {
-		return NewBareErr("Arr Index Failed")
+		return object.NewBareErr("Arr Index Failed")
 	}
 	max := int64(len(arrObj.Elms) - 1)
 

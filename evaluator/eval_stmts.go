@@ -58,7 +58,7 @@ func evalShowStmt(
 func evalBlockStmt(
 	block *ast.BlockStmt,
 	env *object.EnvMap,
-	eh *ErrorHelper,
+	eh *object.ErrorHelper,
 	printBuff *bytes.Buffer,
 	isGui bool,
 ) object.Obj {

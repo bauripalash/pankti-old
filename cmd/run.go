@@ -66,7 +66,7 @@ var runCmd = &cobra.Command{
 				fmt.Printf("fix above mentioned errors first!\n\n")
 			} else {
 				env := object.NewEnvMap()
-				eh := evaluator.ErrorHelper{Source: string(f)}
+				eh := object.ErrorHelper{Source: string(f)}
 				printBuff := bytes.Buffer{}
 
 				evd := evaluator.Eval(at, env, eh, &printBuff, false)

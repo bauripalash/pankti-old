@@ -45,7 +45,7 @@ func Repl(in io.Reader, out io.Writer) {
 			ShowParseErrors(out, p.GetErrors())
 			continue
 		}
-		eh := evaluator.ErrorHelper{Source: input}
+		eh := object.ErrorHelper{Source: input}
 
 		printBuff := bytes.Buffer{}
 		evals := evaluator.Eval(prog, env, eh, &printBuff, false)

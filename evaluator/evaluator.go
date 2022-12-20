@@ -26,7 +26,7 @@ var (
 func Eval(
 	node ast.Node,
 	env *object.EnvMap,
-	eh ErrorHelper,
+	eh object.ErrorHelper,
 	printBuff *bytes.Buffer,
 	isGui bool,
 ) object.Obj {
@@ -45,7 +45,7 @@ func Eval(
 		// <Operator> Expression
 		//
 		r := Eval(node.Right, env, eh, printBuff, isGui) // Evaluate the Expression to the smallest possible value
-		if isErr(r) {
+		if object.IsErr(r) {
 			return r
 		}
 		return evalPrefixExpr(node.Op, r, &eh)
@@ -55,11 +55,11 @@ func Eval(
 		// Left_Expression <Operator> Right_Expression
 		//
 		l := Eval(node.Left, env, eh, printBuff, isGui) // Evaluate the <Left_Expression> to the smallest possible value
-		if isErr(l) {
+		if object.IsErr(l) {
 			return l
 		}
 		r := Eval(node.Right, env, eh, printBuff, isGui) // Evaluate the <Right_Expression> to the smallest possible value
-		if isErr(r) {
+		if object.IsErr(r) {
 			return r
 		}
 		return evalInfixExpr(node.Op, l, r, &eh)
@@ -69,7 +69,7 @@ func Eval(
 		return evalWhileExpr(node, env, &eh, printBuff, isGui)
 	case *ast.ReturnStmt:
 		val := Eval(node.ReturnVal, env, eh, printBuff, isGui)
-		if isErr(val) {
+		if object.IsErr(val) {
 			return val
 		}
 		return &object.ReturnValue{Value: val}
@@ -104,11 +104,11 @@ func Eval(
 
 		fnc := Eval(node.Func, env, eh, printBuff, isGui)
 		//fmt.Println(isMod)
-		if isErr(fnc) {
+		if object.IsErr(fnc) {
 			return fnc
 		}
 		args := evalExprs(node.Args, env, &eh, printBuff, isGui)
-		if len(args) == 1 && isErr(args[0]) {
+		if len(args) == 1 && object.IsErr(args[0]) {
 			return args[0]
 		}
 
@@ -118,7 +118,7 @@ func Eval(
 		return &object.String{Value: node.Value, Token: node.Token}
 	case *ast.ArrLit:
 		elms := evalExprs(node.Elms, env, &eh, printBuff, isGui)
-		if len(elms) == 1 && isErr(elms[0]) {
+		if len(elms) == 1 && object.IsErr(elms[0]) {
 			return elms[0]
 		}
 
@@ -127,12 +127,12 @@ func Eval(
 	case *ast.IndexExpr:
 		// node.Left ==> The Array --> ARRAY[index]
 		left := Eval(node.Left, env, eh, printBuff, isGui)
-		if isErr(left) {
+		if object.IsErr(left) {
 			return nil
 		}
 		// node.Index ==> The Array Index --> array[INDEX]
 		index := Eval(node.Index, env, eh, printBuff, isGui)
-		if isErr(index) {
+		if object.IsErr(index) {
 			return index
 		}
 
@@ -149,7 +149,7 @@ func Eval(
 func evalId(
 	node *ast.Identifier,
 	env *object.EnvMap,
-	eh *ErrorHelper,
+	eh *object.ErrorHelper,
 ) object.Obj {
 	if val, ok := env.GetFromDefault(node.Value); ok {
 		return val
@@ -168,14 +168,14 @@ func evalId(
 		return builtin
 	}
 
-	return NewErr(node.Token, eh, true, "id not found : "+node.Value)
+	return object.NewErr(node.Token, eh, true, "id not found : "+node.Value)
 	//	return val
 }
 
 func evalProg(
 	prog *ast.Program,
 	env *object.EnvMap,
-	eh *ErrorHelper,
+	eh *object.ErrorHelper,
 	printBuff *bytes.Buffer,
 	isGui bool,
 ) object.Obj {
@@ -198,13 +198,13 @@ func evalProg(
 func evalLetStmt(
 	node *ast.LetStmt,
 	env *object.EnvMap,
-	eh *ErrorHelper,
+	eh *object.ErrorHelper,
 	printBuff *bytes.Buffer,
 	isGui bool,
 ) object.Obj {
 
 	if node.Name.IsMod {
-		return NewBareErr("Dot notation can not be used directly")
+		return object.NewBareErr("Dot notation can not be used directly")
 	}
 
 	val := Eval(node.Value, env, *eh, printBuff, isGui)
@@ -218,7 +218,7 @@ func evalLetStmt(
 	}
 
 	//fmt.Println(node.Value.String())
-	if isErr(val) {
+	if object.IsErr(val) {
 		return val
 	}
 
@@ -227,7 +227,7 @@ func evalLetStmt(
 }
 
 func evaluateInclude(env *object.EnvMap,
-	eh *ErrorHelper,
+	eh *object.ErrorHelper,
 	printBuff *bytes.Buffer,
 	isGui bool,
 	key string, filename string) {
@@ -280,9 +280,9 @@ func evaluateInclude(env *object.EnvMap,
 	//fmt.Println(key, filename)
 }
 
-func evalMinusPrefOp(right object.Obj, eh *ErrorHelper) object.Obj {
+func evalMinusPrefOp(right object.Obj, eh *object.ErrorHelper) object.Obj {
 	if right.Type() != object.NUM_OBJ {
-		return NewBareErr("unknown Operator : -%s", right.Type())
+		return object.NewBareErr("unknown Operator : -%s", right.Type())
 	}
 	num := right.(*object.Number)
 	return &object.Number{

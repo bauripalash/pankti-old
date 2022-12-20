@@ -132,10 +132,11 @@ func GetLCM(args []object.Obj) object.Obj {
 	return object.MakeIntNumber(result)
 }
 
-func DoSqrt(args []object.Obj) object.Obj {
+func DoSqrt(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 	fValue, ok := getFloat(args[0])
 	if !ok {
-		return ARG_NOT_FLOAT
+		//fmt.Println(args[0].GetToken())
+		return object.NewErr(args[0].GetToken(), eh, true, "Provided Argument must be a Number")
 	}
 	return object.MakeFloatNumber(math.Sqrt(fValue))
 

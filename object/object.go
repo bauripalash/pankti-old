@@ -21,7 +21,7 @@ const (
 	SHOW_OBJ       = "SHOW"
 )
 
-type BuiltInFunc func(args ...Obj) Obj
+type BuiltInFunc func(eh *ErrorHelper, args ...Obj) Obj
 
 type ObjType string
 

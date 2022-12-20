@@ -7,7 +7,7 @@ import (
 
 func lenFunc(args []object.Obj) object.Obj {
 	if len(args) != 1 {
-		return NewBareErr(
+		return object.NewBareErr(
 			"wrong number of arguments. got %d but wanted 1",
 			len(args),
 		)
@@ -19,18 +19,18 @@ func lenFunc(args []object.Obj) object.Obj {
 	case *object.Array:
 		return object.MakeIntNumber(int64(len(arg.Elms)))
 	default:
-		return NewBareErr("argument type %s to `len` is not supported", args[0].Type())
+		return object.NewBareErr("argument type %s to `len` is not supported", args[0].Type())
 	}
 }
 
 func firstFunc(args []object.Obj) object.Obj {
 
 	if len(args) != 1 {
-		return NewBareErr("wrong number of argument %d", len(args))
+		return object.NewBareErr("wrong number of argument %d", len(args))
 	}
 
 	if args[0].Type() != object.ARRAY_OBJ {
-		return NewBareErr("first cannot be used with %s", args[0].Type())
+		return object.NewBareErr("first cannot be used with %s", args[0].Type())
 	}
 
 	array := args[0].(*object.Array)
@@ -43,11 +43,11 @@ func firstFunc(args []object.Obj) object.Obj {
 func lastFunc(args []object.Obj) object.Obj {
 
 	if len(args) != 1 {
-		return NewBareErr("wrong number of argument %d", len(args))
+		return object.NewBareErr("wrong number of argument %d", len(args))
 	}
 
 	if args[0].Type() != object.ARRAY_OBJ {
-		return NewBareErr("last cannot be used with %s", args[0].Type())
+		return object.NewBareErr("last cannot be used with %s", args[0].Type())
 	}
 
 	array := args[0].(*object.Array)
@@ -61,11 +61,11 @@ func lastFunc(args []object.Obj) object.Obj {
 func restFunc(args []object.Obj) object.Obj {
 
 	if len(args) != 1 {
-		return NewBareErr("wrong number of argument %d", len(args))
+		return object.NewBareErr("wrong number of argument %d", len(args))
 	}
 
 	if args[0].Type() != object.ARRAY_OBJ {
-		return NewBareErr("rest cannot be used with %s", args[0].Type())
+		return object.NewBareErr("rest cannot be used with %s", args[0].Type())
 	}
 
 	array := args[0].(*object.Array)
@@ -81,11 +81,11 @@ func restFunc(args []object.Obj) object.Obj {
 func pushFunc(args []object.Obj) object.Obj {
 
 	if len(args) != 2 {
-		return NewBareErr("wrong number of argument %d", len(args))
+		return object.NewBareErr("wrong number of argument %d", len(args))
 	}
 
 	if args[0].Type() != object.ARRAY_OBJ {
-		return NewBareErr("push cannot be used with %s", args[0].Type())
+		return object.NewBareErr("push cannot be used with %s", args[0].Type())
 	}
 
 	arr := args[0].(*object.Array)
@@ -109,96 +109,96 @@ func showFunc(args []object.Obj) object.Obj {
 var builtins = map[string]*object.Builtin{
 
 	"__len": {
-		Fn: func(args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
 			return lenFunc(args)
 		},
 	},
 
 	"__first": {
-		Fn: func(args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
 			return firstFunc(args)
 		},
 	},
 
 	"__last": {
-		Fn: func(args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
 			return lastFunc(args)
 		},
 	},
 
 	"__res": {
-		Fn: func(args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
 			return restFunc(args)
 		},
 	},
 
 	"__push": {
-		Fn: func(args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
 			return pushFunc(args)
 		},
 	},
 
 	"দেখাও": {
-		Fn: func(args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
 			return showFunc(args)
 		},
 	},
 
 	"show": {
-		Fn: func(args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
 			return showFunc(args)
 		},
 	},
 
 	"dekhau": {
-		Fn: func(args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
 			return showFunc(args)
 		},
 	},
 	"__epoch": {
-		Fn: func(args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
 			return stdlib.UnixTimeFunc(args)
 		},
 	},
 
 	"__isonow": {
-		Fn: func(args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
 			return stdlib.UtcDateISO(args)
 		},
 	},
 
 	"__osname": {
-		Fn: func(args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
 			return stdlib.GetOS(args)
 		},
 	},
 
 	"__osarch": {
-		Fn: func(args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
 			return stdlib.GetArch(args)
 		},
 	},
 
 	"__readfile": {
-		Fn: func(args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
 			return stdlib.ReadFile(args)
 		},
 	},
 
 	"__exists": {
-		Fn: func(args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
 			return stdlib.FileDirExists(args)
 		},
 	},
 
 	"__create_empty": {
-		Fn: func(args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
 			return stdlib.CreateEmptyFile(args)
 		},
 	},
 
 	"__write_file": {
-		Fn: func(args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
 			return stdlib.WriteToFile(args)
 		},
 	},
@@ -206,114 +206,114 @@ var builtins = map[string]*object.Builtin{
 	// Maths
 
 	"__sqrt": {
-		Fn: func(args ...object.Obj) object.Obj {
-			return stdlib.DoSqrt(args)
+		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
+			return stdlib.DoSqrt(eh, args)
 		},
 	},
 
 	"__log_ten": {
-		Fn: func(args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
 			return stdlib.Log10(args)
 		},
 	},
 	"__list_sum": {
-		Fn: func(args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
 			return stdlib.DoListSum(args)
 		},
 	},
 
 	"__gcd": {
-		Fn: func(args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
 			return stdlib.GetGCD(args)
 		},
 	},
 
 	"__lcm": {
-		Fn: func(args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
 			return stdlib.GetLCM(args)
 		},
 	},
 
 	"__pow": {
-		Fn: func(args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
 			return stdlib.DoPow(args)
 		},
 	},
 
 	"__log_e": {
-		Fn: func(args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
 			return stdlib.LogE(args)
 		},
 	},
 
 	"__log_x": {
-		Fn: func(args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
 			return stdlib.LogX(args)
 		},
 	},
 
 	"__cosine": {
-		Fn: func(args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
 			return stdlib.Cosine(args)
 		},
 	},
 
 	"__sine": {
-		Fn: func(args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
 			return stdlib.Sine(args)
 		},
 	},
 
 	"__acos": {
-		Fn: func(args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
 			return stdlib.Acos(args)
 		},
 	},
 
 	"__asin": {
-		Fn: func(args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
 			return stdlib.Asin(args)
 		},
 	},
 
 	"__tan": {
-		Fn: func(args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
 			return stdlib.Tangent(args)
 		},
 	},
 
 	"__atan": {
-		Fn: func(args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
 			return stdlib.Atan(args)
 		},
 	},
 
 	"__atan_two": {
-		Fn: func(args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
 			return stdlib.Atan2(args)
 		},
 	},
 
 	"__to_deg": {
-		Fn: func(args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
 			return stdlib.ToDegree(args)
 		},
 	},
 
 	"__to_rad": {
-		Fn: func(args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
 			return stdlib.ToRadians(args)
 		},
 	},
 
 	"__get_pi": {
-		Fn: func(args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
 			return stdlib.GetPI(args)
 		},
 	},
 
 	"__get_e": {
-		Fn: func(args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
 			return stdlib.GetE(args)
 		},
 	},

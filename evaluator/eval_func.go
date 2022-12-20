@@ -13,7 +13,7 @@ func applyFunc(
 	args []object.Obj,
 	isMod bool,
 	env *object.EnvMap,
-	eh *ErrorHelper,
+	eh *object.ErrorHelper,
 	printBuff *bytes.Buffer,
 	isGui bool,
 ) object.Obj {
@@ -33,12 +33,12 @@ func applyFunc(
 			return unwrapReturnValue(evd)
 		} else {
 
-			return NewErr(caller, eh, false, "Function call doesn't have required arguments provided; wanted = %d but got %d", len(fn.Params), len(args))
+			return object.NewErr(caller, eh, false, "Function call doesn't have required arguments provided; wanted = %d but got %d", len(fn.Params), len(args))
 		}
 	case *object.Builtin:
-		return fn.Fn(args...)
+		return fn.Fn(eh, args...)
 	default:
-		return NewBareErr("%s is not a function", fn.Type())
+		return object.NewBareErr("%s is not a function", fn.Type())
 
 	}
 }

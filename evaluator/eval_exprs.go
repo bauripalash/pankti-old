@@ -10,7 +10,7 @@ import (
 func evalInfixExpr(
 	op string,
 	l, r object.Obj,
-	eh *ErrorHelper,
+	eh *object.ErrorHelper,
 ) object.Obj {
 
 	//fmt.Println(l.GetToken(), r.Type())
@@ -27,7 +27,7 @@ func evalInfixExpr(
 	case op == "!=":
 		return getBoolObj(l != r)
 	case l.Type() != r.Type():
-		return NewErr(
+		return object.NewErr(
 			l.GetToken(),
 			eh,
 			false,
@@ -37,7 +37,7 @@ func evalInfixExpr(
 			r.Type(),
 		)
 	default:
-		return NewErr(
+		return object.NewErr(
 			l.GetToken(),
 			eh,
 			false,
@@ -52,7 +52,7 @@ func evalInfixExpr(
 func evalPrefixExpr(
 	op string,
 	right object.Obj,
-	eh *ErrorHelper,
+	eh *object.ErrorHelper,
 ) object.Obj {
 	switch op {
 	case "!":
@@ -60,7 +60,7 @@ func evalPrefixExpr(
 	case "-":
 		return evalMinusPrefOp(right, eh)
 	default:
-		return NewBareErr("Unknown Operator : %s%s", op, right.Type())
+		return object.NewBareErr("Unknown Operator : %s%s", op, right.Type())
 
 	}
 }
@@ -68,7 +68,7 @@ func evalPrefixExpr(
 func evalExprs(
 	es []ast.Expr,
 	env *object.EnvMap,
-	eh *ErrorHelper,
+	eh *object.ErrorHelper,
 	printBuff *bytes.Buffer,
 	isGui bool,
 ) []object.Obj {
@@ -77,7 +77,7 @@ func evalExprs(
 	for _, e := range es {
 		ev := Eval(e, env, *eh, printBuff, isGui)
 
-		if isErr(ev) {
+		if object.IsErr(ev) {
 			return []object.Obj{ev}
 		}
 

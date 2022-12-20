@@ -8,7 +8,7 @@ import (
 func evalNumInfixExpr(
 	op string,
 	l, r object.Obj,
-	eh *ErrorHelper,
+	eh *object.ErrorHelper,
 ) object.Obj {
 
 	lval := l.(*object.Number).Value
@@ -22,7 +22,7 @@ func evalNumInfixExpr(
 	} else if val.Value == nil && noerr {
 		return getBoolObj(cval)
 	} else {
-		return NewBareErr("Unknown Operator for Numbers %s", op)
+		return object.NewBareErr("Unknown Operator for Numbers %s", op)
 	}
 
 }
@@ -30,7 +30,7 @@ func evalNumInfixExpr(
 func evalStringInfixExpr(
 	op string,
 	l, r object.Obj,
-	eh *ErrorHelper,
+	eh *object.ErrorHelper,
 ) object.Obj {
 	lval := l.(*object.String).Value
 	rval := r.(*object.String).Value
@@ -42,7 +42,7 @@ func evalStringInfixExpr(
 	case "!=":
 		return getBoolObj(lval != rval)
 	default:
-		return NewErr(
+		return object.NewErr(
 			l.GetToken(),
 			eh,
 			false,
