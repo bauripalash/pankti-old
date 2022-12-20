@@ -91,7 +91,7 @@ func GetGCD(eh *object.ErrorHelper, caller token.Token, args []object.Obj) objec
 	temp, ok := getInt(args[0])
 
 	if !ok {
-		return object.NewErr(args[0].GetToken(), eh, false, errs.Errs["NOT_ALL_ARE_INT"])
+		return object.NewErr(args[0].GetToken(), eh, false, errs.Errs["NOT_ALL_ARE_INT"] , constants.FNames["gcd"])
 	}
 
 	for index, item := range args[1:] {
