@@ -3,6 +3,7 @@ package evaluator
 import (
 	"bytes"
 
+	"go.cs.palashbauri.in/pankti/errs"
 	"go.cs.palashbauri.in/pankti/object"
 	"go.cs.palashbauri.in/pankti/token"
 )
@@ -33,10 +34,11 @@ func applyFunc(
 			return unwrapReturnValue(evd)
 		} else {
 
-			return object.NewErr(caller, eh, false, "Function call doesn't have required arguments provided; wanted = %d but got %d", len(fn.Params), len(args))
+			return object.NewErr(caller, eh, false, errs.Errs["FUN_CALL_NOT_ENOUGH_ARGS"], fn.Name, len(fn.Params), len(args))
 		}
 	case *object.Builtin:
-		return fn.Fn(eh, args...)
+		//		fmt.Println(caller)
+		return fn.Fn(eh, caller, args...)
 	default:
 		return object.NewBareErr("%s is not a function", fn.Type())
 

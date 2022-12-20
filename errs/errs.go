@@ -91,8 +91,10 @@ func (ipe *IntegerParseError) String() string {
 
 var Errs = map[string]string{
 
-	"NO_EKTI_BEFORE_FN":   "`কাজ`-এর আগে 'ekti' বা 'একটি' পাওয়া উচিত ছিল %s",
-	"EXPECTED_GOT":        "এখানে `%s` পাওয়া উচিত ছিল কিন্তু `%s` পাওয়া গেল",
-	"NO_PREFIX_SUFFIX_FN": "এটা %s নিয়ে কী করা উচিত আমি জানিনা",
-	"INT_PARSE_ERR":       "%s - এই এটা তো একটা সংখ্যা নয়",
+	"NO_EKTI_BEFORE_FN":        "`কাজ`-এর আগে 'ekti' বা 'একটি' পাওয়া উচিত ছিল %s",
+	"EXPECTED_GOT":             "এখানে `%s` পাওয়া উচিত ছিল কিন্তু `%s` পাওয়া গেল",
+	"NO_PREFIX_SUFFIX_FN":      "এটা %s নিয়ে কী করা উচিত আমি জানিনা",
+	"INT_PARSE_ERR":            "%s - এই এটা তো একটা সংখ্যা নয়",
+	"FUN_CALL_NOT_ENOUGH_ARGS": "এই '%s' কাজের জন্য %dটি চল রাশির প্রয়োজন কিন্তু পাওয়া গেলো %dটি",
+	"NOT_ALL_ARE_INT":          "এই '%s' কাজের সমস্ত জন্য দেওয়া সব চলরাশি গুলিকে সংখ্যা হতে হবে",
 }

@@ -10,6 +10,7 @@ import (
 )
 
 type Function struct {
+	Name   string
 	Params []*ast.Identifier
 	Body   *ast.BlockStmt
 	Env    *Env

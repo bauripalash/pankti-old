@@ -94,7 +94,7 @@ func Eval(
 		pms := node.Params
 		body := node.Body
 		e, _ := env.GetDefaultEnv()
-		return &object.Function{Params: pms, Body: body, Env: &e, Token: node.Token}
+		return &object.Function{Name: node.TokenLit(), Params: pms, Body: body, Env: &e, Token: node.Token}
 	case *ast.CallExpr:
 		//
 		// Function Call
@@ -208,6 +208,12 @@ func evalLetStmt(
 	}
 
 	val := Eval(node.Value, env, *eh, printBuff, isGui)
+	//fmt.Println(val)
+
+	if val.Type() == object.FUNC_OBJ {
+		v := val.(*object.Function)
+		v.Name = node.Name.Value
+	}
 
 	if val.Type() == object.INCLUDE_OBJ {
 		//fmt.Println(val.Inspect())

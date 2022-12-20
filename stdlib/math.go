@@ -3,8 +3,11 @@ package stdlib
 import (
 	"math"
 
+	"go.cs.palashbauri.in/pankti/constants"
+	"go.cs.palashbauri.in/pankti/errs"
 	"go.cs.palashbauri.in/pankti/number"
 	"go.cs.palashbauri.in/pankti/object"
+	"go.cs.palashbauri.in/pankti/token"
 )
 
 var ARG_NOT_FLOAT = &object.Error{Msg: "Arguments must be Numbers as the provided can not be parsed as decimal number"}
@@ -80,20 +83,21 @@ func gcd(a, b int64) int64 {
 }
 
 // Unstable
-func GetGCD(args []object.Obj) object.Obj {
+func GetGCD(eh *object.ErrorHelper, caller token.Token, args []object.Obj) object.Obj {
 	if len(args) < 2 {
-		return &object.Error{Msg: "Must provide at least two arguments to calculate GCD"}
+		return object.NewErr(caller, eh, false, "Must provide two arguments to calculate GCD")
+		//return &object.Error{Msg: "Must provide at least two arguments to calculate GCD"}
 	}
 	temp, ok := getInt(args[0])
 
 	if !ok {
-		return NOT_ALL_INT
+		return object.NewErr(args[0].GetToken(), eh, false, errs.Errs["NOT_ALL_ARE_INT"])
 	}
 
-	for _, item := range args[1:] {
+	for index, item := range args[1:] {
 		b, ok2 := getInt(item)
 		if !ok2 {
-			return NOT_ALL_INT
+			return object.NewErr(args[index].GetToken(), eh, false, errs.Errs["NOT_ALL_ARE_INT"], constants.FNames["gcd"])
 		}
 		temp = gcd(temp, b)
 	}

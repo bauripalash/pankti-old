@@ -3,6 +3,7 @@ package evaluator
 import (
 	"go.cs.palashbauri.in/pankti/object"
 	"go.cs.palashbauri.in/pankti/stdlib"
+	"go.cs.palashbauri.in/pankti/token"
 )
 
 func lenFunc(args []object.Obj) object.Obj {
@@ -109,96 +110,96 @@ func showFunc(args []object.Obj) object.Obj {
 var builtins = map[string]*object.Builtin{
 
 	"__len": {
-		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
 			return lenFunc(args)
 		},
 	},
 
 	"__first": {
-		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
 			return firstFunc(args)
 		},
 	},
 
 	"__last": {
-		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
 			return lastFunc(args)
 		},
 	},
 
 	"__res": {
-		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
 			return restFunc(args)
 		},
 	},
 
 	"__push": {
-		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
 			return pushFunc(args)
 		},
 	},
 
 	"দেখাও": {
-		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
 			return showFunc(args)
 		},
 	},
 
 	"show": {
-		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
 			return showFunc(args)
 		},
 	},
 
 	"dekhau": {
-		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
 			return showFunc(args)
 		},
 	},
 	"__epoch": {
-		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
 			return stdlib.UnixTimeFunc(args)
 		},
 	},
 
 	"__isonow": {
-		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
 			return stdlib.UtcDateISO(args)
 		},
 	},
 
 	"__osname": {
-		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
 			return stdlib.GetOS(args)
 		},
 	},
 
 	"__osarch": {
-		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
 			return stdlib.GetArch(args)
 		},
 	},
 
 	"__readfile": {
-		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
 			return stdlib.ReadFile(args)
 		},
 	},
 
 	"__exists": {
-		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
 			return stdlib.FileDirExists(args)
 		},
 	},
 
 	"__create_empty": {
-		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
 			return stdlib.CreateEmptyFile(args)
 		},
 	},
 
 	"__write_file": {
-		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
 			return stdlib.WriteToFile(args)
 		},
 	},
@@ -206,114 +207,114 @@ var builtins = map[string]*object.Builtin{
 	// Maths
 
 	"__sqrt": {
-		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
 			return stdlib.DoSqrt(eh, args)
 		},
 	},
 
 	"__log_ten": {
-		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
 			return stdlib.Log10(args)
 		},
 	},
 	"__list_sum": {
-		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
 			return stdlib.DoListSum(args)
 		},
 	},
 
 	"__gcd": {
-		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
-			return stdlib.GetGCD(args)
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
+			return stdlib.GetGCD(eh, caller, args)
 		},
 	},
 
 	"__lcm": {
-		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
 			return stdlib.GetLCM(args)
 		},
 	},
 
 	"__pow": {
-		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
 			return stdlib.DoPow(args)
 		},
 	},
 
 	"__log_e": {
-		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
 			return stdlib.LogE(args)
 		},
 	},
 
 	"__log_x": {
-		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
 			return stdlib.LogX(args)
 		},
 	},
 
 	"__cosine": {
-		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
 			return stdlib.Cosine(args)
 		},
 	},
 
 	"__sine": {
-		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
 			return stdlib.Sine(args)
 		},
 	},
 
 	"__acos": {
-		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
 			return stdlib.Acos(args)
 		},
 	},
 
 	"__asin": {
-		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
 			return stdlib.Asin(args)
 		},
 	},
 
 	"__tan": {
-		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
 			return stdlib.Tangent(args)
 		},
 	},
 
 	"__atan": {
-		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
 			return stdlib.Atan(args)
 		},
 	},
 
 	"__atan_two": {
-		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
 			return stdlib.Atan2(args)
 		},
 	},
 
 	"__to_deg": {
-		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
 			return stdlib.ToDegree(args)
 		},
 	},
 
 	"__to_rad": {
-		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
 			return stdlib.ToRadians(args)
 		},
 	},
 
 	"__get_pi": {
-		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
 			return stdlib.GetPI(args)
 		},
 	},
 
 	"__get_e": {
-		Fn: func(eh *object.ErrorHelper, args ...object.Obj) object.Obj {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
 			return stdlib.GetE(args)
 		},
 	},

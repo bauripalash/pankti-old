@@ -24,27 +24,47 @@ func (e *ErrorHelper) MakeErrorLine(t token.Token, showHint bool) string {
 	}
 
 	//newLine := e.Source
-	var newLine string
+	//var newLine string
 	xLine := e.GetLine(t)
+	//fmt.Println(xLine)
 	if showHint {
+
+		x := []rune(xLine)
+		var li int
+		var ri int
+
+		if temp := t.Column + len([]rune(t.Literal)); temp < len(x) {
+			ri = temp
+		} else {
+			ri = len(x) - 1
+		}
 
 		//fmt.Println(xLine)
 
-		Lindex := t.Column - 1
-		if Lindex < 0 { //In case of a virtual token
-			Lindex = 0
+		//Lindex := t.Column - 1
+		//fmt.Println(t.Column)
+		if li < 0 { //In case of a virtual token
+			li = 0
+			//return ""
 		}
 
-		RIndex := t.Column + len(t.Literal) - 1
+		//RIndex := t.Column + len(t.Literal) - 1
 
 		if len(t.Literal) <= 1 {
-			RIndex = Lindex + 1
+			ri = li + 1
 		}
 
-		newL := xLine[:RIndex] + " <-- " + xLine[RIndex:]
-		newLine = newL[:Lindex] + " --> " + newL[Lindex:]
+		li = t.Column
 
-		return strconv.Itoa(t.LineNo) + "| " + newLine
+		temp_x := string(x[:ri]) + " <-- " + string(x[ri:])
+		y := []rune(temp_x)
+		temp_y := string(y[:li]) + " --> " + string(y[li:])
+		//fmt.Println(temp_y)
+
+		//newL := xLine[:RIndex] + " <-- " + xLine[RIndex:]
+		//newLine = newL[:Lindex] + " --> " + newL[Lindex:]
+
+		return strconv.Itoa(t.LineNo) + "| " + temp_y
 	}
 	return strconv.Itoa(t.LineNo) + "| " + xLine
 }
