@@ -168,42 +168,6 @@ var builtins = map[string]*object.Builtin{
 		},
 	},
 
-	"__osname": {
-		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
-			return stdlib.GetOS(args)
-		},
-	},
-
-	"__osarch": {
-		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
-			return stdlib.GetArch(args)
-		},
-	},
-
-	"__readfile": {
-		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
-			return stdlib.ReadFile(args)
-		},
-	},
-
-	"__exists": {
-		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
-			return stdlib.FileDirExists(args)
-		},
-	},
-
-	"__create_empty": {
-		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
-			return stdlib.CreateEmptyFile(args)
-		},
-	},
-
-	"__write_file": {
-		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
-			return stdlib.WriteToFile(args)
-		},
-	},
-
 	// Maths
 
 	"__sqrt": {
@@ -316,6 +280,178 @@ var builtins = map[string]*object.Builtin{
 	"__get_e": {
 		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
 			return stdlib.GetE(args)
+		},
+	},
+	"__to_number": {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
+			return stdlib.ToNumber(eh, args)
+		},
+	},
+
+	"__to_number__float": {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
+			return stdlib.ConvertToFloat(eh, args)
+		},
+	},
+
+	"__to_number__int": {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
+			return stdlib.ConvertToInt(eh, args)
+		},
+	},
+
+	"__string_split": {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
+			return stdlib.SplitString(eh, args)
+		},
+	},
+
+	"__string_join": {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
+			return stdlib.JoinAsString(eh, args)
+		},
+	},
+
+	"__string_convert": {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
+			return stdlib.ToString(eh, args)
+		},
+	},
+
+	"__time_now": {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
+			return stdlib.TimeNow()
+		},
+	},
+
+	"__date_now": {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
+			return stdlib.DateNow()
+		},
+	},
+
+	"__time_format_local": {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
+			return stdlib.FormatTimeLocal(eh, args)
+		},
+	},
+
+	"__time_format_utc": {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
+			return stdlib.FormatTimeUTC(eh, args)
+		},
+	},
+
+	"__os_user_name": {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
+			return stdlib.GetUserName()
+		},
+	},
+
+	"__os_user_homedir": {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
+			return stdlib.GetUserHomeDir()
+		},
+	},
+
+	"__osname": {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
+			return stdlib.GetOS()
+		},
+	},
+
+	"__osarch": {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
+			return stdlib.GetArch()
+		},
+	},
+
+	"__array_pop_without_index": {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
+			return stdlib.ArrayPopWithoutIndex(eh, args)
+		},
+	},
+
+	"__array_pop_index": {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
+			return stdlib.ArrayPopIndex(eh, args)
+		},
+	},
+	"__array_join": {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
+			return stdlib.JoinArrays(eh, args)
+		},
+	},
+
+	"__array_insert": {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
+			return stdlib.InsertToArray(eh, args)
+		},
+	},
+
+	"__array_insert_asis": {
+
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
+			return stdlib.InsertToArrayAsIs(eh, args)
+		},
+	},
+
+	"__file_read": {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
+			return stdlib.ReadFile(eh, args)
+		},
+	},
+
+	"__file_exists": {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
+			return stdlib.FileDirExists(eh, args)
+		},
+	},
+
+	"__file_create_empty": {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
+			return stdlib.CreateEmptyFile(eh, args)
+		},
+	},
+
+	"__file_write": {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
+			return stdlib.WriteToFile(eh, args)
+		},
+	},
+	"__file_delete": {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
+			return stdlib.DeletePath(eh, args)
+		},
+	},
+
+	"__file_rename": {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
+			return stdlib.RenameFile(eh, args)
+		},
+	},
+
+	"__file_is_file": {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
+			return stdlib.IsAFile(eh, args)
+		},
+	},
+
+	"__file_is_dir": {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
+			return stdlib.IsADir(eh, args)
+		},
+	},
+
+	"__file_append_line": {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
+			return stdlib.AppendLineToFile(eh, args)
+		},
+	},
+
+	"__file_list_dir": {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
+			return stdlib.ListDir(eh, args)
 		},
 	},
 }

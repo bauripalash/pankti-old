@@ -4,36 +4,37 @@
     * [x] done
 
 ### Files 
-    * [] _delete
+    * [x] _delete
     * [x] write
     * [x] read
-    * [] append_line
+    * [x] append_line
     * [x] rename
-    * [] read-dir
-    * [] is-file
-    * [] is_dir
-    * [] isfile_dir
+    * [x] read-dir
+    * [x] is-file
+    * [x] is_dir
+    * [] isfile_dir (not needed)
 
 
 ### Os
-    * [] os_name
-    * [] os_arch
-    * [] who_is_current_user
+    * [x] os_name
+    * [x] os_arch
+    * [x] who_is_current_user
+    * [x] current_user_home_dir
 
 ### Datetime
-    * [] date_time_with_format
-    * [] date
-    * [] time
-    * [] iso
-    * [] epoch
-    * [] date-diff
+    * [x] date_time_with_format
+    * [x] date
+    * [x] time
+    * [x] iso
+    * [x] epoch
+    * [] date-diff (will not be implemented; more details will be on devlog at palashbauri.in)
 
 
-### Array 
-    * [] push 
-    * [] pop
-    * [] len
-    * [] sum
+### Array
+    * [x] push
+    * [x] pop
+    * [x] len
+    * [x] sum
 
 ### Std Builtins 
     * [] print
@@ -43,10 +44,10 @@
 
 
 ### String 
-    * [] split 
-    * [] join
+    * [x] split 
+    * [x] join
 
-### Internet
+### Internet (not planned)
     * [] read_as_string
     * [] read-as-binary
     * [] JSON_as_dictionary (not sure)

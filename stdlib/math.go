@@ -2,6 +2,7 @@ package stdlib
 
 import (
 	"math"
+	"strconv"
 
 	"go.cs.palashbauri.in/pankti/constants"
 	"go.cs.palashbauri.in/pankti/errs"
@@ -91,13 +92,13 @@ func GetGCD(eh *object.ErrorHelper, caller token.Token, args []object.Obj) objec
 	temp, ok := getInt(args[0])
 
 	if !ok {
-		return object.NewErr(args[0].GetToken(), eh, false, errs.Errs["NOT_ALL_ARE_INT"] , constants.FNames["gcd"])
+		return object.NewErr(args[0].GetToken(), eh, false, errs.Errs["NOT_ALL_ARE_INT"], constants.FNames["gcd"])
 	}
 
 	for index, item := range args[1:] {
 		b, ok2 := getInt(item)
 		if !ok2 {
-			return object.NewErr(args[index].GetToken(), eh, false, errs.Errs["NOT_ALL_ARE_INT"], constants.FNames["gcd"])
+			return object.NewErr(args[index].GetToken(), eh, true, errs.Errs["NOT_ALL_ARE_INT"], constants.FNames["gcd"])
 		}
 		temp = gcd(temp, b)
 	}
@@ -266,6 +267,75 @@ func ToRadians(args []object.Obj) object.Obj {
 	}
 
 	return ARG_NOT_FLOAT
+}
+
+func ToNumber(eh *object.ErrorHelper, args []object.Obj) object.Obj {
+	result := float64(0)
+	target := args[0]
+	switch target.Type() {
+	case object.BOOL_OBJ:
+		if t := target.(*object.Boolean).Value; t {
+			result = 1.0
+		} else {
+			result = 0.0
+		}
+	case object.STRING_OBJ:
+		t := target.(*object.String).Value
+
+		v, err := strconv.ParseFloat(t, 64)
+
+		if err != nil {
+			return object.NewErr(target.GetToken(), eh, true, "Failed to parse string as Number")
+		}
+
+		result = v
+	case object.NUM_OBJ:
+		v, _ := getFloat(target)
+		result = v
+
+	default:
+		return object.NewErr(target.GetToken(), eh, true, "This value can not be parsed as Number")
+
+	}
+
+	return object.MakeFloatNumber(result)
+}
+
+func ConvertToFloat(eh *object.ErrorHelper, args []object.Obj) object.Obj {
+	return ToNumber(eh, args)
+}
+
+func ConvertToInt(eh *object.ErrorHelper, args []object.Obj) object.Obj {
+	result := int64(0)
+	target := args[0]
+	switch target.Type() {
+	case object.BOOL_OBJ:
+		if t := target.(*object.Boolean).Value; t {
+			result = 1
+		} else {
+			result = 0
+		}
+	case object.STRING_OBJ:
+		t := target.(*object.String).Value
+
+		v, err := strconv.Atoi(t)
+
+		if err != nil {
+			return object.NewErr(target.GetToken(), eh, true, "Failed to parse string as Number")
+		}
+
+		result = int64(v)
+	case object.NUM_OBJ:
+		v, _ := getInt(target)
+		result = v
+
+	default:
+		return object.NewErr(target.GetToken(), eh, true, "This value can not be parsed as Number")
+
+	}
+
+	return object.MakeIntNumber(result)
+
 }
 
 func GetPI(_ []object.Obj) object.Obj {
