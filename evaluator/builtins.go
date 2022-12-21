@@ -288,13 +288,13 @@ var builtins = map[string]*object.Builtin{
 		},
 	},
 
-	"__to_number__float": {
+	"__to_number_float": {
 		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
 			return stdlib.ConvertToFloat(eh, args)
 		},
 	},
 
-	"__to_number__int": {
+	"__to_number_int": {
 		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
 			return stdlib.ConvertToInt(eh, args)
 		},

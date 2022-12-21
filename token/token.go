@@ -128,6 +128,7 @@ var Keywords = map[string]TokenType{
 	"আনয়ন":     INCLUDE,
 	"dekhau":   SHOW,
 	"show":     SHOW,
+	"দেখাও":    SHOW,
 	"sesh":     END,
 	"end":      END,
 	"শেষ":      END,

@@ -50,7 +50,7 @@ func CreateEmptyFile(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 
 	}
 
-	if err := f.Close(); err == nil {
+	if err := f.Close(); err != nil {
 		return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["FAILED_TO_CLOSE_FILE"], filename)
 	} else {
 		return &object.Boolean{Value: true}
