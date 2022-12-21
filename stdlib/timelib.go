@@ -2,8 +2,10 @@ package stdlib
 
 import (
 	"fmt"
-	"go.cs.palashbauri.in/pankti/object"
 	"time"
+
+	"go.cs.palashbauri.in/pankti/errs"
+	"go.cs.palashbauri.in/pankti/object"
 )
 
 func UnixTimeFunc(args []object.Obj) object.Obj {
@@ -39,7 +41,7 @@ func FormatTimeLocal(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 	f, ok := getStringFromArgs(args[0])
 
 	if !ok {
-		return object.NewErr(args[0].GetToken(), eh, true, "Arguement must be string")
+		return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["NOT_ALL_STRING"])
 	}
 
 	return &object.String{
@@ -51,7 +53,7 @@ func FormatTimeUTC(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 	f, ok := getStringFromArgs(args[0])
 
 	if !ok {
-		return object.NewErr(args[0].GetToken(), eh, true, "Arguement must be string")
+		return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["NOT_ALL_STRING"])
 	}
 
 	return &object.String{

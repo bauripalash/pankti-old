@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"go.cs.palashbauri.in/pankti/errs"
 	"go.cs.palashbauri.in/pankti/object"
 )
 
@@ -22,7 +23,7 @@ func ReadFile(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 	filename, isOkay := getStringFromArgs(args[0])
 
 	if !isOkay {
-		return &object.Error{Msg: "Filename must be string"}
+		return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["FILE_PATH_MUST_BE_STRING"])
 	}
 	d, err := os.ReadFile(filename)
 	if err != nil {
@@ -36,7 +37,7 @@ func CreateEmptyFile(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 	filename, isOkay := getStringFromArgs(args[0])
 
 	if !isOkay {
-		return &object.Error{Msg: "Filename must be string"}
+		return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["FILE_PATH_MUST_BE_STRING"])
 	}
 
 	if _, err := os.Stat(filename); err == nil {
@@ -45,11 +46,12 @@ func CreateEmptyFile(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 
 	f, err := os.Create(filename)
 	if err != nil {
-		return &object.Error{Msg: "Filed to Create File " + filename}
+		return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["FAILED_TO_CREATE"], filename)
+
 	}
 
 	if err := f.Close(); err == nil {
-		return &object.Error{Msg: "Error while Creating File " + filename + ";" + "Failed to close the file"}
+		return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["FAILED_TO_CLOSE_FILE"], filename)
 	} else {
 		return &object.Boolean{Value: true}
 	}
@@ -60,13 +62,13 @@ func WriteToFile(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 	filename, isOkay := getStringFromArgs(args[0])
 	data := args[1]
 	if !isOkay {
-		return &object.Error{Msg: "Filename must be string"}
+		return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["FILE_PATH_MUST_BE_STRING"])
 	}
 
 	err := os.WriteFile(filename, []byte(data.Inspect()), 0644)
 
 	if err != nil {
-		return &object.Error{Msg: "Failed to write to file " + filename}
+		return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["FAILED_TO_WRITE_FILE"], filename)
 	}
 
 	return &object.Boolean{Value: true}
@@ -78,7 +80,7 @@ func FileDirExists(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 	filename, isOkay := getStringFromArgs(args[0])
 
 	if !isOkay {
-		return &object.Error{Msg: "Filename must be string"}
+		return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["FILE_PATH_MUST_BE_STRING"])
 	}
 
 	if _, err := os.Stat(filename); err == nil {
@@ -91,15 +93,15 @@ func DeletePath(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 	filename, ok := getStringFromArgs(args[0])
 
 	if !ok {
-		return &object.Error{Msg: "File path must be string"}
+		return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["FILE_PATH_MUST_BE_STRING"])
 	}
 
 	if _, err := os.Stat(filename); err != nil {
-		return &object.Error{Msg: "File path does not exist"}
+		return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["FILE_NOT_EXIST"])
 	} else {
 		err := os.RemoveAll(filename)
 		if err != nil {
-			return &object.Error{Msg: "Failed to delete file"}
+			return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["DELETE_FAILED"])
 		}
 	}
 	return &object.Boolean{Value: true}
@@ -108,32 +110,28 @@ func DeletePath(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 
 func RenameFile(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 
-	if len(args) != 2 {
-		return &object.Error{Msg: "Rename takes only two arguments"}
-	}
-
 	//result := false
 
 	targetFile, isOkay := getStringFromArgs(args[0])
 
 	if !isOkay {
-		return &object.Error{Msg: "Target Filename must be string"}
+		return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["FILE_PATH_MUST_BE_STRING"])
 	}
 
 	newName, isOkay2 := getStringFromArgs(args[1])
 
 	if !isOkay2 {
-		return &object.Error{Msg: "New Filename must be string"}
+		return object.NewErr(args[1].GetToken(), eh, true, errs.Errs["FILE_PATH_MUST_BE_STRING"])
 	}
 
 	if _, err := os.Stat(targetFile); err != nil {
-		return &object.Error{Msg: "Target File does not exist"}
+		return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["FILE_NOT_EXIST"])
 	}
 
 	err := os.Rename(targetFile, newName)
 
 	if err != nil {
-		return &object.Error{Msg: "Failed to rename file"}
+		return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["RENAME_FAILED"])
 	}
 
 	return &object.Boolean{Value: true}
@@ -145,11 +143,11 @@ func IsAFile(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 	result := false
 
 	if !ok {
-		return object.NewErr(args[0].GetToken(), eh, true, "Target Filename must be string")
+		return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["FILE_PATH_MUST_BE_STRING"])
 	}
 
 	if s, err := os.Stat(target); err != nil {
-		return object.NewErr(args[0].GetToken(), eh, true, "Target does not exist")
+		return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["FILE_NOT_EXIST"])
 	} else {
 		if !s.IsDir() {
 			result = true
@@ -164,11 +162,11 @@ func IsADir(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 	result := false
 
 	if !ok {
-		return object.NewErr(args[0].GetToken(), eh, true, "Target Filename must be string")
+		return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["FILE_PATH_MUST_BE_STRING"])
 	}
 
 	if s, err := os.Stat(target); err != nil {
-		return object.NewErr(args[0].GetToken(), eh, true, "Target does not exist")
+		return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["FILE_NOT_EXIST"])
 	} else {
 		if s.IsDir() {
 			result = true
@@ -181,32 +179,32 @@ func IsADir(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 func AppendLineToFile(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 	filename, ok := getStringFromArgs(args[0])
 	if !ok {
-		return object.NewErr(args[0].GetToken(), eh, true, "Target Filename must be string")
+		return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["FILE_PATH_MUST_BE_STRING"])
 	}
 
 	data, ok2 := getStringFromArgs(args[1])
 
 	if !ok2 {
-		return object.NewErr(args[1].GetToken(), eh, true, "Data must be a string")
+		return object.NewErr(args[1].GetToken(), eh, true, errs.Errs["DATA_MUST_BE_STRING"])
 	}
 
 	if s, err := os.Stat(filename); err != nil {
-		return object.NewErr(args[0].GetToken(), eh, true, "Target does not exist")
+		return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["FILE_NOT_EXIST"])
 	} else {
 		if s.IsDir() {
-			return object.NewErr(args[0].GetToken(), eh, true, "Target is a directory")
+			return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["TARGET_IS_DIR"])
 		} else {
 			f, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY, 0644)
 
 			if err != nil {
 
-				return object.NewErr(args[0].GetToken(), eh, true, "Failed to open file")
+				return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["FAILED_OPEN_FILE"])
 			}
 
 			defer f.Close()
 
 			if _, err := f.WriteString(data); err != nil {
-				return object.NewErr(args[0].GetToken(), eh, true, "Failed to write data to file ")
+				return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["FAILED_TO_WRITE_DATA"])
 			}
 		}
 
@@ -220,14 +218,14 @@ func ListDir(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 	d := args[0]
 	dirname, ok := getStringFromArgs(d)
 	if !ok {
-		return object.NewErr(d.GetToken(), eh, true, "Target must be string")
+		return object.NewErr(d.GetToken(), eh, true, errs.Errs["FILENAME_MUST_BE_STRING"])
 	}
 
 	if f, err := os.Stat(dirname); err != nil {
-		return object.NewErr(d.GetToken(), eh, true, "Target does not exist")
+		return object.NewErr(d.GetToken(), eh, true, errs.Errs["FILE_NOT_EXIST"])
 	} else {
 		if !f.IsDir() {
-			return object.NewErr(d.GetToken(), eh, true, "Target is not a directory")
+			return object.NewErr(d.GetToken(), eh, true, errs.Errs["TARGET_NO_DIR"])
 		}
 
 		result := []object.Obj{}
@@ -242,7 +240,7 @@ func ListDir(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 		})
 
 		if err != nil {
-			object.NewErr(d.GetToken(), eh, true, "Failed to list files in directory")
+			object.NewErr(d.GetToken(), eh, true, errs.Errs["DIR_LIST_FAILED"])
 		}
 
 		return &object.Array{Elms: result}

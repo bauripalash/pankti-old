@@ -178,12 +178,12 @@ var builtins = map[string]*object.Builtin{
 
 	"__log_ten": {
 		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
-			return stdlib.Log10(args)
+			return stdlib.Log10(eh, args)
 		},
 	},
 	"__list_sum": {
 		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
-			return stdlib.DoListSum(args)
+			return stdlib.DoListSum(eh, args)
 		},
 	},
 
@@ -195,79 +195,79 @@ var builtins = map[string]*object.Builtin{
 
 	"__lcm": {
 		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
-			return stdlib.GetLCM(args)
+			return stdlib.GetLCM(eh, args)
 		},
 	},
 
 	"__pow": {
 		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
-			return stdlib.DoPow(args)
+			return stdlib.DoPow(eh, args)
 		},
 	},
 
 	"__log_e": {
 		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
-			return stdlib.LogE(args)
+			return stdlib.LogE(eh, args)
 		},
 	},
 
 	"__log_x": {
 		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
-			return stdlib.LogX(args)
+			return stdlib.LogX(eh, args)
 		},
 	},
 
 	"__cosine": {
 		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
-			return stdlib.Cosine(args)
+			return stdlib.Cosine(eh, args)
 		},
 	},
 
 	"__sine": {
 		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
-			return stdlib.Sine(args)
+			return stdlib.Sine(eh, args)
 		},
 	},
 
 	"__acos": {
 		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
-			return stdlib.Acos(args)
+			return stdlib.Acos(eh, args)
 		},
 	},
 
 	"__asin": {
 		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
-			return stdlib.Asin(args)
+			return stdlib.Asin(eh, args)
 		},
 	},
 
 	"__tan": {
 		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
-			return stdlib.Tangent(args)
+			return stdlib.Tangent(eh, args)
 		},
 	},
 
 	"__atan": {
 		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
-			return stdlib.Atan(args)
+			return stdlib.Atan(eh, args)
 		},
 	},
 
 	"__atan_two": {
 		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
-			return stdlib.Atan2(args)
+			return stdlib.Atan2(eh, args)
 		},
 	},
 
 	"__to_deg": {
 		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
-			return stdlib.ToDegree(args)
+			return stdlib.ToDegree(eh, args)
 		},
 	},
 
 	"__to_rad": {
 		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
-			return stdlib.ToRadians(args)
+			return stdlib.ToRadians(eh, args)
 		},
 	},
 
@@ -452,6 +452,22 @@ var builtins = map[string]*object.Builtin{
 	"__file_list_dir": {
 		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
 			return stdlib.ListDir(eh, args)
+		},
+	},
+
+	"__return_error": {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
+			return stdlib.ReturnErrorString(eh, args)
+		},
+	},
+	"__readline": {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
+			return stdlib.ReadLine(eh, args)
+		},
+	},
+	"__get_type": {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
+			return stdlib.GetType(eh, args)
 		},
 	},
 }

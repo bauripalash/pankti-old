@@ -1,6 +1,7 @@
 package stdlib
 
 import (
+	"go.cs.palashbauri.in/pankti/errs"
 	"go.cs.palashbauri.in/pankti/number"
 	"go.cs.palashbauri.in/pankti/object"
 )
@@ -39,7 +40,7 @@ func ArrayPopWithoutIndex(eh *object.ErrorHelper, args []object.Obj) object.Obj 
 	elms, ok := getArrayFromArg(args[0])
 
 	if !ok {
-		object.NewErr(args[0].GetToken(), eh, true, "Argument must be list")
+		object.NewErr(args[0].GetToken(), eh, true, errs.Errs["NOT_ALL_ARE_LIST"])
 	}
 
 	return &object.Array{Elms: elms[:len(elms)-1]}
@@ -48,16 +49,16 @@ func ArrayPopWithoutIndex(eh *object.ErrorHelper, args []object.Obj) object.Obj 
 func ArrayPopIndex(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 	elms, ok := getArrayFromArg(args[0])
 	if !ok {
-		return object.NewErr(args[0].GetToken(), eh, true, "Argument must be list")
+		return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["NOT_ALL_ARE_LIST"])
 	}
 
 	i, ok2 := getIntFromArg(args[1])
 
 	if ok2 {
-		return object.NewErr(args[1].GetToken(), eh, true, "Index Argument must be list")
+		return object.NewErr(args[1].GetToken(), eh, true, errs.Errs["INDEX_MUST_BE_NUMBER"])
 	}
 	if i >= int64(len(elms)) {
-		return object.NewErr(args[1].GetToken(), eh, true, "Index out of range")
+		return object.NewErr(args[1].GetToken(), eh, true, errs.Errs["INDEX_OUT_RANGE"])
 	}
 	s := append(elms[:i], elms[i+1:]...)
 
@@ -70,14 +71,14 @@ func ArrayPopIndex(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 func JoinArrays(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 	x_elms, ok := getArrayFromArg(args[0])
 	if !ok {
-		return object.NewErr(args[0].GetToken(), eh, true, "Argument must be a list")
+		return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["NOT_ALL_ARE_LIST"])
 	}
 
 	y_elms, ok2 := getArrayFromArg(args[2])
 
 	if !ok2 {
 
-		return object.NewErr(args[1].GetToken(), eh, true, "Argument must be a list")
+		return object.NewErr(args[1].GetToken(), eh, true, errs.Errs["NOT_ALL_ARE_LIST"])
 	}
 
 	x_elms = append(x_elms, y_elms...)
@@ -90,7 +91,7 @@ func InsertToArray(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 
 	if !ok {
 
-		return object.NewErr(args[0].GetToken(), eh, true, "Argument must be a list")
+		return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["NOT_ALL_ARE_LIST"])
 	}
 
 	y := args[1]
@@ -98,17 +99,17 @@ func InsertToArray(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 
 	if !ok2 {
 
-		return object.NewErr(args[2].GetToken(), eh, true, "Index Argument must be list")
+		return object.NewErr(args[2].GetToken(), eh, true, errs.Errs["INDEX_MUST_BE_NUMBER"])
 	}
 	if index >= int64(len(x_elms)) {
-		return object.NewErr(y.GetToken(), eh, true, "Index out of range")
+		return object.NewErr(y.GetToken(), eh, true, errs.Errs["INDEX_OUT_RANGE"])
 	}
 	if y.Type() == object.ARRAY_OBJ {
 		y_elms, oky := getArrayFromArg(y)
 
 		if !oky {
 
-			return object.NewErr(y.GetToken(), eh, true, "Argument must be a list")
+			return object.NewErr(y.GetToken(), eh, true, errs.Errs["NOT_ALL_ARE_LIST"])
 		}
 
 		result := append(x_elms[:index], append(y_elms, x_elms[index+1:]...)...)
@@ -131,7 +132,7 @@ func InsertToArrayAsIs(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 
 	if !ok {
 
-		return object.NewErr(args[0].GetToken(), eh, true, "Argument must be a list")
+		return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["NOT_ALL_ARE_LIST"])
 	}
 
 	y := args[1]
@@ -139,11 +140,11 @@ func InsertToArrayAsIs(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 
 	if !ok2 {
 
-		return object.NewErr(args[2].GetToken(), eh, true, "Index Argument must be list")
+		return object.NewErr(args[2].GetToken(), eh, true, errs.Errs["INDEX_MUST_BE_NUMBER"])
 	}
 
 	if index >= int64(len(x_elms)) {
-		return object.NewErr(y.GetToken(), eh, true, "Index out of range")
+		return object.NewErr(y.GetToken(), eh, true, errs.Errs["INDEX_OUT_RANGE"])
 	}
 
 	result := x_elms[:index]

@@ -11,10 +11,6 @@ import (
 	"go.cs.palashbauri.in/pankti/token"
 )
 
-var ARG_NOT_FLOAT = &object.Error{Msg: "Arguments must be Numbers as the provided can not be parsed as decimal number"}
-
-var NOT_ALL_INT = &object.Error{Msg: "All arguments to GCD must be integers"}
-
 func getFloat(arg object.Obj) (float64, bool) {
 	rawinput := arg
 
@@ -56,18 +52,18 @@ func getInt(arg object.Obj) (int64, bool) {
 	//return 0,false
 }
 
-func DoListSum(args []object.Obj) object.Obj {
+func DoListSum(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 	if args[0].Type() != object.ARRAY_OBJ {
-		return &object.Error{Msg: "Sum can be only done on Arrays"}
+		return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["SUM_ONLY_LISTS"])
 	}
 
-	inputList := args[0].(*object.Array).Elms
+	inputList := args[0].(*object.Array)
 	result := float64(0)
-	for _, item := range inputList {
+	for _, item := range inputList.Elms {
 		if fv, ok := getFloat(item); ok {
 			result += fv
 		} else {
-			return ARG_NOT_FLOAT
+			return object.NewErr(item.GetToken(), eh, true, errs.Errs["SUM_ARRAY_ALL_NUM"])
 		}
 	}
 
@@ -85,10 +81,7 @@ func gcd(a, b int64) int64 {
 
 // Unstable
 func GetGCD(eh *object.ErrorHelper, caller token.Token, args []object.Obj) object.Obj {
-	if len(args) < 2 {
-		return object.NewErr(caller, eh, false, "Must provide two arguments to calculate GCD")
-		//return &object.Error{Msg: "Must provide at least two arguments to calculate GCD"}
-	}
+
 	temp, ok := getInt(args[0])
 
 	if !ok {
@@ -110,18 +103,16 @@ func lcm(a, b int64) int64 {
 	return (a * b / gcd(a, b))
 }
 
-func GetLCM(args []object.Obj) object.Obj {
-	if len(args) < 2 {
-		return &object.Error{Msg: "Must provide at least two arguments to calculate GCD"}
-	}
-
+func GetLCM(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 	tempA, ok := getInt(args[0])
 	if !ok {
-		return NOT_ALL_INT
+		return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["TEMPLATE_NOT_ALL_INT"])
 	}
 	tempB, okB := getInt(args[1])
 	if !okB {
-		return NOT_ALL_INT
+		//eturn NOT_ALL_INT
+
+		return object.NewErr(args[1].GetToken(), eh, true, errs.Errs["TEMPLATE_NOT_ALL_INT"])
 	}
 
 	result := tempA * tempB / gcd(tempA, tempB)
@@ -129,7 +120,7 @@ func GetLCM(args []object.Obj) object.Obj {
 	for _, item := range args[2:] {
 		b, ok := getInt(item)
 		if !ok {
-			return NOT_ALL_INT
+			return object.NewErr(item.GetToken(), eh, true, errs.Errs["TEMPLATE_NOT_ALL_INT"])
 		}
 		result = lcm(result, b)
 	}
@@ -141,132 +132,150 @@ func DoSqrt(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 	fValue, ok := getFloat(args[0])
 	if !ok {
 		//fmt.Println(args[0].GetToken())
-		return object.NewErr(args[0].GetToken(), eh, true, "Provided Argument must be a Number")
+		return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["TEMPLATE_NOT_ALL_INT"], constants.FNames["sqrt"], constants.FNames["int"])
 	}
 	return object.MakeFloatNumber(math.Sqrt(fValue))
 
 }
 
-func DoPow(args []object.Obj) object.Obj {
-	if len(args) != 2 {
-		return &object.Error{Msg: "Pow must have two arguments"}
-	}
+func DoPow(eh *object.ErrorHelper, args []object.Obj) object.Obj {
+
 	if fv, ok := getFloat(args[0]); ok {
 		if fv2, ok2 := getFloat(args[1]); ok2 {
 			return object.MakeFloatNumber(math.Pow(fv, fv2))
+		} else {
+
+			return object.NewErr(args[1].GetToken(), eh, true, errs.Errs["TEMPLATE_NOT_ALL_INT"], constants.FNames["pow"], constants.FNames["num"])
 		}
+
+	} else {
+
+		return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["TEMPLATE_NOT_ALL_INT"], constants.FNames["pow"], constants.FNames["num"])
 	}
 
-	return ARG_NOT_FLOAT
 }
 
-func Log10(args []object.Obj) object.Obj {
+func Log10(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 	fv, ok := getFloat(args[0])
 	if !ok {
-		return ARG_NOT_FLOAT
+		return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["TEMPLATE_NOT_ONE_TEMPALTE"], constants.FNames["log"], constants.FNames["num"])
 	}
 	return object.MakeFloatNumber(math.Log10(fv))
 }
 
-func LogE(args []object.Obj) object.Obj {
+func LogE(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 	fv, ok := getFloat(args[0])
 	if !ok {
-		return ARG_NOT_FLOAT
+		return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["TEMPLATE_NOT_ONE_TEMPALTE"], constants.FNames["log"], constants.FNames["num"])
 	}
 	return object.MakeFloatNumber(math.Log(fv))
 }
 
-func LogX(args []object.Obj) object.Obj {
+func LogX(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 	if fv, ok := getFloat(args[0]); ok {
 		if len(args) == 1 {
 			return object.MakeFloatNumber(math.Log(fv))
 		} else if len(args) >= 2 {
 			if base, okay := getFloat(args[1]); okay {
 				return object.MakeFloatNumber(math.Log(fv) / math.Log(base))
+			} else {
+
+				return object.NewErr(args[1].GetToken(), eh, true, errs.Errs["TEMPLATE_NOT_ONE_TEMPALTE"], constants.FNames["log"], constants.FNames["num"])
 			}
+
 		}
 
+	} else {
+
+		return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["TEMPLATE_NOT_ONE_TEMPALTE"], constants.FNames["log"], constants.FNames["num"])
 	}
 
-	return ARG_NOT_FLOAT
+	return object.NewErr(args[0].GetToken(), eh, false, errs.Errs["TEMPLATE_NOT_ALL_INT"], constants.FNames["log"], constants.FNames["num"])
 }
 
-func Cosine(args []object.Obj) object.Obj {
+func Cosine(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 	fv, ok := getFloat(args[0])
 	if !ok {
-		return ARG_NOT_FLOAT
+		return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["TEMPLATE_NOT_ONE_TEMPALTE"], constants.FNames["cos"], constants.FNames["num"])
 	}
 
 	return object.MakeFloatNumber(math.Cos(fv))
 }
 
-func Acos(args []object.Obj) object.Obj {
+func Acos(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 	if fv, ok := getFloat(args[0]); ok {
 		return object.MakeFloatNumber(math.Acos(fv))
 	}
-	return ARG_NOT_FLOAT
+
+	return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["TEMPLATE_NOT_ONE_TEMPALTE"], constants.FNames["cos"], constants.FNames["num"])
 }
 
-func Sine(args []object.Obj) object.Obj {
+func Sine(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 	fv, ok := getFloat(args[0])
 	if !ok {
-		return ARG_NOT_FLOAT
+
+		return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["TEMPLATE_NOT_ONE_TEMPALTE"], constants.FNames["sin"], constants.FNames["num"])
 	}
 
 	return object.MakeFloatNumber(math.Sin(fv))
 }
 
-func Asin(args []object.Obj) object.Obj {
+func Asin(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 	if fv, ok := getFloat(args[0]); ok {
 		return object.MakeFloatNumber(math.Asin(fv))
 	}
-	return ARG_NOT_FLOAT
+	return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["TEMPLATE_NOT_ONE_TEMPALTE"], constants.FNames["sin"], constants.FNames["num"])
 }
 
-func Tangent(args []object.Obj) object.Obj {
+func Tangent(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 	if fv, ok := getFloat(args[0]); ok {
 		return object.MakeFloatNumber(math.Tan(fv))
 	}
 
-	return ARG_NOT_FLOAT
+	return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["TEMPLATE_NOT_ONE_TEMPALTE"], constants.FNames["tan"], constants.FNames["num"])
 }
 
-func Atan(args []object.Obj) object.Obj {
+func Atan(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 	if fv, ok := getFloat(args[0]); ok {
 		return object.MakeFloatNumber(math.Atan(fv))
 	}
-	return ARG_NOT_FLOAT
+
+	return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["TEMPLATE_NOT_ONE_TEMPALTE"], constants.FNames["tan"], constants.FNames["num"])
+
 }
 
-func Atan2(args []object.Obj) object.Obj {
-	if len(args) != 2 {
-		return &object.Error{Msg: "There must be 2 arguments to Atan2"}
-	}
-
+func Atan2(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 	if fv, ok := getFloat(args[0]); ok {
 		if fv2, ok2 := getFloat(args[1]); ok2 {
 			return object.MakeFloatNumber(math.Atan2(fv, fv2))
+		} else {
+
+			return object.NewErr(args[1].GetToken(), eh, true, errs.Errs["TEMPLATE_NOT_ALL_INT"], constants.FNames["tan"], constants.FNames["num"])
 		}
 	}
 
-	return ARG_NOT_FLOAT
+	return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["TEMPLATE_NOT_ALL_INT"], constants.FNames["tan"], constants.FNames["num"])
+
 }
 
-func ToDegree(args []object.Obj) object.Obj {
+func ToDegree(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 	if fv, ok := getFloat(args[0]); ok {
 		dg := fv * (180 / math.Pi)
 		return object.MakeFloatNumber(dg)
 	}
-	return ARG_NOT_FLOAT
+
+	return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["TEMPLATE_NOT_ONE_TEMPALTE"], constants.FNames["degree"], constants.FNames["num"])
+
 }
 
-func ToRadians(args []object.Obj) object.Obj {
+func ToRadians(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 	if fv, ok := getFloat(args[0]); ok {
 		rad := fv * (math.Pi / 180)
 		return object.MakeFloatNumber(rad)
 	}
 
-	return ARG_NOT_FLOAT
+	return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["TEMPLATE_NOT_ONE_TEMPALTE"], constants.FNames["rad"], constants.FNames["num"])
+
 }
 
 func ToNumber(eh *object.ErrorHelper, args []object.Obj) object.Obj {
@@ -285,7 +294,7 @@ func ToNumber(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 		v, err := strconv.ParseFloat(t, 64)
 
 		if err != nil {
-			return object.NewErr(target.GetToken(), eh, true, "Failed to parse string as Number")
+			return object.NewErr(target.GetToken(), eh, true, errs.Errs["CANNOT_PARSE_STRING_AS_NUM"])
 		}
 
 		result = v
@@ -294,7 +303,7 @@ func ToNumber(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 		result = v
 
 	default:
-		return object.NewErr(target.GetToken(), eh, true, "This value can not be parsed as Number")
+		return object.NewErr(target.GetToken(), eh, true, errs.Errs["CANNOT_PARSE_AS_NUM"])
 
 	}
 
@@ -321,7 +330,7 @@ func ConvertToInt(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 		v, err := strconv.Atoi(t)
 
 		if err != nil {
-			return object.NewErr(target.GetToken(), eh, true, "Failed to parse string as Number")
+			return object.NewErr(target.GetToken(), eh, true, errs.Errs["CANNOT_PARSE_STRING_AS_NUM"])
 		}
 
 		result = int64(v)
@@ -330,7 +339,7 @@ func ConvertToInt(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 		result = v
 
 	default:
-		return object.NewErr(target.GetToken(), eh, true, "This value can not be parsed as Number")
+		return object.NewErr(target.GetToken(), eh, true, errs.Errs["CANNOT_PARSE_AS_NUM"])
 
 	}
 

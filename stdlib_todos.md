@@ -37,7 +37,7 @@
     * [x] sum
 
 ### Std Builtins 
-    * [] print
+    * [x] print
     * [] readline
     * [] type
     * [] error
