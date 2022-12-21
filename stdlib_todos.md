@@ -38,9 +38,9 @@
 
 ### Std Builtins 
     * [x] print
-    * [] readline
-    * [] type
-    * [] error
+    * [x] readline
+    * [x] type
+    * [x] error
 
 
 ### String 
