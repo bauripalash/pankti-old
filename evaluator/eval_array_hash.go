@@ -106,7 +106,8 @@ func evalArrIndexExpr(arr, index object.Obj, eh *object.ErrorHelper) object.Obj 
 	idx, noerr := number.GetAsInt(id)
 
 	if !noerr {
-		return object.NewBareErr("Arr Index Failed")
+		//return object.NewBareErr("Arr Index Failed")
+		return object.NewErr( arr.GetToken() , eh , true , "Array Index Failed" )
 	}
 	max := int64(len(arrObj.Elms) - 1)
 

@@ -38,7 +38,7 @@ func ReadLine(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 	return &object.String{Value: text}
 }
 
-func GetType(eh *object.ErrorHelper, args []object.Obj) object.Obj {
+func GetType(_ *object.ErrorHelper, args []object.Obj) object.Obj {
 	t, ok := constants.TypeNames[string(args[0].Type())]
 	if !ok {
 		t = constants.UNKNOWN

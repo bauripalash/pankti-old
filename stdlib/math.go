@@ -80,7 +80,7 @@ func gcd(a, b int64) int64 {
 }
 
 // Unstable
-func GetGCD(eh *object.ErrorHelper, caller token.Token, args []object.Obj) object.Obj {
+func GetGCD(eh *object.ErrorHelper, _ token.Token, args []object.Obj) object.Obj {
 
 	temp, ok := getInt(args[0])
 

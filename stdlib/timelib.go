@@ -8,12 +8,12 @@ import (
 	"go.cs.palashbauri.in/pankti/object"
 )
 
-func UnixTimeFunc(args []object.Obj) object.Obj {
+func UnixTimeFunc(_ []object.Obj) object.Obj {
 
 	return &object.String{Value: fmt.Sprintf("%d", time.Now().Unix())}
 }
 
-func UtcDateISO(args []object.Obj) object.Obj {
+func UtcDateISO(_ []object.Obj) object.Obj {
 	return &object.String{
 		Value: fmt.Sprintf("%s", time.Now().Format(time.RFC3339)),
 	}
@@ -32,7 +32,7 @@ func DateNow() object.Obj {
 }
 
 // %y%m%d -> 2006 - 01 - 02
-func dateFormat(d string) string {
+func dateFormat(_ string) string {
 	//TODO: Fix
 	return "02-01-2006"
 }
