@@ -14,7 +14,7 @@ type LetStmt struct {
 	Value Expr
 }
 
-func (lst *LetStmt) stmtNode()        {}
+func (_ *LetStmt) stmtNode()          {}
 func (lst *LetStmt) TokenLit() string { return lst.Token.Literal }
 
 func (lst *LetStmt) String() string {
@@ -43,7 +43,7 @@ type ReturnStmt struct {
 	ReturnVal Expr
 }
 
-func (r *ReturnStmt) stmtNode() {}
+func (_ *ReturnStmt) stmtNode() {}
 func (r *ReturnStmt) TokenLit() string {
 	return r.Token.Literal
 }
@@ -68,7 +68,7 @@ type ShowStmt struct {
 	Value []Expr
 }
 
-func (s *ShowStmt) stmtNode() {}
+func (_ *ShowStmt) stmtNode() {}
 func (s *ShowStmt) TokenLit() string {
 	return s.Token.Literal
 }
@@ -96,7 +96,7 @@ type IncludeStmt struct {
 	Filename Expr
 }
 
-func (is *IncludeStmt) stmtNode()        {}
+func (_ *IncludeStmt) stmtNode()         {}
 func (is *IncludeStmt) TokenLit() string { return is.Token.Literal }
 func (is *IncludeStmt) String() string   { return is.Token.Literal }
 
@@ -105,7 +105,7 @@ type BlockStmt struct {
 	Stmts []Stmt
 }
 
-func (bs *BlockStmt) stmtNode()        {}
+func (_ *BlockStmt) stmtNode()         {}
 func (bs *BlockStmt) TokenLit() string { return bs.Token.Literal }
 func (bs *BlockStmt) String() string {
 	var out bytes.Buffer
@@ -121,7 +121,7 @@ type ExprStmt struct {
 	Expr  Expr
 }
 
-func (e *ExprStmt) stmtNode() {}
+func (_ *ExprStmt) stmtNode() {}
 func (e *ExprStmt) TokenLit() string {
 	return e.Token.Literal
 }

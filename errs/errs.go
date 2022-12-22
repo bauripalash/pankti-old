@@ -26,7 +26,7 @@ type PeekError struct {
 	ErrLine  string
 }
 
-func (pe *PeekError) GetMsg() string { return Errs[EXPECTED_GOT] }
+func (_ *PeekError) GetMsg() string { return Errs[EXPECTED_GOT] }
 
 func (pe *PeekError) GetToken() token.Token { return pe.Got }
 
@@ -44,7 +44,7 @@ type NoPrefixSuffixError struct {
 	//Type token.TokenType
 }
 
-func (spe *NoPrefixSuffixError) GetMsg() string {
+func (_ *NoPrefixSuffixError) GetMsg() string {
 	return Errs[NO_PREFIX_SUFFIX_FN]
 }
 
@@ -66,7 +66,7 @@ type NoEktiError struct {
 	ErrLine string
 }
 
-func (nee *NoEktiError) GetMsg() string { return Errs[NO_EKTI_BEFORE_FN] }
+func (_ *NoEktiError) GetMsg() string { return Errs[NO_EKTI_BEFORE_FN] }
 
 func (nee *NoEktiError) GetToken() token.Token { return token.Token{} }
 
@@ -81,7 +81,7 @@ type IntegerParseError struct {
 	Token token.Token
 }
 
-func (ipe *IntegerParseError) GetMsg() string { return Errs[INT_PARSE_ERR] }
+func (_ *IntegerParseError) GetMsg() string { return Errs[INT_PARSE_ERR] }
 
 func (ipe *IntegerParseError) GetToken() token.Token { return ipe.Token }
 

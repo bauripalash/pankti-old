@@ -12,7 +12,7 @@ type StringLit struct {
 	Value string
 }
 
-func (s *StringLit) exprNode()        {}
+func (_ *StringLit) exprNode()        {}
 func (s *StringLit) TokenLit() string { return s.Token.Literal }
 func (s *StringLit) String() string   { return s.Token.Literal }
 
@@ -25,7 +25,7 @@ type Identifier struct {
 	Value string
 }
 
-func (id *Identifier) exprNode() {}
+func (_ *Identifier) exprNode() {}
 func (id *Identifier) TokenLit() string {
 	return id.Token.Literal
 }
@@ -40,7 +40,7 @@ type IncludeId struct {
 	Value string
 }
 
-func (ii *IncludeId) exprNode()        {}
+func (_ *IncludeId) exprNode()         {}
 func (ii *IncludeId) TokenLit() string { return ii.Token.Literal }
 func (ii *IncludeId) String() string {
 	return ii.Value
@@ -51,7 +51,7 @@ type IncludeExpr struct {
 	Filename Expr
 }
 
-func (ix *IncludeExpr) exprNode()        {}
+func (_ *IncludeExpr) exprNode()         {}
 func (ix *IncludeExpr) TokenLit() string { return ix.Token.Literal }
 func (ix *IncludeExpr) String() string   { return ix.Token.Literal }
 
@@ -65,7 +65,7 @@ type NumberLit struct {
 	IsInt bool
 }
 
-func (nl *NumberLit) exprNode()        {}
+func (_ *NumberLit) exprNode()         {}
 func (nl *NumberLit) TokenLit() string { return nl.Token.Literal }
 func (nl *NumberLit) String() string   { return nl.Token.Literal }
 
@@ -78,7 +78,7 @@ type Boolean struct {
 	Value bool
 }
 
-func (b *Boolean) exprNode()        {}
+func (_ *Boolean) exprNode()        {}
 func (b *Boolean) TokenLit() string { return b.Token.Literal }
 func (b *Boolean) String() string   { return b.Token.Literal }
 

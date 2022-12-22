@@ -23,7 +23,7 @@ func evalNumInfixExpr(
 		return getBoolObj(cval)
 	} else {
 		//return object.NewBareErr("Unknown Operator for Numbers %s", op)
-		return object.NewErr(l.GetToken() , eh , false , "Unknown Operator for Numbers : %s" , op)
+		return object.NewErr(l.GetToken(), eh, false, "Unknown Operator for Numbers : %s", op)
 	}
 
 }

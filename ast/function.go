@@ -13,7 +13,7 @@ type FunctionLit struct {
 	Body   *BlockStmt
 }
 
-func (fl *FunctionLit) exprNode()        {}
+func (_ *FunctionLit) exprNode()         {}
 func (fl *FunctionLit) TokenLit() string { return fl.Token.Literal }
 func (fl *FunctionLit) String() string {
 	var out bytes.Buffer
@@ -37,7 +37,7 @@ type CallExpr struct {
 	Args []Expr
 }
 
-func (ce *CallExpr) exprNode()        {}
+func (_ *CallExpr) exprNode()         {}
 func (ce *CallExpr) TokenLit() string { return ce.Token.Literal }
 func (ce *CallExpr) String() string {
 	var out bytes.Buffer

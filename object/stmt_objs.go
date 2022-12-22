@@ -17,7 +17,7 @@ type Function struct {
 	Token  token.Token
 }
 
-func (f *Function) Type() ObjType { return FUNC_OBJ }
+func (_ *Function) Type() ObjType { return FUNC_OBJ }
 func (f *Function) Inspect() string {
 	var out bytes.Buffer
 
@@ -49,7 +49,7 @@ type IncludeObj struct {
 	Token    token.Token
 }
 
-func (ib *IncludeObj) Type() ObjType { return INCLUDE_OBJ }
+func (_ *IncludeObj) Type() ObjType { return INCLUDE_OBJ }
 
 func (ib *IncludeObj) Inspect() string {
 
@@ -65,7 +65,7 @@ type ShowObj struct {
 	Token token.Token
 }
 
-func (so *ShowObj) Type() ObjType { return SHOW_OBJ }
+func (_ *ShowObj) Type() ObjType { return SHOW_OBJ }
 
 func (so *ShowObj) Inspect() string {
 	return strings.Join(so.Value, "\n")
@@ -82,7 +82,7 @@ type ReturnValue struct {
 	Token token.Token
 }
 
-func (r *ReturnValue) Type() ObjType         { return RETURN_VAL_OBJ }
+func (_ *ReturnValue) Type() ObjType         { return RETURN_VAL_OBJ }
 func (r *ReturnValue) Inspect() string       { return r.Value.Inspect() }
 func (r *ReturnValue) GetToken() token.Token { return r.Token }
 
@@ -90,6 +90,6 @@ type Error struct {
 	Msg string
 }
 
-func (e *Error) Type() ObjType         { return ERR_OBJ }
+func (_ *Error) Type() ObjType         { return ERR_OBJ }
 func (e *Error) Inspect() string       { return "ERR : " + e.Msg }
 func (e *Error) GetToken() token.Token { return token.Token{} }

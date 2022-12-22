@@ -289,7 +289,7 @@ func evaluateInclude(env *object.EnvMap,
 func evalMinusPrefOp(right object.Obj, eh *object.ErrorHelper) object.Obj {
 	if right.Type() != object.NUM_OBJ {
 		//return object.NewBareErr("unknown Operator : -%s", right.Type())
-		return object.NewErr( right.GetToken() , eh , true , "Unknown operator" )
+		return object.NewErr(right.GetToken(), eh, true, "Unknown operator")
 	}
 	num := right.(*object.Number)
 	return &object.Number{

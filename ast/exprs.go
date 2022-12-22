@@ -14,7 +14,7 @@ type PrefixExpr struct {
 	Right Expr
 }
 
-func (pref *PrefixExpr) exprNode()        {}
+func (_ *PrefixExpr) exprNode()           {}
 func (pref *PrefixExpr) TokenLit() string { return pref.Token.Literal }
 func (pref *PrefixExpr) String() string {
 
@@ -36,7 +36,7 @@ type InfixExpr struct {
 	Right Expr
 }
 
-func (inf *InfixExpr) exprNode()        {}
+func (_ *InfixExpr) exprNode()          {}
 func (inf *InfixExpr) TokenLit() string { return inf.Token.Literal }
 func (inf *InfixExpr) String() string {
 
