@@ -68,7 +68,7 @@ type NoEktiError struct {
 
 func (_ *NoEktiError) GetMsg() string { return Errs[NO_EKTI_BEFORE_FN] }
 
-func (nee *NoEktiError) GetToken() token.Token { return token.Token{} }
+func (_ *NoEktiError) GetToken() token.Token { return token.Token{} }
 
 func (nee *NoEktiError) String() string {
 	return nee.ErrLine + "\n" + fmt.Sprintf(

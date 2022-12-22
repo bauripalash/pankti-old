@@ -92,4 +92,4 @@ type Error struct {
 
 func (_ *Error) Type() ObjType         { return ERR_OBJ }
 func (e *Error) Inspect() string       { return "ERR : " + e.Msg }
-func (e *Error) GetToken() token.Token { return token.Token{} }
+func (_ *Error) GetToken() token.Token { return token.Token{} }

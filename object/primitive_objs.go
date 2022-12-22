@@ -52,8 +52,8 @@ func (b *Boolean) GetToken() token.Token { return b.Token }
 type Null struct{}
 
 func (_ *Null) Type() ObjType         { return NULL_OBJ }
-func (n *Null) Inspect() string       { return "null" }
-func (n *Null) GetToken() token.Token { return token.Token{} }
+func (_ *Null) Inspect() string       { return "null" }
+func (_ *Null) GetToken() token.Token { return token.Token{} }
 
 //Arrays
 

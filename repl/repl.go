@@ -21,7 +21,7 @@ func Repl(in io.Reader, out io.Writer) {
 	env := object.NewEnvMap()
 
 	for {
-		fmt.Fprintf(out, PROMPT)
+		fmt.Fprint(out, PROMPT)
 		scanned := scanner.Scan()
 
 		if !scanned {

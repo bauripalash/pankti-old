@@ -59,7 +59,7 @@ func JoinAsString(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 
 }
 
-func ToString(eh *object.ErrorHelper, args []object.Obj) object.Obj {
+func ToString(_ *object.ErrorHelper, args []object.Obj) object.Obj {
 	//if args[0].Type() != object.NULL_OBJ{
 	return &object.String{Value: args[0].Inspect()}
 	//}

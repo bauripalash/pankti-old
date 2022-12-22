@@ -24,27 +24,6 @@ func (p *Parser) parseShowStmt() *ast.ShowStmt {
 	return stmt
 }
 
-func (p *Parser) parseIncludeStmt() *ast.IncludeStmt {
-	stmt := &ast.IncludeStmt{Token: p.curTok}
-	p.nextToken()
-
-	stmt.Filename = p.parseExpr(LOWEST)
-
-	if p.isPeekToken(token.SEMICOLON) {
-		p.nextToken()
-	}
-
-	log.Info(
-		fmt.Sprintf(
-			"INCLUDE => FNAME=>%s || FNAME_TYPE=>%s",
-			stmt.Filename,
-			stmt,
-		),
-	)
-
-	return stmt
-}
-
 func (p *Parser) parseIncludeExpr() ast.Expr {
 	exp := &ast.IncludeExpr{Token: p.curTok}
 	p.nextToken()

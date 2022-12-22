@@ -28,7 +28,7 @@ func ReadLine(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 	}
 
 	reader := bufio.NewReader(os.Stdin)
-	fmt.Printf(msg)
+	fmt.Print(msg)
 	text, err := reader.ReadString('\n')
 
 	if err != nil {

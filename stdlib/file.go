@@ -148,10 +148,8 @@ func IsAFile(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 
 	if s, err := os.Stat(target); err != nil {
 		return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["FILE_NOT_EXIST"])
-	} else {
-		if !s.IsDir() {
-			result = true
-		}
+	} else if !s.IsDir() {
+		result = true
 	}
 
 	return &object.Boolean{Value: result}
@@ -167,10 +165,8 @@ func IsADir(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 
 	if s, err := os.Stat(target); err != nil {
 		return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["FILE_NOT_EXIST"])
-	} else {
-		if s.IsDir() {
-			result = true
-		}
+	} else if s.IsDir() {
+		result = true
 	}
 
 	return &object.Boolean{Value: result}
