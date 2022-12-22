@@ -2,7 +2,7 @@ package androidapi
 
 import (
 	"bytes"
-	"io/ioutil"
+	"io"
 	"strings"
 
 	"go.cs.palashbauri.in/pankti/evaluator"
@@ -38,7 +38,7 @@ func DoParse(i string) string {
 	eh := object.ErrorHelper{Source: i}
 	printBuff := bytes.Buffer{}
 	evd := evaluator.Eval(prog, env, eh, &printBuff, true)
-	rd, err := ioutil.ReadAll(&printBuff)
+	rd, err := io.ReadAll(&printBuff)
 
 	printValue := ""
 
