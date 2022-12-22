@@ -30,7 +30,7 @@ func (_ *Number) Type() ObjType {
 }
 
 func (num *Number) Inspect() string {
-	return fmt.Sprintf("%s", num.Value.Value.String())
+	return num.Value.Value.String()
 }
 
 func (num *Number) GetToken() token.Token {

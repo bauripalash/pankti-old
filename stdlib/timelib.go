@@ -15,7 +15,7 @@ func UnixTimeFunc(_ []object.Obj) object.Obj {
 
 func UtcDateISO(_ []object.Obj) object.Obj {
 	return &object.String{
-		Value: fmt.Sprintf("%s", time.Now().Format(time.RFC3339)),
+		Value: time.Now().Format(time.RFC3339),
 	}
 }
 
