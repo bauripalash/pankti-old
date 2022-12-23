@@ -117,9 +117,9 @@ func (p *Parser) ParseProg() *ast.Program {
 		//fmt.Println(p.curTok)
 		stmt := p.parseStmt()
 
-		if stmt != nil {
-			prog.Stmts = append(prog.Stmts, stmt)
-		}
+		//		if stmt != nil {
+		prog.Stmts = append(prog.Stmts, stmt)
+		//		}
 
 		p.nextToken()
 	}

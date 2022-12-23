@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 
 	"os"
 
@@ -72,7 +72,7 @@ var runCmd = &cobra.Command{
 				evd := evaluator.Eval(at, env, eh, &printBuff, false)
 
 				//rd, _ := ioutil.ReadAll(&printBuff)
-				rd, err := ioutil.ReadAll(&printBuff)
+				rd, err := io.ReadAll(&printBuff)
 
 				printValue := ""
 

@@ -29,9 +29,9 @@ func (p *Parser) parseIfExpr() ast.Expr {
 
 	for !p.isCurToken(token.ELSE) && !p.isCurToken(token.EOF) {
 		s := p.parseStmt()
-		if s != nil {
-			tb.Stmts = append(tb.Stmts, s)
-		}
+		//if  {
+		tb.Stmts = append(tb.Stmts, s)
+		//}
 		p.nextToken()
 	}
 
@@ -39,9 +39,9 @@ func (p *Parser) parseIfExpr() ast.Expr {
 
 	if !p.isCurToken(token.END) && !p.isCurToken(token.EOF) {
 		s := p.parseStmt()
-		if s != nil {
-			eb.Stmts = append(eb.Stmts, s)
-		}
+		//if s != nil {
+		eb.Stmts = append(eb.Stmts, s)
+		//}
 		p.nextToken()
 	}
 

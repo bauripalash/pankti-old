@@ -5,7 +5,7 @@ package ide
 
 import (
 	"bytes"
-	"io/ioutil"
+	"io"
 	"os"
 	"strings"
 
@@ -64,7 +64,7 @@ func RunFile(src string) string {
 	printBuff := bytes.Buffer{}
 	evd := evaluator.Eval(prog, env, eh, &printBuff, true)
 	//rd, _ := ioutil.ReadAll(&printBuff)
-	rd, err := ioutil.ReadAll(&printBuff)
+	rd, err := io.ReadAll(&printBuff)
 
 	printValue := ""
 

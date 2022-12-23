@@ -93,9 +93,9 @@ func (p *Parser) parseBlockStmt(eT token.TokenType) *ast.BlockStmt {
 
 	for !p.isCurToken(eT) && !p.isCurToken(token.EOF) {
 		s := p.parseStmt()
-		if s != nil {
-			bs.Stmts = append(bs.Stmts, s)
-		}
+		//		if s != nil {
+		bs.Stmts = append(bs.Stmts, s)
+		//		}
 		p.nextToken()
 	}
 	//fmt.Println("BS=> " , bs)
