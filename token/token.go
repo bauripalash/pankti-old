@@ -123,6 +123,7 @@ var Keywords = map[string]TokenType{
 	"tahole":   TAHOLE,
 	"jotokhon": WHILE,
 	"while":    WHILE,
+	"যতক্ষণ" : WHILE,
 	"include":  INCLUDE,
 	"anoyon":   INCLUDE,
 	"আনয়ন":     INCLUDE,
