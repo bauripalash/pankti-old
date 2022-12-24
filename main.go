@@ -2,13 +2,14 @@
 package main
 
 import (
-	"go.cs.palashbauri.in/pankti/cmd"
-	"go.cs.palashbauri.in/pankti/constants"
 	"os"
 	"path"
 	"runtime"
 	"runtime/debug"
 	"strings"
+
+	"go.cs.palashbauri.in/pankti/cmd"
+	"go.cs.palashbauri.in/pankti/constants"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -61,7 +62,6 @@ func setImportPathEnv() {
 }
 
 func main() {
-	//fmt.Println(os.Getenv(IMPORT_PATH_ENV))
 	is_noide := false
 	bi, noerr := debug.ReadBuildInfo()
 	if !noerr {
