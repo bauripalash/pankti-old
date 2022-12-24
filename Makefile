@@ -15,6 +15,12 @@ win_cli:
 	GOOS=windows GOARCH=amd64 go build -o dist/pankti_x86-64.exe --tags noide
 	rm versioninfo.json 
 
+win_gui:
+	cp windows/versioninfo.json ./
+        GOOS=windows GOARCH=amd64 goversioninfo -64 -icon=windows/res/icon.ico -manifest=windows/res/pankti.exe.manifest
+        GOOS=windows GOARCH=amd64 go build -o dist/pankti_x86-64_gui.exe 
+        rm versioninfo.json 
+
 win32_cli:
 	cp windows/versioninfo.json ./
 	GOOS=windows GOARCH=386 goversioninfo -icon=windows/res/icon.ico -manifest=windows/res/pankti.exe.manifest
@@ -23,6 +29,9 @@ win32_cli:
 
 linux_cli:
 	GOOS=linux GOARCH=amd64 go build -o dist/pankti_x86-64 --tags noide
+
+linux_gui:
+	GOOS=linux GOARCH=amd64 go build -o dist/pankti_x86-64-gui
 
 linux32_cli:
 	GOOS=linux GOARCH=386 go build -o dist/pankti_x86 --tags noide 
