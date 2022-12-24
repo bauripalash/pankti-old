@@ -17,9 +17,9 @@ win_cli:
 
 win_gui:
 	cp windows/versioninfo.json ./
-        GOOS=windows GOARCH=amd64 goversioninfo -64 -icon=windows/res/icon.ico -manifest=windows/res/pankti.exe.manifest
-        GOOS=windows GOARCH=amd64 go build -o dist/pankti_x86-64_gui.exe 
-        rm versioninfo.json 
+	GOOS=windows GOARCH=amd64 goversioninfo -64 -icon=windows/res/icon.ico -manifest=windows/res/pankti.exe.manifest 
+	GOOS=windows GOARCH=amd64 go build -o dist/pankti_x86-64_gui.exe 
+	rm versioninfo.json 
 
 win32_cli:
 	cp windows/versioninfo.json ./
