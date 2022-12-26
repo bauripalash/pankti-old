@@ -1,0 +1,98 @@
+// This is not a very syntax specific grammar representation
+// of Pankti Program Language
+// This is only a `Mental Image` of mine
+
+Program := EMPTY
+		| Comment
+		| Statements+
+
+Comment := '#' <ANYTHING> `\n`
+
+Statements := Let_Statement
+			| Return_Statement
+			| Show_Statement
+			| Expression_Statement
+
+Let_Statement := 
+			'LET' <IDENTIFIER> <EQ> Expression 
+
+Return_Statement := 
+			'RETURN` <LEFT_BRACKET> Expression <RIGHT_BRACKET>
+
+
+Show_Statement := 
+			'SHOW' <LEFT_BRACKET> Expression <RIGHT_BRACKET>
+
+Expression_Statement := 
+			Expression
+
+Expression := Expression_List 
+			| Function_Declaration
+			| Function_Call
+			| Import_Expression
+			| Conditionals
+			| Arithmetic_Expression
+			| Boolean_Ops
+			| Primitives 
+
+Expression_List := <LEFT_BRACKET> 
+						Expression 
+							( `,` Expression )* 
+								<RIGHT_BRACKET>
+
+Function_Declaration := `EKTI` 
+							`KAJ` 
+								<LEFT_BRACKET> Expression <RIGHT_BRACKET> 
+									Statements+ 
+								`END`
+
+Conditionals := If_Expression
+			| While_Expression
+
+If_Expression := `JODI` 
+				Expression_List 
+					`TAHOLE` 
+						Statements+ 
+							`END`
+While_Expression := `JOTOKHON`
+					Expression_List
+						Statements+
+							`END`
+
+Arithmetic_Expression :=
+			Expression `+` Expression
+			| Expression `-` Expression
+			| Expression `/` Expression
+			| Expression `*` Expression
+
+Boolean_Ops :=
+			Expression `>` Expression
+			| Expression `<` Expression
+			| Expression `>=` Expression
+			| Expression `=<` Expression
+			| Expression `!=` Expression
+			| Expression `==` Expression
+
+Primitives := Identifier_Expression
+			| Hashmap_Expression
+			| Array_Expression
+			| Number_Expression
+
+Identifier_Expression := [a-zA-Z0-9_]+
+						| [\u0980–\u09FF]+
+
+Hashmap_Expression := <LEFT_CURLY_BRACKET> 
+							( Expression `:` Expression )+ 
+								<RIGHT_CURLY_BRACKET>
+
+Array_Expression := <LEFT_SQUARE_BRACKET> 
+							Expression (`,` Expression)* 
+								<RIGHT_SQUARE_BRACKET>
+
+Number_Expression := Decimal_Number
+			| Integer
+
+Decimal_Number:= Integer `.` Integer
+
+Integer := [0-9]+
+			| [\u09E6-\u09EF]+
