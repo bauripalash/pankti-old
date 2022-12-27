@@ -1,5 +1,4 @@
 //go:generate goversioninfo -64 -icon=res/icon.ico -manifest=res/pankti.exe.manifest
-//go:generatei goversioninfo -icon=res/icon.ico -manifest=res/pankti.exe.manifest
 package main
 
 import (
