@@ -300,6 +300,12 @@ var builtins = map[string]*object.Builtin{
 		},
 	},
 
+	"__get_random_with_arg": {
+		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
+			return stdlib.GenerateRandom(eh, args)
+		},
+	},
+
 	"__string_split": {
 		Fn: func(eh *object.ErrorHelper, caller token.Token, args ...object.Obj) object.Obj {
 			return stdlib.SplitString(eh, args)

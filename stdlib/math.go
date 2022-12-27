@@ -2,7 +2,9 @@ package stdlib
 
 import (
 	"math"
+	"math/rand"
 	"strconv"
+	"time"
 
 	"go.cs.palashbauri.in/pankti/constants"
 	"go.cs.palashbauri.in/pankti/errs"
@@ -344,6 +346,19 @@ func ConvertToInt(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 	}
 
 	return object.MakeIntNumber(result)
+
+}
+
+func GenerateRandom(eh *object.ErrorHelper, args []object.Obj) object.Obj {
+
+	rand.Seed(time.Now().UnixNano())
+	n, ok := getIntFromArg(args[0])
+	if !ok {
+		object.NewErr(args[0].GetToken(), eh, true, errs.Errs["CANNOT_PARSE_AS_NUM"])
+	}
+
+	return object.MakeIntNumber(int64(rand.Intn(int(n))))
+	//rand.Intn()
 
 }
 
