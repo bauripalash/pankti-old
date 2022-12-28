@@ -20,6 +20,9 @@ func getStringFromArgs(arg object.Obj) (string, bool) { // Value, isOkay
 }
 
 func ReadFile(eh *object.ErrorHelper, args []object.Obj) object.Obj {
+	if IsAndroid() {
+		return object.NewErr(args[0].GetToken(), eh, false, errs.Errs["NOT_ON_ANDROID"])
+	}
 	filename, isOkay := getStringFromArgs(args[0])
 
 	if !isOkay {
@@ -34,6 +37,9 @@ func ReadFile(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 }
 
 func CreateEmptyFile(eh *object.ErrorHelper, args []object.Obj) object.Obj {
+	if IsAndroid() {
+		return object.NewErr(args[0].GetToken(), eh, false, errs.Errs["NOT_ON_ANDROID"])
+	}
 	filename, isOkay := getStringFromArgs(args[0])
 
 	if !isOkay {
@@ -59,6 +65,9 @@ func CreateEmptyFile(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 }
 
 func WriteToFile(eh *object.ErrorHelper, args []object.Obj) object.Obj {
+	if IsAndroid() {
+		return object.NewErr(args[0].GetToken(), eh, false, errs.Errs["NOT_ON_ANDROID"])
+	}
 	filename, isOkay := getStringFromArgs(args[0])
 	data := args[1]
 	if !isOkay {
@@ -76,6 +85,9 @@ func WriteToFile(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 }
 
 func FileDirExists(eh *object.ErrorHelper, args []object.Obj) object.Obj {
+	if IsAndroid() {
+		return object.NewErr(args[0].GetToken(), eh, false, errs.Errs["NOT_ON_ANDROID"])
+	}
 	result := false
 	filename, isOkay := getStringFromArgs(args[0])
 
@@ -90,6 +102,9 @@ func FileDirExists(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 }
 
 func DeletePath(eh *object.ErrorHelper, args []object.Obj) object.Obj {
+	if IsAndroid() {
+		return object.NewErr(args[0].GetToken(), eh, false, errs.Errs["NOT_ON_ANDROID"])
+	}
 	filename, ok := getStringFromArgs(args[0])
 
 	if !ok {
@@ -109,7 +124,9 @@ func DeletePath(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 }
 
 func RenameFile(eh *object.ErrorHelper, args []object.Obj) object.Obj {
-
+	if IsAndroid() {
+		return object.NewErr(args[0].GetToken(), eh, false, errs.Errs["NOT_ON_ANDROID"])
+	}
 	//result := false
 
 	targetFile, isOkay := getStringFromArgs(args[0])
@@ -139,6 +156,9 @@ func RenameFile(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 }
 
 func IsAFile(eh *object.ErrorHelper, args []object.Obj) object.Obj {
+	if IsAndroid() {
+		return object.NewErr(args[0].GetToken(), eh, false, errs.Errs["NOT_ON_ANDROID"])
+	}
 	target, ok := getStringFromArgs(args[0])
 	result := false
 
@@ -156,6 +176,9 @@ func IsAFile(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 }
 
 func IsADir(eh *object.ErrorHelper, args []object.Obj) object.Obj {
+	if IsAndroid() {
+		return object.NewErr(args[0].GetToken(), eh, false, errs.Errs["NOT_ON_ANDROID"])
+	}
 	target, ok := getStringFromArgs(args[0])
 	result := false
 
@@ -173,6 +196,9 @@ func IsADir(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 }
 
 func AppendLineToFile(eh *object.ErrorHelper, args []object.Obj) object.Obj {
+	if IsAndroid() {
+		return object.NewErr(args[0].GetToken(), eh, false, errs.Errs["NOT_ON_ANDROID"])
+	}
 	filename, ok := getStringFromArgs(args[0])
 	if !ok {
 		return object.NewErr(args[0].GetToken(), eh, true, errs.Errs["FILE_PATH_MUST_BE_STRING"])
@@ -211,6 +237,9 @@ func AppendLineToFile(eh *object.ErrorHelper, args []object.Obj) object.Obj {
 }
 
 func ListDir(eh *object.ErrorHelper, args []object.Obj) object.Obj {
+	if IsAndroid() {
+		return object.NewErr(args[0].GetToken(), eh, false, errs.Errs["NOT_ON_ANDROID"])
+	}
 	d := args[0]
 	dirname, ok := getStringFromArgs(d)
 	if !ok {

@@ -6,7 +6,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
 
   <groupId>in.palashbauri</groupId>
   <artifactId>panktijapi</artifactId>
-  <version>0.2.0-alpha.1</version>
+  <version>0.2.0-alpha.3</version>
   <packaging>aar</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>

@@ -127,4 +127,5 @@ var Errs = map[string]string{
 	"CANNOT_PARSE_AS_NUM":            "প্রদত্ত চলরাশিকে সংখ্যাতে পরিণত করা যাবে না।",
 	"CANNOT_PARSE_STRING_AS_NUM":     "প্রদত্ত স্ট্রিং/'লেখা'কে সংখ্যাতে পরিণত করা যাবে না।",
 	"STDIN_READ_FAILED":              "Stdin থেকে তথ্য পড়া গেল না।",
+	"NOT_ON_ANDROID":                 "এই কাজটি Android এ ব্যবহার করা যাবে না। ",
 }

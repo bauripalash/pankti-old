@@ -3,14 +3,20 @@ package stdlib
 import (
 	"embed"
 	"errors"
-	"go.cs.palashbauri.in/pankti/constants"
 	"io/fs"
 	"os"
 	"path/filepath"
+	"runtime"
+
+	"go.cs.palashbauri.in/pankti/constants"
 )
 
 //go:embed x
 var stdx embed.FS
+
+func IsAndroid() bool {
+	return runtime.GOOS == "android"
+}
 
 func GetStdLibFileSrc(path string) (string, bool) {
 	if filepath.IsAbs(path) {
