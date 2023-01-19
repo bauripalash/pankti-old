@@ -1,12 +1,13 @@
 ![Pankti Programming Language](./images/pankti_cover.jpg)
 
-## Introduction
+## Introductions
 
-Pankti is an interpreted dynamically typed programming language for programming in the Bengali language. Vabna is designed with Bengali in mind but can also be used with English. As matter of fact, the implementation is so easy to modify that it can be used to program in any language with very little change to the source code of the vabna interpreter. Vabna is a potential multilingual programming language
+Pankti is an interpreted dynamically typed programming language for programming in the Bengali language. Pankti is designed with Bengali in mind but can also be used with English. As matter of fact, the implementation is so easy to modify that it can be used to program in any language with very little change to the source code of the pankti interpreter. Pankti is a potential multilingual programming language
 
 ## Why
-My mother tongue is Bengali. Previously there have been few attempts to build a Bengali programming language but most of them have no practical usage, so I ventured into the dark world of language design.## Language Features
+My mother tongue is Bengali. Previously there have been few attempts to build a Bengali programming language but most of them have no practical usage, so I ventured into the dark world of language design.
 
+## Language Features
 ###  Data Types:
 * Strings : `"পলাশ বাউরি"` , `"ভাবনা"`...
 * Numbers:
@@ -17,7 +18,7 @@ My mother tongue is Bengali. Previously there have been few attempts to build a 
 * Booleans: `সত্য`, `মিথ্যা`
 
 ### Functions:
-* Example: 
+* Example:
 ```go
 ধরি ঘুমানো = একটি কাজ(নায়ক)
     দেখাও(নায়ক + " ঘুমোচ্ছে!")
@@ -32,7 +33,6 @@ Output: পলাশ বাউরি ঘুমোচ্ছে!
 * Examples:
 ```go
 ধরি মাস = "বৈশাখ"
-ধরি আজ_কি_ছুটি = মিথ্যা
 ```
 
 ## Project Status:
