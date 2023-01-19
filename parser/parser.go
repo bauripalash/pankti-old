@@ -65,6 +65,7 @@ func NewParser(l *lexer.Lexer) *Parser {
 	p.regPrefix(token.EXC, p.parsePrefixExpr)
 	p.regPrefix(token.TRUE, p.parseBool)
 	p.regPrefix(token.FALSE, p.parseBool)
+	p.regPrefix(token.BREAK, p.parseBreak)
 	p.regPrefix(token.LPAREN, p.parseGroupedExpr)
 	p.regPrefix(token.IF, p.parseIfExpr)
 	p.regPrefix(token.WHILE, p.parseWhileExpr)

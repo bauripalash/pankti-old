@@ -61,11 +61,14 @@ func evalBlockStmt(
 	eh *object.ErrorHelper,
 	printBuff *bytes.Buffer,
 	isGui bool,
+	isLoop bool,
 ) object.Obj {
 
 	var res object.Obj
+	var prevRes object.Obj
 
 	for _, stmt := range block.Stmts {
+		prevRes = res
 		res = Eval(stmt, env, *eh, printBuff, isGui)
 
 		//fmt.Println("E_BS=> " , res)
@@ -74,6 +77,10 @@ func evalBlockStmt(
 			rtype := res.Type()
 			if rtype == object.RETURN_VAL_OBJ || rtype == object.ERR_OBJ {
 				//fmt.Println("RET => " ,  res)
+				return res
+			}
+			if isLoop && rtype == object.BREAK_OBJ {
+				res.(*object.Break).PrevValue = prevRes
 				return res
 			}
 		}

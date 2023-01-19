@@ -43,6 +43,13 @@ func (p *Parser) parseBool() ast.Expr {
 	}
 }
 
+func (p *Parser) parseBreak() ast.Expr {
+	return &ast.Break{
+		Token: p.curTok,
+		Value: p.curTok.Literal,
+	}
+}
+
 func (p *Parser) parseNumLit() ast.Expr {
 
 	lit := &ast.NumberLit{Token: p.curTok}

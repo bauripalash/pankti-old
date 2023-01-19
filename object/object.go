@@ -19,6 +19,7 @@ const (
 	NUM_OBJ        = "NUM"
 	INCLUDE_OBJ    = "INCLUDE"
 	SHOW_OBJ       = "SHOW"
+	BREAK_OBJ      = "BREAK"
 )
 
 type BuiltInFunc func(eh *ErrorHelper, caller token.Token, args ...Obj) Obj

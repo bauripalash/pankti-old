@@ -48,6 +48,16 @@ func (_ *Boolean) Type() ObjType { return BOOL_OBJ }
 func (b *Boolean) Inspect() string       { return fmt.Sprintf("%t", b.Value) }
 func (b *Boolean) GetToken() token.Token { return b.Token }
 
+type Break struct {
+	Token     token.Token
+	PrevValue Obj
+}
+
+func (*Break) Type() ObjType           { return BREAK_OBJ }
+func (*Break) Inspect() string         { return "break" }
+func (b *Break) GetToken() token.Token { return b.Token }
+func (b *Break) Prev() Obj             { return b.PrevValue }
+
 // NULL_OBJ
 type Null struct{}
 

@@ -76,6 +76,7 @@ const (
 	SHOW   = "SHOW"
 	END    = "END"
 	DUMMY  = "DUMMY"
+	BREAK  = "BREAK"
 )
 
 var HumanFriendly = map[string]string{
@@ -94,6 +95,7 @@ var HumanFriendly = map[string]string{
 	WHILE:  "jotokhon",
 	SHOW:   "dekhau",
 	END:    "end",
+	BREAK:  "break",
 }
 
 var Keywords = map[string]TokenType{
@@ -115,7 +117,7 @@ var Keywords = map[string]TokenType{
 	"else":     ELSE,
 	"ফেরাও":    RETURN,
 	"ferau":    RETURN,
-	"ferao": RETURN,
+	"ferao":    RETURN,
 	"হল":       HOLO,
 	"holo":     HOLO,
 	"একটি":     EKTI,
@@ -129,12 +131,15 @@ var Keywords = map[string]TokenType{
 	"anoyon":   INCLUDE,
 	"আনয়ন":     INCLUDE,
 	"dekhau":   SHOW,
-	"dekhao": SHOW,
+	"dekhao":   SHOW,
 	"show":     SHOW,
 	"দেখাও":    SHOW,
 	"sesh":     END,
 	"end":      END,
 	"শেষ":      END,
+	"break":    BREAK,
+	"সমাপ্ত":   BREAK,
+	"somapto":  BREAK,
 }
 
 func LookupIdent(ident string) TokenType {

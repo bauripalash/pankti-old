@@ -83,3 +83,12 @@ func (b *Boolean) TokenLit() string { return b.Token.Literal }
 func (b *Boolean) String() string   { return b.Token.Literal }
 
 // ===========================================================
+
+type Break struct {
+	Token token.Token
+	Value string
+}
+
+func (*Break) exprNode()          {}
+func (b *Break) TokenLit() string { return b.Token.Literal }
+func (b *Break) String() string   { return b.Token.Literal }

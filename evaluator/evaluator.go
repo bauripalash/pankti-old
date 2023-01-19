@@ -77,7 +77,7 @@ func Eval(
 		args := evalExprs(node.Value, env, &eh, printBuff, isGui)
 		return evalShowStmt(args, printBuff, isGui)
 	case *ast.BlockStmt:
-		return evalBlockStmt(node, env, &eh, printBuff, isGui)
+		return evalBlockStmt(node, env, &eh, printBuff, isGui, false)
 	case *ast.LetStmt:
 		return evalLetStmt(node, env, &eh, printBuff, isGui)
 	case *ast.Identifier:
@@ -137,6 +137,8 @@ func Eval(
 		return evalHashLit(node, env, &eh, printBuff, isGui)
 	case *ast.IncludeExpr:
 		return &object.IncludeObj{Filename: node.Filename.String()}
+	case *ast.Break:
+		return &object.Break{Token: node.Token, PrevValue: NULL}
 	}
 
 	return nil

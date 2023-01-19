@@ -45,8 +45,22 @@ func evalWhileExpr(
 	}
 
 	for isTruthy(cond) {
-		result = Eval(wx.StmtBlock, env, *eh, printBuff, isGui)
+		result = evalBlockStmt(wx.StmtBlock, env, eh, printBuff, isGui, true)
+
+		if result != nil && result.Type() == object.BREAK_OBJ {
+			break
+		}
+
+		//fmt.Printf("%v\n" , result)
+
 		cond = Eval(wx.Cond, env, *eh, printBuff, isGui)
+	}
+
+	if result.Type() == object.BREAK_OBJ {
+		r := result.(*object.Break)
+		if r.PrevValue != nil {
+			return r.PrevValue
+		}
 	}
 
 	return result
