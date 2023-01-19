@@ -1,0 +1,5 @@
+dhori h = ekti kaj(n)
+	dekhao(n + " says hello")
+sesh
+
+h("aa")

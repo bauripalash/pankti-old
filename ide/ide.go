@@ -136,10 +136,19 @@ func RunIde() {
 		return iup.IGNORE
 	}))
 
+	
+
+	splitbox := iup.Split(editor , outputBox).SetAttributes(map[string]string{
+		"ORIENTATION" : "HORIZONTAL",
+	})
+
 	inf := iup.Vbox(
 		topToolbar,
+		splitbox,
+		/*
 		editor,
 		outputBox,
+		*/
 	)
 
 	dlg := iup.Dialog(inf).SetAttributes(map[string]string{
@@ -148,6 +157,20 @@ func RunIde() {
 		"SIZE":  "QUARTERxQUARTER",
 		"ICON":  "iconimage",
 	})
+	iup.SetCallback(dlg , "K_ANY" , iup.KAnyFunc(func(ih iup.Ihandle, id int) int {
+		if id == iup.K_F5{
+			outputBox.SetAttribute(
+			"VALUE",
+			RunFile(editor.GetAttribute("VALUE")))
+			return iup.IGNORE
+
+			
+
+		}
+		return iup.CONTINUE
+	}))
+
+
 
 	iup.Show(dlg)
 	iup.MainLoop()
