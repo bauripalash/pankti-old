@@ -26,7 +26,6 @@ func RunIde() {
 		fmt.Println("Failed to read gear image")
 		return
 	}
-
 	iconImage, err := png.Decode(bytes.NewReader(iconImg))
 
 	if err != nil {
@@ -38,10 +37,6 @@ func RunIde() {
 	iup.ImageFromImage(iconImage).SetHandle("iconimage")
 	editor := iup.MultiLine().
 		SetCallback("ACTION", iup.TextActionFunc(func(ih iup.Ihandle, item int, text string) int {
-			if item == iup.K_g {
-				return iup.IGNORE
-			}
-
 			return iup.DEFAULT
 		})).
 		SetAttributes(map[string]string{
@@ -136,18 +131,16 @@ func RunIde() {
 		return iup.IGNORE
 	}))
 
-	
-
-	splitbox := iup.Split(editor , outputBox).SetAttributes(map[string]string{
-		"ORIENTATION" : "HORIZONTAL",
+	splitbox := iup.Split(editor, outputBox).SetAttributes(map[string]string{
+		"ORIENTATION": "HORIZONTAL",
 	})
 
 	inf := iup.Vbox(
 		topToolbar,
 		splitbox,
 		/*
-		editor,
-		outputBox,
+			editor,
+			outputBox,
 		*/
 	)
 
@@ -157,20 +150,16 @@ func RunIde() {
 		"SIZE":  "QUARTERxQUARTER",
 		"ICON":  "iconimage",
 	})
-	iup.SetCallback(dlg , "K_ANY" , iup.KAnyFunc(func(ih iup.Ihandle, id int) int {
-		if id == iup.K_F5{
+	iup.SetCallback(dlg, "K_ANY", iup.KAnyFunc(func(ih iup.Ihandle, id int) int {
+		if id == iup.K_F5 {
 			outputBox.SetAttribute(
-			"VALUE",
-			RunFile(editor.GetAttribute("VALUE")))
+				"VALUE",
+				RunFile(editor.GetAttribute("VALUE")))
 			return iup.IGNORE
-
-			
 
 		}
 		return iup.CONTINUE
 	}))
-
-
 
 	iup.Show(dlg)
 	iup.MainLoop()

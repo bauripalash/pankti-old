@@ -5,13 +5,16 @@ import (
 
 	"go.cs.palashbauri.in/pankti/ast"
 	"go.cs.palashbauri.in/pankti/object"
+	"go.cs.palashbauri.in/pankti/token"
 )
 
 func evalInfixExpr(
-	op string,
+	optok token.Token,
 	l, r object.Obj,
 	eh *object.ErrorHelper,
 ) object.Obj {
+
+	op := optok.Literal
 
 	//fmt.Println(l.GetToken(), r.Type())
 	switch {
@@ -26,6 +29,15 @@ func evalInfixExpr(
 		return getBoolObj(l == r)
 	case op == "!=":
 		return getBoolObj(l != r)
+	case optok.Type == token.AND:
+		lval := getBoolTypeFromObj(l)
+		rval := getBoolTypeFromObj(r)
+		return getBoolObj(lval && rval)
+
+	case optok.Type == token.OR:
+		lval := getBoolTypeFromObj(l)
+		rval := getBoolTypeFromObj(r)
+		return getBoolObj(lval || rval)
 	case l.Type() != r.Type():
 		return object.NewErr(
 			l.GetToken(),
@@ -36,6 +48,7 @@ func evalInfixExpr(
 			op,
 			r.Type(),
 		)
+
 	default:
 		return object.NewErr(
 			l.GetToken(),

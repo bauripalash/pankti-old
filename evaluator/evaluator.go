@@ -315,6 +315,17 @@ func evalBangOp(r object.Obj) object.Obj {
 	}
 }
 
+func getBoolTypeFromObj(inp object.Obj) bool {
+
+	switch inp.Type() {
+	case object.BOOL_OBJ:
+		o := inp.(*object.Boolean)
+		return o.Value
+	default:
+		return false
+	}
+}
+
 func getBoolObj(inp bool) *object.Boolean {
 	if inp {
 		return TRUE

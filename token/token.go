@@ -62,6 +62,8 @@ const (
 	HOLO      = "HOLO"
 	EKTI      = "EKTI"
 	TAHOLE    = "TAHOLE"
+	AND       = "AND"
+	OR        = "OR"
 
 	//Keywords
 
@@ -96,6 +98,8 @@ var HumanFriendly = map[string]string{
 	SHOW:   "dekhau",
 	END:    "end",
 	BREAK:  "break",
+	AND:    "and",
+	OR:     "or",
 }
 
 var Keywords = map[string]TokenType{
@@ -140,6 +144,12 @@ var Keywords = map[string]TokenType{
 	"break":    BREAK,
 	"সমাপ্ত":   BREAK,
 	"somapto":  BREAK,
+	"ebong":    AND,
+	"and":      AND,
+	"এবং":      AND,
+	"ba":       OR,
+	"or":       OR,
+	"বা":       OR,
 }
 
 func LookupIdent(ident string) TokenType {

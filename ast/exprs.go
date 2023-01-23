@@ -32,7 +32,7 @@ func (pref *PrefixExpr) String() string {
 type InfixExpr struct {
 	Token token.Token
 	Left  Expr
-	Op    string
+	Op    token.Token
 	Right Expr
 }
 
@@ -43,7 +43,7 @@ func (inf *InfixExpr) String() string {
 	var out bytes.Buffer
 	out.WriteString("(")
 	out.WriteString(inf.Left.String())
-	out.WriteString(" " + inf.Op + " ")
+	out.WriteString(" " + inf.Op.Literal + " ")
 	out.WriteString(inf.Right.String())
 	out.WriteString(")")
 	return out.String()

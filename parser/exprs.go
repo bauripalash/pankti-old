@@ -62,7 +62,7 @@ func (p *Parser) parseInfixExpr(left ast.Expr) ast.Expr {
 
 	exp := &ast.InfixExpr{
 		Token: p.curTok,
-		Op:    p.curTok.Literal,
+		Op:    p.curTok,
 		Left:  left,
 	}
 
