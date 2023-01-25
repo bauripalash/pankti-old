@@ -30,10 +30,10 @@ func SaveFile(filename string, content string, overwrite bool) error {
 		return err
 	} else {
 		nf, err := os.Create(filename)
-		defer nf.Close()
 		if err != nil {
 			return err
 		}
+		defer nf.Close()
 
 		nf.Write([]byte(content))
 		nf.Sync()

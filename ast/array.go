@@ -12,7 +12,7 @@ type ArrLit struct {
 	Elms  []Expr
 }
 
-func (_ *ArrLit) exprNode()         {}
+func (*ArrLit) exprNode()           {}
 func (ar *ArrLit) TokenLit() string { return ar.Token.Literal }
 func (ar *ArrLit) String() string {
 	var out bytes.Buffer
@@ -38,7 +38,7 @@ type IndexExpr struct {
 	Index Expr
 }
 
-func (_ *IndexExpr) exprNode()         {}
+func (*IndexExpr) exprNode()           {}
 func (ie *IndexExpr) TokenLit() string { return ie.Token.Literal }
 func (ie *IndexExpr) String() string {
 	var out bytes.Buffer

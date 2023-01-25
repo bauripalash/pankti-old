@@ -20,7 +20,7 @@ func (f *FloatNumber) String() string {
 	return f.Value.String()
 }
 
-func (_ *FloatNumber) Type() NumberType {
+func (*FloatNumber) Type() NumberType {
 	return "F"
 }
 
@@ -32,7 +32,7 @@ func (i *IntNumber) String() string {
 	return i.Value.String()
 }
 
-func (_ *IntNumber) Type() NumberType {
+func (*IntNumber) Type() NumberType {
 	return "I"
 }
 

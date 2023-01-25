@@ -37,6 +37,6 @@ type Builtin struct {
 	Token token.Token
 }
 
-func (_ *Builtin) Type() ObjType         { return BUILTIN_OBJ }
-func (_ *Builtin) Inspect() string       { return "builtin function" }
+func (*Builtin) Type() ObjType           { return BUILTIN_OBJ }
+func (*Builtin) Inspect() string         { return "builtin function" }
 func (b *Builtin) GetToken() token.Token { return b.Token }

@@ -13,7 +13,7 @@ type IfExpr struct {
 	ElseBlock *BlockStmt
 }
 
-func (_ *IfExpr) exprNode()        {}
+func (*IfExpr) exprNode()          {}
 func (i *IfExpr) TokenLit() string { return i.Token.Literal }
 func (i *IfExpr) String() string {
 
@@ -37,7 +37,7 @@ type WhileExpr struct {
 	StmtBlock *BlockStmt
 }
 
-func (_ *WhileExpr) exprNode()        {}
+func (*WhileExpr) exprNode()          {}
 func (w *WhileExpr) TokenLit() string { return w.Token.Literal }
 func (w *WhileExpr) String() string {
 	var out bytes.Buffer

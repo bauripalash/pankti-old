@@ -15,7 +15,7 @@ type String struct {
 	Token token.Token
 }
 
-func (_ *String) Type() ObjType         { return STRING_OBJ }
+func (*String) Type() ObjType           { return STRING_OBJ }
 func (s *String) Inspect() string       { return s.Value }
 func (s *String) GetToken() token.Token { return s.Token }
 
@@ -25,7 +25,7 @@ type Number struct {
 	Token token.Token
 }
 
-func (_ *Number) Type() ObjType {
+func (*Number) Type() ObjType {
 	return NUM_OBJ
 }
 
@@ -43,7 +43,7 @@ type Boolean struct {
 	Token token.Token
 }
 
-func (_ *Boolean) Type() ObjType { return BOOL_OBJ }
+func (*Boolean) Type() ObjType { return BOOL_OBJ }
 
 func (b *Boolean) Inspect() string       { return fmt.Sprintf("%t", b.Value) }
 func (b *Boolean) GetToken() token.Token { return b.Token }
@@ -61,9 +61,9 @@ func (b *Break) Prev() Obj             { return b.PrevValue }
 // NULL_OBJ
 type Null struct{}
 
-func (_ *Null) Type() ObjType         { return NULL_OBJ }
-func (_ *Null) Inspect() string       { return "null" }
-func (_ *Null) GetToken() token.Token { return token.Token{} }
+func (*Null) Type() ObjType         { return NULL_OBJ }
+func (*Null) Inspect() string       { return "null" }
+func (*Null) GetToken() token.Token { return token.Token{} }
 
 //Arrays
 
@@ -72,7 +72,7 @@ type Array struct {
 	Token token.Token
 }
 
-func (_ *Array) Type() ObjType { return ARRAY_OBJ }
+func (*Array) Type() ObjType { return ARRAY_OBJ }
 func (a *Array) Inspect() string {
 	var out bytes.Buffer
 	es := []string{}

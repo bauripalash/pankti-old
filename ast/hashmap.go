@@ -13,7 +13,7 @@ type HashLit struct {
 	Pairs map[Expr]Expr
 }
 
-func (_ *HashLit) exprNode()         {}
+func (*HashLit) exprNode()           {}
 func (hl *HashLit) TokenLit() string { return hl.Token.Literal }
 func (hl *HashLit) String() string {
 	var out bytes.Buffer

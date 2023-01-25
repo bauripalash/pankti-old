@@ -64,7 +64,7 @@ type Hash struct {
 	Token token.Token
 }
 
-func (_ *Hash) Type() ObjType { return HASH_OBJ }
+func (*Hash) Type() ObjType { return HASH_OBJ }
 
 func (h *Hash) Inspect() string {
 	var out bytes.Buffer

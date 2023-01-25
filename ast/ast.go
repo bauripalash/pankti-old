@@ -53,6 +53,6 @@ type Comment struct {
 	Value string
 }
 
-func (_ *Comment) stmtNode()        {}
+func (*Comment) stmtNode()          {}
 func (s *Comment) TokenLit() string { return s.Token.Literal }
 func (s *Comment) String() string   { return s.Token.Literal }
