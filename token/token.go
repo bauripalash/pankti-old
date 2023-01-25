@@ -45,6 +45,7 @@ const (
 	MUL    = "*"
 	DIV    = "/"
 	MINUS  = "-"
+	MOD    = "%"
 
 	//Bang or `!`
 	EXC = "!"

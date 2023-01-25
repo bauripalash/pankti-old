@@ -141,6 +141,8 @@ func (l *Lexer) NextToken() token.Token {
 		tk = NewToken(token.LBRACE, l.ch, l.line, l.column)
 	case '}':
 		tk = NewToken(token.RBRACE, l.ch, l.line, l.column)
+	case '%':
+		tk = NewToken(token.MOD, l.ch, l.line, l.column)
 	case '!':
 		if l.peekChar() == '=' {
 			ch := l.ch

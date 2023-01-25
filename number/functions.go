@@ -1,6 +1,7 @@
 package number
 
 import (
+	"math"
 	"math/big"
 
 	"go.cs.palashbauri.in/pankti/token"
@@ -168,6 +169,14 @@ func NumberOperation(op string, n Number, x Number) (Number, bool, bool) {
 			val = new(big.Float).Mul(fa, fb)
 		case token.DIV:
 			val = new(big.Float).Quo(fa, fb)
+
+		case token.MOD:
+			nfa, _ := fa.Float64()
+			nfb, _ := fb.Float64()
+			rawVal := math.Mod(nfa, nfb)
+
+			val = big.NewFloat(rawVal)
+
 		case token.GT:
 			return Number{}, FloatFloatCompare(token.GT, *fa, *fb), true
 		case token.GTE:
@@ -205,6 +214,9 @@ func NumberOperation(op string, n Number, x Number) (Number, bool, bool) {
 				val = new(big.Int).Mul(&ia, &ib)
 			case token.DIV:
 				val = new(big.Int).Div(&ia, &ib)
+			case token.MOD:
+				val = new(big.Int).Mod(&ia, &ib)
+
 			case token.GT:
 				return Number{}, IntIntCompare(token.GT, ia, ib), true
 			case token.GTE:
@@ -238,6 +250,13 @@ func NumberOperation(op string, n Number, x Number) (Number, bool, bool) {
 			val = new(big.Float).Mul(fa, fb)
 		case token.DIV:
 			val = new(big.Float).Quo(fa, fb)
+
+		case token.MOD:
+			nfa, _ := fa.Float64()
+			nfb, _ := fb.Float64()
+			rawVal := math.Mod(nfa, nfb)
+
+			val = big.NewFloat(rawVal)
 		case token.GT:
 			return Number{}, FloatFloatCompare(token.GT, *fa, *fb), true
 		case token.GTE:
