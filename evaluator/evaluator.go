@@ -25,6 +25,7 @@ func Eval(
 	eh object.ErrorHelper,
 	printBuff *bytes.Buffer,
 	isGui bool,
+
 ) object.Obj {
 	switch node := node.(type) {
 	case *ast.Program: //Entry point of a Program AST

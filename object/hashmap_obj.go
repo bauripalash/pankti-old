@@ -90,6 +90,12 @@ func (h *Hash) GetToken() token.Token {
 	return h.Token
 }
 
+/*
+func (h *Hash) GetKey() HashPair{
+
+}
+*/
+
 type Hashable interface {
 	HashKey() HashKey
 }

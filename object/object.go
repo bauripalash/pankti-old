@@ -22,7 +22,7 @@ const (
 	BREAK_OBJ      = "BREAK"
 )
 
-type BuiltInFunc func(eh *ErrorHelper, caller token.Token, args ...Obj) Obj
+type BuiltInFunc func(eh *ErrorHelper, env *EnvMap, caller token.Token, args ...Obj) Obj
 
 type ObjType string
 

@@ -1,0 +1,11 @@
+dhori a = {
+	"nam" : "Palash",
+	"age" : 21
+}
+show(a)
+dhori a = sethv(a , "nam" , "Bauri")
+show(a)
+dhori a = sethv(a , "sur" , "Palash")
+show(a)
+show(getkeys(a))
+show(getvals(a))

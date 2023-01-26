@@ -13,7 +13,7 @@ func applyFunc(
 	caller token.Token,
 	args []object.Obj,
 	_ bool,
-	_ *object.EnvMap,
+	env *object.EnvMap,
 	eh *object.ErrorHelper,
 	printBuff *bytes.Buffer,
 	isGui bool,
@@ -38,7 +38,7 @@ func applyFunc(
 		}
 	case *object.Builtin:
 		//		fmt.Println(caller)
-		return fn.Fn(eh, caller, args...)
+		return fn.Fn(eh, env, caller, args...)
 	default:
 		return object.NewBareErr("%s is not a function", fn.Type())
 
