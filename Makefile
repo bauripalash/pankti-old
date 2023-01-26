@@ -6,6 +6,12 @@ all: linux_cli
 wasm:
 	GOOS=js GOARCH=wasm go build -o wasm/res/pankti.wasm wasm/panktiWasm.go
 
+test:
+	go test -v -tags noide -cpuprofile cpu.prof -memprofile mem.prof .
+
+bench:
+	go test -v -tags noide -cpuprofile cpu.prof -memprofile mem.prof -bench .
+
 pyserver:
 	cd wasm/res/ && python -m http.server 8099
 

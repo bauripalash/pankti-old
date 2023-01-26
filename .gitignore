@@ -11,3 +11,4 @@ go.work
 windows/build/
 *.syso
 examples/news/
+*.prof
