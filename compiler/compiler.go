@@ -1,6 +1,8 @@
 package compiler
 
 import (
+	"fmt"
+
 	"go.cs.palashbauri.in/pankti/ast"
 	"go.cs.palashbauri.in/pankti/code"
 	"go.cs.palashbauri.in/pankti/object"
@@ -45,6 +47,14 @@ func (c *Compiler) Compile(node ast.Node) error {
 		if err := c.Compile(node.Right); err != nil {
 			return err
 		}
+		switch node.Op.Literal {
+		case "+":
+			c.emit(code.OpAdd)
+
+		default:
+			return fmt.Errorf("Unknown operator %s", node.Op.Literal)
+
+		}
 	case *ast.NumberLit:
 		i := &object.Number{Value: node.Value}
 		c.emit(code.OpConstant, c.addConst(i))
@@ -52,7 +62,6 @@ func (c *Compiler) Compile(node ast.Node) error {
 		//switch node := node.(type){
 
 		//}
-
 	}
 
 	return nil

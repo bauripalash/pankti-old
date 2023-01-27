@@ -5,7 +5,9 @@ import (
 
 	"go.cs.palashbauri.in/pankti/code"
 	"go.cs.palashbauri.in/pankti/compiler"
+	"go.cs.palashbauri.in/pankti/number"
 	"go.cs.palashbauri.in/pankti/object"
+	"go.cs.palashbauri.in/pankti/token"
 )
 
 const StackSize = 2048
@@ -49,6 +51,13 @@ func (vm *VM) Run() error {
 			if err != nil {
 				return nil
 			}
+		case code.OpAdd:
+			right := vm.pop()
+			left := vm.pop()
+			lval := left.(*object.Number).Value
+			rval := right.(*object.Number).Value
+			r, _, _ := number.NumberOperation(token.PLUS, lval, rval)
+			vm.push(&object.Number{Value: r})
 		}
 
 	}
@@ -65,4 +74,10 @@ func (v *VM) push(o object.Obj) error {
 	v.sp++
 
 	return nil
+}
+
+func (v *VM) pop() object.Obj {
+	o := v.stack[v.sp-1]
+	v.sp--
+	return o
 }

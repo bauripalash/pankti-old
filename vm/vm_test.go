@@ -92,7 +92,7 @@ func TestNumber(t *testing.T) {
 	tests := []vmTestCase{
 		{"1", number.MakeInt(1)},
 		{"100", number.MakeInt(100)},
-		{"1 + 2", number.MakeInt(2)},
+		{"1 + 2", number.MakeInt(3)},
 	}
 
 	//t.Log(tests)
