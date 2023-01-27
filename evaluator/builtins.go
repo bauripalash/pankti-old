@@ -120,14 +120,14 @@ var builtins = map[string]*object.Builtin{
 			return stdlib.SetHashTableElm(eh, env, caller, args)
 		},
 	},
-	"getkeys" : {
+	"getkeys": {
 		Fn: func(eh *object.ErrorHelper, env *object.EnvMap, caller token.Token, args ...object.Obj) object.Obj {
-            return stdlib.GetAllKVsOfHashTable(true , eh , env , caller , args)
+			return stdlib.GetAllKVsOfHashTable(true, eh, env, caller, args)
 		},
 	},
-	"getvals" : {
+	"getvals": {
 		Fn: func(eh *object.ErrorHelper, env *object.EnvMap, caller token.Token, args ...object.Obj) object.Obj {
-            return stdlib.GetAllKVsOfHashTable(false , eh , env , caller , args)
+			return stdlib.GetAllKVsOfHashTable(false, eh, env, caller, args)
 		},
 	},
 

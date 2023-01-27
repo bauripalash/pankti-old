@@ -1,6 +1,7 @@
 package number
 
 import (
+	"fmt"
 	"math/big"
 	"strings"
 )
@@ -17,7 +18,7 @@ type FloatNumber struct {
 }
 
 func (f *FloatNumber) String() string {
-	return f.Value.String()
+	return string(f.Type()) + "->" + f.Value.String()
 }
 
 func (*FloatNumber) Type() NumberType {
@@ -29,7 +30,7 @@ type IntNumber struct {
 }
 
 func (i *IntNumber) String() string {
-	return i.Value.String()
+	return string(i.Type()) + "->" + i.Value.String()
 }
 
 func (*IntNumber) Type() NumberType {
@@ -39,6 +40,10 @@ func (*IntNumber) Type() NumberType {
 type Number struct {
 	Value Num
 	IsInt bool
+}
+
+func (n *Number) String() string {
+	return fmt.Sprintf("%#v", n.Value)
 }
 
 func IsFloat(inp string) bool {

@@ -37,34 +37,32 @@ var src = `
 `
 var expected = "832040"
 
-func TestX(t *testing.T){	
-	
-	l := lexer.NewLexer(src)	
+func TestX(t *testing.T) {
+
+	l := lexer.NewLexer(src)
 	p := parser.NewParser(&l)
 	prog := p.ParseProg()
-	eh := object.ErrorHelper{ Source: src } 
+	eh := object.ErrorHelper{Source: src}
 	printBuf := new(bytes.Buffer)
 	env := object.NewEnvMap()
-	ev := evaluator.Eval(prog , env , eh , printBuf  , true )
+	ev := evaluator.Eval(prog, env, eh, printBuf, true)
 
 	got := ev.Inspect()
 
-	if got != expected{
-		t.Errorf("Got %q; Wanted %q" , got , expected)
+	if got != expected {
+		t.Errorf("Got %q; Wanted %q", got, expected)
 	}
 
 }
 
-
 func BenchmarkX(b *testing.B) {
-   for i := 0; i < b.N ; i++{
-	l := lexer.NewLexer(src)	
-	p := parser.NewParser(&l)
-	prog := p.ParseProg()
-	eh := object.ErrorHelper{ Source: src } 
-	printBuf := new(bytes.Buffer)
-	env := object.NewEnvMap()
-	evaluator.Eval(prog , env , eh , printBuf  , true )
-   }
+	for i := 0; i < b.N; i++ {
+		l := lexer.NewLexer(src)
+		p := parser.NewParser(&l)
+		prog := p.ParseProg()
+		eh := object.ErrorHelper{Source: src}
+		printBuf := new(bytes.Buffer)
+		env := object.NewEnvMap()
+		evaluator.Eval(prog, env, eh, printBuf, true)
+	}
 }
-
