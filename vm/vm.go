@@ -12,6 +12,9 @@ import (
 
 const StackSize = 2048
 
+var True = &object.Boolean{Value: true}
+var False = &object.Boolean{Value: false}
+
 type VM struct {
 	constants    []object.Obj
 	instructions code.Instructions
@@ -51,18 +54,65 @@ func (vm *VM) Run() error {
 			if err != nil {
 				return nil
 			}
-		case code.OpAdd:
-			right := vm.pop()
-			left := vm.pop()
-			lval := left.(*object.Number).Value
-			rval := right.(*object.Number).Value
-			r, _, _ := number.NumberOperation(token.PLUS, lval, rval)
-			vm.push(&object.Number{Value: r})
+		case code.OpAdd, code.OpSub, code.OpMul, code.OpDiv:
+			err := vm.exeBinaryOp(op)
+			if err != nil {
+				return nil
+			}
+		case code.OpTrue:
+			if err := vm.push(True); err != nil {
+				return err
+			}
+		case code.OpFalse:
+			if err := vm.push(False); err != nil {
+				return err
+			}
+
+		case code.OpPop:
+			vm.pop()
 		}
 
 	}
 
 	return nil
+}
+
+func (vm *VM) exeBinaryOp(op code.OpCode) error {
+	right := vm.pop()
+	left := vm.pop()
+	lType := left.Type()
+	rType := right.Type()
+
+	if lType == object.NUM_OBJ && rType == object.NUM_OBJ {
+		return vm.exeNumBinaryOp(op, left, right)
+	}
+
+	return fmt.Errorf("Unsupported type for binary operation : %s %s", lType, rType)
+
+}
+
+func (vm *VM) exeNumBinaryOp(op code.OpCode, left, right object.Obj) error {
+
+	lval := left.(*object.Number).Value
+	rval := right.(*object.Number).Value
+	var result number.Number
+
+	switch op {
+	case code.OpAdd:
+		result, _, _ = number.NumberOperation(token.PLUS, lval, rval)
+	case code.OpSub:
+		result, _, _ = number.NumberOperation(token.MINUS, lval, rval)
+	case code.OpMul:
+		result, _, _ = number.NumberOperation(token.MUL, lval, rval)
+	case code.OpDiv:
+		result, _, _ = number.NumberOperation(token.DIV, lval, rval)
+		fmt.Println(result)
+	default:
+		return fmt.Errorf("Unknown number operator : %d", op)
+
+	}
+
+	return vm.push(&object.Number{Value: result})
 }
 
 func (v *VM) push(o object.Obj) error {
@@ -80,4 +130,8 @@ func (v *VM) pop() object.Obj {
 	o := v.stack[v.sp-1]
 	v.sp--
 	return o
+}
+
+func (vm *VM) LastPoppedStackItem() object.Obj {
+	return vm.stack[vm.sp]
 }

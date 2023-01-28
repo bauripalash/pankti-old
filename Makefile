@@ -3,6 +3,9 @@
 
 all: linux_cli
 
+fmt:
+	go fmt ./...
+
 wasm:
 	GOOS=js GOARCH=wasm go build -o wasm/res/pankti.wasm wasm/panktiWasm.go
 

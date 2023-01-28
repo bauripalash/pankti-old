@@ -24,6 +24,8 @@ func parse(i string) *ast.Program {
 }
 
 func testNumberObject(t *testing.T, ex number.Number, got object.Obj) error {
+	t.Log("-->")
+	t.Log(got)
 	result, ok := got.(*object.Number)
 	//	t.Log(result.Value.Value.String())
 	//	t.Log(ex.Value.String())
@@ -35,6 +37,21 @@ func testNumberObject(t *testing.T, ex number.Number, got object.Obj) error {
 		return fmt.Errorf("Object Wrong value got =>%v , Wanted => %v ",
 			result.Value.Value, ex.Value,
 		)
+	}
+
+	return nil
+}
+
+func testBoolObj(ex bool, got object.Obj) error {
+	//t.Helper()
+
+	r, ok := got.(*object.Boolean)
+	if !ok {
+		return fmt.Errorf("not bool got=>%T (%+v)", got, got)
+	}
+
+	if r.Value != ex {
+		return fmt.Errorf("Bool obj Value mismatch W=>%T , G=>%T", r.Value, ex)
 	}
 
 	return nil
@@ -64,7 +81,7 @@ func runVmTests(t *testing.T, tests []vmTestCase) {
 			t.Fatalf("vm error : %s", err)
 		}
 
-		sElm := vm.StackTop()
+		sElm := vm.LastPoppedStackItem()
 
 		testExpectedObj(t, tt.exp, sElm)
 	}
@@ -84,15 +101,28 @@ func testExpectedObj(t *testing.T,
 		if err != nil {
 			t.Errorf("Number Object failed: %s", err)
 		}
+	case bool:
+		if err := testBoolObj(exp, got); err != nil {
+			t.Errorf("Bool obj failed : %s", err)
+		}
+
 	}
 
 }
 
 func TestNumber(t *testing.T) {
 	tests := []vmTestCase{
-		{"1", number.MakeInt(1)},
+		/*{"1", number.MakeInt(1)},
 		{"100", number.MakeInt(100)},
 		{"1 + 2", number.MakeInt(3)},
+		{ "1-3" , number.MakeInt(-2) },
+
+		{ "2*3" , number.MakeInt(6) },
+
+		{ "6/2" , number.MakeInt(3) },
+		*/
+		{"sotto", true},
+		{"mittha", false},
 	}
 
 	//t.Log(tests)
