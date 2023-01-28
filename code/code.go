@@ -18,6 +18,9 @@ const (
 	OpPop
 	OpTrue
 	OpFalse
+	OpEqual
+	OpNotEqual
+	OpGT
 )
 
 type Definition struct {
@@ -34,6 +37,9 @@ var definitions = map[OpCode]*Definition{
 	OpPop:      {"OpPop", []int{}},
 	OpTrue:     {"OpTrue", []int{}},
 	OpFalse:    {"OpFalse", []int{}},
+	OpEqual:    {"OpEqual", []int{}},
+	OpNotEqual: {"OpNotEqual", []int{}},
+	OpGT:       {"OpGT", []int{}},
 }
 
 func (ins Instructions) String() string {

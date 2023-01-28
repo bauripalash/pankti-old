@@ -62,6 +62,16 @@ func TestIntArithmetic(t *testing.T) {
 				code.Make(code.OpPop),
 			},
 		},
+		{
+			input:   "1<2",
+			exConst: []interface{}{1, 2},
+			exIns: []code.Instructions{
+				code.Make(code.OpConstant, 0),
+				code.Make(code.OpConstant, 1),
+				code.Make(code.OpGT),
+				code.Make(code.OpPop),
+			},
+		},
 	}
 
 	runCTests(t, tests)

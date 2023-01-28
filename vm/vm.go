@@ -67,6 +67,10 @@ func (vm *VM) Run() error {
 			if err := vm.push(False); err != nil {
 				return err
 			}
+		case code.OpEqual, code.OpNotEqual, code.OpGT:
+			if err := vm.exeComparison(op); err != nil {
+				return err
+			}
 
 		case code.OpPop:
 			vm.pop()
@@ -75,6 +79,52 @@ func (vm *VM) Run() error {
 	}
 
 	return nil
+}
+
+func (vm *VM) exeComparison(op code.OpCode) error {
+	r := vm.pop()
+	l := vm.pop()
+
+	if r.Type() == object.NUM_OBJ && r.Type() == object.NUM_OBJ {
+		return vm.exeNumComparison(op, l, r)
+	}
+
+	switch op {
+	case code.OpEqual:
+		return vm.push(getBoolObj(l == r))
+	case code.OpNotEqual:
+		return vm.push(getBoolObj(l != r))
+	default:
+		return fmt.Errorf("unknown operator %d (%s %s)", op, l.Type(), r.Type())
+	}
+
+}
+
+func (vm *VM) exeNumComparison(op code.OpCode, l, r object.Obj) error {
+	lval := l.(*object.Number)
+	rval := r.(*object.Number)
+	var v bool
+	switch op {
+	case code.OpEqual:
+		_, v, _ = number.NumberOperation(token.EQEQ, lval.Value, rval.Value)
+		return vm.push(getBoolObj(v))
+	case code.OpNotEqual:
+		_, v, _ = number.NumberOperation(token.NOT_EQ, lval.Value, rval.Value)
+		return vm.push(getBoolObj(v))
+	case code.OpGT:
+		_, v, _ = number.NumberOperation(token.GT, lval.Value, rval.Value)
+		return vm.push(getBoolObj(v))
+	default:
+		return fmt.Errorf("Unknown Op : %d", op)
+	}
+}
+
+func getBoolObj(b bool) *object.Boolean {
+	if b {
+		return True
+	} else {
+		return False
+	}
 }
 
 func (vm *VM) exeBinaryOp(op code.OpCode) error {

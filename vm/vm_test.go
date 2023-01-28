@@ -46,12 +46,13 @@ func testBoolObj(ex bool, got object.Obj) error {
 	//t.Helper()
 
 	r, ok := got.(*object.Boolean)
+
 	if !ok {
 		return fmt.Errorf("not bool got=>%T (%+v)", got, got)
 	}
 
 	if r.Value != ex {
-		return fmt.Errorf("Bool obj Value mismatch W=>%T , G=>%T", r.Value, ex)
+		return fmt.Errorf("Bool obj Value mismatch W=>%v , G=>%v", r.Value, ex)
 	}
 
 	return nil
@@ -102,6 +103,8 @@ func testExpectedObj(t *testing.T,
 			t.Errorf("Number Object failed: %s", err)
 		}
 	case bool:
+		t.Log(exp)
+		t.Log(got)
 		if err := testBoolObj(exp, got); err != nil {
 			t.Errorf("Bool obj failed : %s", err)
 		}
@@ -123,6 +126,7 @@ func TestNumber(t *testing.T) {
 		*/
 		{"sotto", true},
 		{"mittha", false},
+		{"1 == 2", false},
 	}
 
 	//t.Log(tests)
