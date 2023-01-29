@@ -31,6 +31,9 @@ const (
 	OpArray
 	OpHash
 	OpIndex
+	OpCall
+	OpReturnValue
+	OpReturn
 )
 
 type Definition struct {
@@ -60,6 +63,9 @@ var definitions = map[OpCode]*Definition{
 	OpArray:         {"OpArray", []int{2}},
 	OpHash:          {"OpHash", []int{2}},
 	OpIndex:         {"OpIndex", []int{}},
+	OpCall:          {"OpCall", []int{}},
+	OpReturnValue:   {"OpReturnValue", []int{}},
+	OpReturn:        {"OpReturn", []int{}},
 }
 
 func (ins Instructions) String() string {
