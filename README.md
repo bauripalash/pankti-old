@@ -38,6 +38,10 @@ Output: পলাশ বাউরি ঘুমোচ্ছে!
 ## Project Status:
 > *Under Heavy Development*
 
+## Roadmap
+* [ ] Bytecode Compiler & VM (in progress)
+* [ ] Rewrite in Rust
+
 ## Android API:
 
 [![Maven Central](https://img.shields.io/maven-central/v/in.palashbauri/panktijapi)](https://central.sonatype.dev/artifact/in.palashbauri/panktijapi/0.1.1-alpha.1)
