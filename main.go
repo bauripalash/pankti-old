@@ -10,6 +10,7 @@ import (
 	"go.cs.palashbauri.in/pankti/compiler"
 	"go.cs.palashbauri.in/pankti/lexer"
 	"go.cs.palashbauri.in/pankti/parser"
+	"go.cs.palashbauri.in/pankti/vm"
 )
 
 /*
@@ -110,7 +111,7 @@ type t struct {
 
 func main() {
 	//helloparser("1 + 2 * 3 * 4 / 5 * 6 + 7 - 8")
-	h := helloparser("1+2")
+	h := helloparser("{1:2}")
 	/*tx := t{
 		Op: code.OpConstant,
 		Operands: []int{10},
@@ -124,6 +125,9 @@ func main() {
 	//fmt.Println(code.Instruction(ins))
 	n := compiler.NewCompiler()
 	n.Compile(&h)
+	fmt.Println(n.ByteCode().Instructions.String())
+	v := vm.NewVM(*n.ByteCode())
+	v.Run()
 	//fmt.Println(n.ByteCode().Constants[len(n.ByteCode().Constants)-1])
 	fmt.Println(n)
 

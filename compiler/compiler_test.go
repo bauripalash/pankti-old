@@ -72,6 +72,165 @@ func TestIntArithmetic(t *testing.T) {
 				code.Make(code.OpPop),
 			},
 		},
+		{
+			input:   "jodi (sotto) tahole 10 nahole sesh 3333",
+			exConst: []interface{}{10, 3333},
+			exIns: []code.Instructions{
+				code.Make(code.OpTrue),
+				code.Make(code.OpJumpNotTruthy, 10),
+				code.Make(code.OpConstant, 0),
+				code.Make(code.OpJump, 11),
+				code.Make(code.OpNull),
+				code.Make(code.OpPop),
+				code.Make(code.OpConstant, 1),
+				code.Make(code.OpPop),
+			},
+		},
+
+		{
+			input:   "jodi (sotto) tahole 10 nahole 20 sesh 3333",
+			exConst: []interface{}{10, 20, 3333},
+			exIns: []code.Instructions{
+				code.Make(code.OpTrue),
+				code.Make(code.OpJumpNotTruthy, 10),
+				code.Make(code.OpConstant, 0),
+				code.Make(code.OpJump, 13),
+				code.Make(code.OpConstant, 1),
+				code.Make(code.OpPop),
+				code.Make(code.OpConstant, 2),
+				code.Make(code.OpPop),
+			},
+		},
+
+		{
+			input: `
+			dhori a = 1
+			dhori b = 2
+			`,
+			exConst: []interface{}{1, 2},
+			exIns: []code.Instructions{
+				code.Make(code.OpConstant, 0),
+				code.Make(code.OpSetGlobal, 0),
+				code.Make(code.OpConstant, 1),
+				code.Make(code.OpSetGlobal, 1),
+			},
+		},
+
+		{
+
+			input: `
+            dhori a = 1
+			a 
+			`,
+			exConst: []interface{}{1},
+			exIns: []code.Instructions{
+				code.Make(code.OpConstant, 0),
+				code.Make(code.OpSetGlobal, 0),
+				code.Make(code.OpGetGlobal, 0),
+				code.Make(code.OpPop),
+			},
+		},
+		{
+			input:   `"hello"`,
+			exConst: []interface{}{"hello"},
+			exIns: []code.Instructions{
+				code.Make(code.OpConstant, 0),
+				code.Make(code.OpPop),
+			},
+		}, {
+			input:   `"hell" + "o"`,
+			exConst: []interface{}{"hell", "o"},
+			exIns: []code.Instructions{
+				code.Make(code.OpConstant, 0),
+
+				code.Make(code.OpConstant, 1),
+				code.Make(code.OpAdd),
+				code.Make(code.OpPop),
+			},
+		},
+		{
+			input:   "[]",
+			exConst: []interface{}{},
+			exIns: []code.Instructions{
+				code.Make(code.OpArray, 0),
+				code.Make(code.OpPop),
+			},
+		},
+		{
+			input:   "[1,2,3]",
+			exConst: []interface{}{1, 2, 3},
+			exIns: []code.Instructions{
+				code.Make(code.OpConstant, 0),
+				code.Make(code.OpConstant, 1),
+				code.Make(code.OpConstant, 2),
+				code.Make(code.OpArray, 3),
+				code.Make(code.OpPop),
+			},
+		},
+
+		{
+			input:   "{1:2 , 3 : 4}",
+			exConst: []interface{}{1, 2, 3, 4},
+			exIns: []code.Instructions{
+				code.Make(code.OpConstant, 0),
+				code.Make(code.OpConstant, 1),
+				code.Make(code.OpConstant, 2),
+				code.Make(code.OpConstant, 3),
+				code.Make(code.OpHash, 4),
+				code.Make(code.OpPop),
+			},
+		},
+		{
+			input:   "{1:2+3 , 4 : 5*6}",
+			exConst: []interface{}{1, 2, 3, 4, 5, 6},
+			exIns: []code.Instructions{
+				code.Make(code.OpConstant, 0),
+				code.Make(code.OpConstant, 1),
+				code.Make(code.OpConstant, 2),
+				code.Make(code.OpAdd),
+				code.Make(code.OpConstant, 3),
+				code.Make(code.OpConstant, 4),
+				code.Make(code.OpConstant, 5),
+				code.Make(code.OpMul),
+				code.Make(code.OpHash, 4),
+				code.Make(code.OpPop),
+			},
+		},
+		{
+			input:   "[1,2,3][1+1]",
+			exConst: []interface{}{1, 2, 3, 1, 1},
+			exIns: []code.Instructions{
+				code.Make(code.OpConstant, 0),
+
+				code.Make(code.OpConstant, 1),
+
+				code.Make(code.OpConstant, 2),
+				code.Make(code.OpArray, 3),
+
+				code.Make(code.OpConstant, 3),
+
+				code.Make(code.OpConstant, 4),
+				code.Make(code.OpAdd),
+				code.Make(code.OpIndex),
+				code.Make(code.OpPop),
+			},
+		}, {
+			input:   "{1:2}[2-1]",
+			exConst: []interface{}{1, 2, 2, 1},
+			exIns: []code.Instructions{
+				code.Make(code.OpConstant, 0),
+
+				code.Make(code.OpConstant, 1),
+
+				code.Make(code.OpHash, 2),
+				code.Make(code.OpConstant, 2),
+
+				code.Make(code.OpConstant, 3),
+				code.Make(code.OpSub),
+				code.Make(code.OpIndex),
+				code.Make(code.OpPop),
+			},
+		},
 	}
 
 	runCTests(t, tests)
@@ -94,7 +253,7 @@ func runCTests(t *testing.T, tests []cTestCase) {
 		err = testInstructions(tt.exIns, bc.Instructions)
 
 		if err != nil {
-			t.Fatalf("test Instructions faile : %s", err)
+			t.Fatalf("test Instructions failed : %s", err)
 		}
 
 		err = testConsts(t, tt.exConst, bc.Constants)
@@ -109,12 +268,12 @@ func testInstructions(ex []code.Instructions, got code.Instructions) error {
 	ctd := concatIns(ex)
 
 	if len(got) != len(ctd) {
-		return fmt.Errorf("Wrong Ins len; W=>%q G=>%q", ctd, got)
+		return fmt.Errorf("Wrong Ins len;\n W=>%q\n G=>%q\n", ctd, got)
 	}
 
 	for i, ins := range ctd {
 		if got[i] != ins {
-			return fmt.Errorf("wrong instructions at %d; W=>%q G=>%q", i, ctd, got)
+			return fmt.Errorf("wrong instructions at %d; W=>%q\n G=>%q\n", i, ctd, got)
 		}
 	}
 
@@ -139,8 +298,25 @@ func testConsts(t *testing.T, ex []interface{}, got []object.Obj) error {
 			if err := testBoolObj(*con, got[i]); err != nil {
 				return fmt.Errorf("const %d testBoolObj failed %s", i, err)
 			}
+		case string:
+			if err := testStringObj(con, got[i]); err != nil {
+				return fmt.Errorf("constant %d - testStringObj failed %s", i, err)
+			}
 
 		}
+	}
+
+	return nil
+}
+
+func testStringObj(ex string, got object.Obj) error {
+	r, ok := got.(*object.String)
+	if !ok {
+		return fmt.Errorf("Object not string got=%T (%+v)", got, got)
+	}
+
+	if r.Value != ex {
+		return fmt.Errorf("Obj Wrong Obj got=%q want %q", r.Value, ex)
 	}
 
 	return nil
