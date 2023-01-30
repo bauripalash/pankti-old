@@ -231,6 +231,9 @@ func TestIntArithmetic(t *testing.T) {
 				code.Make(code.OpPop),
 			},
 		},
+		{
+			input: "ekti kaj() ferao(5+10) sesh",
+		},
 	}
 
 	runCTests(t, tests)
