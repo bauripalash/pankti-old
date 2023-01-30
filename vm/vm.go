@@ -17,26 +17,48 @@ var False = &object.Boolean{Value: false}
 var Null = &object.Null{}
 
 const GlobalsSize = 65536
+const MaxFrames = 1024
 
 type VM struct {
-	constants    []object.Obj
-	instructions code.Instructions
+	constants []object.Obj
 
 	stack []object.Obj
 	sp    int
 
-	globals []object.Obj
+	globals     []object.Obj
+	frames      []*Frame
+	framesIndex int
 }
 
 func NewVM(bc compiler.ByteCode) *VM {
+	mainFunc := &object.CompiledFunc{Instructions: bc.Instructions}
+	mainClosure := &object.Closure{Fn: mainFunc}
+	mainFrame := NewFrame(mainClosure, 0)
+	frames := make([]*Frame, MaxFrames)
+	frames[0] = mainFrame
 	return &VM{
-		instructions: bc.Instructions,
-		constants:    bc.Constants,
+		constants: bc.Constants,
 
-		stack:   make([]object.Obj, StackSize),
-		sp:      0,
-		globals: make([]object.Obj, GlobalsSize),
+		stack:       make([]object.Obj, StackSize),
+		sp:          0,
+		globals:     make([]object.Obj, GlobalsSize),
+		frames:      frames,
+		framesIndex: 1,
 	}
+}
+
+func (vm *VM) currentFrame() *Frame {
+	return vm.frames[vm.framesIndex-1]
+}
+
+func (vm *VM) pushFrame(f *Frame) {
+	vm.frames[vm.framesIndex] = f
+	vm.framesIndex++
+}
+
+func (vm *VM) popFrame() *Frame {
+	vm.framesIndex--
+	return vm.frames[vm.framesIndex]
 }
 
 func (vm *VM) StackTop() object.Obj {
@@ -48,13 +70,21 @@ func (vm *VM) StackTop() object.Obj {
 }
 
 func (vm *VM) Run() error {
-	for ip := 0; ip < len(vm.instructions); ip++ {
-		op := code.OpCode(vm.instructions[ip])
+	var ip int
+	var ins code.Instructions
+	var op code.OpCode
+
+	for vm.currentFrame().ip < len(vm.currentFrame().Instructions())-1 {
+		vm.currentFrame().ip++
+		ip = vm.currentFrame().ip
+		ins = vm.currentFrame().Instructions()
+		op = code.OpCode(ins[ip])
+		//op := code.OpCode(vm.instructions[ip])
 
 		switch op {
 		case code.OpConstant:
-			constIndex := code.ReadUint16(vm.instructions[ip+1:])
-			ip += 2
+			constIndex := code.ReadUint16(ins[ip+1:])
+			vm.currentFrame().ip += 2
 
 			err := vm.push(vm.constants[constIndex])
 			if err != nil {
@@ -86,45 +116,53 @@ func (vm *VM) Run() error {
 				return err
 			}
 		case code.OpJump:
-			pos := int(code.ReadUint16(vm.instructions[ip+1:]))
-			ip = pos - 1
+			pos := int(code.ReadUint16(ins[ip+1:]))
+			vm.currentFrame().ip = pos - 1
 		case code.OpJumpNotTruthy:
 			//pos :=
 
-			pos := int(code.ReadUint16(vm.instructions[ip+1:]))
-			ip += 2
+			pos := int(code.ReadUint16(ins[ip+1:]))
+			vm.currentFrame().ip += 2
 
 			cond := vm.pop()
 
 			if !isTruthy(cond) {
-				ip = pos - 1
+				vm.currentFrame().ip = pos - 1
 			}
 		case code.OpNull:
 			if err := vm.push(Null); err != nil {
 				return err
 			}
 		case code.OpSetGlobal:
-			gIndex := code.ReadUint16(vm.instructions[ip+1:])
-			ip += 2
+			gIndex := code.ReadUint16(ins[ip+1:])
+			vm.currentFrame().ip += 2
 			vm.globals[gIndex] = vm.pop()
 		case code.OpGetGlobal:
-			gIndex := code.ReadUint16(vm.instructions[ip+1:])
-			ip += 2
+			localId := code.ReadUint16(ins[ip+1:])
+			vm.currentFrame().ip += 2
+
+			f := vm.currentFrame()
+			if err := vm.push(vm.stack[f.basePointer+int(localId)]); err != nil {
+				return err
+			}
+
+			/*gIndex := code.ReadUint16(ins[ip+1:])
+			vm.currentFrame().ip += 2
 
 			if err := vm.push(vm.globals[gIndex]); err != nil {
 				return err
-			}
+			}*/
 		case code.OpArray:
-			numElms := int(code.ReadUint16(vm.instructions[ip+1:]))
-			ip += 2
+			numElms := int(code.ReadUint16(ins[ip+1:]))
+			vm.currentFrame().ip += 2
 			arr := vm.buildArray(vm.sp-numElms, vm.sp)
 			vm.sp = vm.sp - numElms
 			if err := vm.push(arr); err != nil {
 				return err
 			}
 		case code.OpHash:
-			numElms := int(code.ReadUint16(vm.instructions[ip+1:]))
-			ip += 2
+			numElms := int(code.ReadUint16(ins[ip+1:]))
+			vm.currentFrame().ip += 2
 			hash, err := vm.buildHash(vm.sp-numElms, vm.sp)
 
 			if err != nil {
@@ -142,6 +180,49 @@ func (vm *VM) Run() error {
 			if err := vm.exeIndexExpr(left, index); err != nil {
 				return err
 			}
+		case code.OpCall:
+			numArgs := code.ReadUint8(ins[ip+1:])
+			vm.currentFrame().ip += 1
+			if err := vm.exeCall(int(numArgs)); err != nil {
+				return err
+			}
+		case code.OpClosure:
+			cIndex := code.ReadUint16(ins[ip+1:])
+			_ = code.ReadUint8(ins[ip+3:])
+			vm.currentFrame().ip += 3
+			if err := vm.pushClosure(int(cIndex)); err != nil {
+				return err
+			}
+			//			if err := vm.push
+
+		case code.OpReturnValue:
+			rvalue := vm.pop()
+			f := vm.popFrame()
+			vm.sp = f.basePointer - 1
+			//vm.pop()
+			if err := vm.push(rvalue); err != nil {
+				return err
+			}
+		case code.OpReturn:
+			f := vm.popFrame()
+			vm.sp = f.basePointer - 1
+			//vm.pop()
+			if err := vm.push(Null); err != nil {
+				return err
+			}
+		case code.OpSetLocal:
+			localId := code.ReadUint8(ins[ip+1:])
+			vm.currentFrame().ip += 1
+			f := vm.currentFrame()
+			vm.stack[f.basePointer+int(localId)] = vm.pop()
+		case code.OpGetLocal:
+			lindex := code.ReadUint8(ins[ip+1:])
+			vm.currentFrame().ip += 1
+			f := vm.currentFrame()
+
+			if err := vm.push(vm.stack[f.basePointer+int(lindex)]); err != nil {
+				return err
+			}
 
 		case code.OpPop:
 			vm.pop()
@@ -149,6 +230,42 @@ func (vm *VM) Run() error {
 
 	}
 
+	return nil
+}
+
+func (vm *VM) pushClosure(ci int) error {
+	c := vm.constants[ci]
+	fn, ok := c.(*object.CompiledFunc)
+	if !ok {
+		return fmt.Errorf("not a function : %+v", c)
+	}
+	closure := &object.Closure{Fn: fn}
+	return vm.push(closure)
+}
+
+func (vm *VM) exeCall(n int) error {
+	callee := vm.stack[vm.sp-1-n]
+	switch callee := callee.(type) {
+	case *object.Closure:
+		return vm.callClosure(callee, n)
+
+	default:
+		return fmt.Errorf("calling non-function")
+	}
+}
+
+func (vm *VM) callClosure(cl *object.Closure, numArgs int) error {
+	if numArgs != cl.Fn.NumParams {
+		return fmt.Errorf("wrong args w=%d; g=%d", cl.Fn.NumParams, numArgs)
+	}
+	//fn, ok := vm.stack[vm.sp-1-numArgs].(*object.CompiledFunc)
+	//if !ok {
+	//	return fmt.Errorf("calling non-function")
+	//}
+
+	frame := NewFrame(cl, vm.sp-numArgs)
+	vm.pushFrame(frame)
+	vm.sp = frame.basePointer + cl.Fn.NumLocals
 	return nil
 }
 

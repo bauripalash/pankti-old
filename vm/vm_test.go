@@ -176,37 +176,68 @@ func testStringObj(ex string, got object.Obj) error {
 func TestNumber(t *testing.T) {
 	tests := []vmTestCase{
 		/*		{"1", number.MakeInt(1)},
-				{"100", number.MakeInt(100)},
-				{"1 + 2", number.MakeInt(3)},
-				{"1-3", number.MakeInt(-2)},
+						{"100", number.MakeInt(100)},
+						{"1 + 2", number.MakeInt(3)},
+						{"1-3", number.MakeInt(-2)},
 
-				{"2*3", number.MakeInt(6)},
+						{"2*3", number.MakeInt(6)},
 
-				{"6/2", number.MakeInt(3)},
+						{"6/2", number.MakeInt(3)},
 
-				{"sotto", true},
-				{"mittha", false},
-				{"1 == 2", false},
-				{"jodi (sotto) tahole 10 nahole sesh", 10},
-				{"jodi (sotto) tahole 10 nahole 20 sesh;", 10},
-				{"jodi (mittha) tahole 10 nahole 20 sesh ", 20},
+						{"sotto", true},
+						{"mittha", false},
+						{"1 == 2", false},
+						{"jodi (sotto) tahole 10 nahole sesh", 10},
+						{"jodi (sotto) tahole 10 nahole 20 sesh;", 10},
+						{"jodi (mittha) tahole 10 nahole 20 sesh ", 20},
 
-				{"jodi (1<2) tahole 10 nahole 20 sesh ", 10},
-				{"jodi ( 1 > 2) tahole 10 nahole sesh", Null},
-				{"!(jodi (mittha) tahole 5 nahole sesh )", true},
-				{`dhori a = 1
-				a`, 1},
-				{`"hell" + "o"`, "hello"},
-				{"[]", []int{}},
-				{"[1 , 2 ,3]", []int{1, 2, 3}},
-		*/ //	{"{}", map[object.HashKey]number.Number{}},
-		{`{"1":2}`, map[object.HashKey]number.Number{
-			(&object.String{Value: "1"}).HashKey(): number.MakeFloat(2),
-		}},
-		{"[1,2,3][1]", 2},
-		{"[[1,1,1]][0][0]", 1},
-		{"[][0]", Null},
-		{`{"a" : 1 , "b" : 2}["a"]`, 1},
+						{"jodi (1<2) tahole 10 nahole 20 sesh ", 10},
+						{"jodi ( 1 > 2) tahole 10 nahole sesh", Null},
+						{"!(jodi (mittha) tahole 5 nahole sesh )", true},
+						{`dhori a = 1
+						a`, 1},
+						{`"hell" + "o"`, "hello"},
+						{"[]", []int{}},
+						{"[1 , 2 ,3]", []int{1, 2, 3}},
+				//	{"{}", map[object.HashKey]number.Number{}},
+				{`{"1":2}`, map[object.HashKey]number.Number{
+					(&object.String{Value: "1"}).HashKey(): number.MakeFloat(2),
+				}},
+				{"[1,2,3][1]", 2},
+				{"[[1,1,1]][0][0]", 1},
+				{"[][0]", Null},
+				{`{"a" : 1 , "b" : 2}["a"]`, 1},*/
+		/*	{`dhori a = ekti kaj() 5 + 10 sesh
+			a()
+			`, number.MakeInt(15)},
+			{`ekti kaj() sesh()`, Null},*/
+		{`dhori a = 1
+		a
+		`, number.MakeInt(1)},
+		{`dhori one = ekti kaj()
+			dhori one = 1 
+			one
+		  sesh 
+		  one()`, number.MakeInt(1)},
+		{
+			`dhori ab = ekti kaj()
+				dhori a = 1 
+				dhori b = 2
+				a+b 
+			sesh 
+			ab()`,
+			number.MakeInt(3),
+		},
+		{
+			`dhori x = ekti kaj(a) a sesh 
+			x(4)`,
+			number.MakeInt(4),
+		},
+		{
+			`dhori j = ekti kaj (a , b) a + b sesh
+			j(1 , 2)`,
+			number.MakeInt(3),
+		},
 	}
 
 	//t.Log(tests)

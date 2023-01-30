@@ -24,6 +24,7 @@ const (
 	SHOW_OBJ          = "SHOW"
 	BREAK_OBJ         = "BREAK"
 	COMPILED_FUNC_OBJ = "COMPILED_FUNC_OBJ"
+	CLOSURE_OBJ       = "CLOSURE"
 )
 
 type BuiltInFunc func(eh *ErrorHelper, env *EnvMap, caller token.Token, args ...Obj) Obj
@@ -36,8 +37,21 @@ type Obj interface {
 	GetToken() token.Token
 }
 
+type Closure struct {
+	Fn   *CompiledFunc
+	Free []Obj
+}
+
+func (*Closure) Type() ObjType { return CLOSURE_OBJ }
+func (cf *Closure) Inspect() string {
+	return fmt.Sprintf("Closure[%p]", cf)
+}
+func (*Closure) GetToken() token.Token { return token.Token{} }
+
 type CompiledFunc struct {
 	Instructions code.Instructions
+	NumLocals    int
+	NumParams    int
 }
 
 func (*CompiledFunc) Type() ObjType { return COMPILED_FUNC_OBJ }

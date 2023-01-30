@@ -34,6 +34,9 @@ const (
 	OpCall
 	OpReturnValue
 	OpReturn
+	OpGetLocal
+	OpSetLocal
+	OpClosure
 )
 
 type Definition struct {
@@ -63,9 +66,12 @@ var definitions = map[OpCode]*Definition{
 	OpArray:         {"OpArray", []int{2}},
 	OpHash:          {"OpHash", []int{2}},
 	OpIndex:         {"OpIndex", []int{}},
-	OpCall:          {"OpCall", []int{}},
+	OpCall:          {"OpCall", []int{1}},
 	OpReturnValue:   {"OpReturnValue", []int{}},
 	OpReturn:        {"OpReturn", []int{}},
+	OpGetLocal:      {"OpGetLocal", []int{1}},
+	OpSetLocal:      {"OpSetLocal", []int{1}},
+	OpClosure:       {"OpClosure", []int{2, 1}},
 }
 
 func (ins Instructions) String() string {
@@ -103,6 +109,8 @@ func (ins Instructions) fmtInstructions(def *Definition, ops []int) string {
 		return def.Name
 	case 1:
 		return fmt.Sprintf("%s %d", def.Name, ops[0])
+	case 2:
+		return fmt.Sprintf("%s %d %d", def.Name, ops[0], ops[1])
 	}
 
 	return fmt.Sprintf("ERR: operandCount unhandled for %s\n", def.Name)
@@ -116,6 +124,8 @@ func ReadOperands(def *Definition, ins Instructions) ([]int, int) {
 		switch w {
 		case 2:
 			operands[i] = int(ReadUint16(ins[offset:]))
+		case 1:
+			operands[i] = int(ReadUint16(ins[offset:1]))
 
 		}
 
@@ -124,6 +134,10 @@ func ReadOperands(def *Definition, ins Instructions) ([]int, int) {
 	}
 
 	return operands, offset
+}
+
+func ReadUint8(ins Instructions) uint8 {
+	return uint8(ins[0])
 }
 
 func ReadUint16(ins Instructions) uint16 {
@@ -162,6 +176,8 @@ func Make(op OpCode, operands ...int) []byte {
 		switch w {
 		case 2:
 			binary.BigEndian.PutUint16(ins[offset:], uint16(o))
+		case 1:
+			ins[offset] = byte(o)
 		}
 
 		offset += w

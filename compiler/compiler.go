@@ -13,10 +13,19 @@ type Compiler struct {
 	instructions code.Instructions
 	constants    []object.Obj
 
-	lastIns EmittedIns
-	prevIns EmittedIns
+	//lastIns EmittedIns
+	//prevIns EmittedIns
 
 	symTable *SymbolTable
+
+	scopes     []CompScope
+	scopeIndex int
+}
+
+type CompScope struct {
+	instructions code.Instructions
+	lastIns      EmittedIns
+	prevIns      EmittedIns
 }
 
 type ByteCode struct {
@@ -30,12 +39,17 @@ type EmittedIns struct {
 }
 
 func NewCompiler() *Compiler {
+	defScope := CompScope{
+		instructions: code.Instructions{},
+		lastIns:      EmittedIns{},
+		prevIns:      EmittedIns{},
+	}
 	return &Compiler{
 		instructions: code.Instructions{},
 		constants:    []object.Obj{},
-		lastIns:      EmittedIns{},
-		prevIns:      EmittedIns{},
 		symTable:     NewSymbolTable(),
+		scopes:       []CompScope{defScope},
+		scopeIndex:   0,
 	}
 }
 
@@ -122,12 +136,12 @@ func (c *Compiler) Compile(node ast.Node) error {
 			return err
 		}
 
-		if c.lastInsIsPop() {
+		if c.lastInsIs(code.OpPop) {
 			c.removeLastPop()
 		}
 
 		jmpPos := c.emit(code.OpJump, 9999)
-		afteTBPos := len(c.instructions)
+		afteTBPos := len(c.currentIns())
 		c.changeOperand(jntpos, afteTBPos)
 		//fmt.Println(node.ElseBlock)
 		if len(node.ElseBlock.Stmts) < 1 {
@@ -143,12 +157,12 @@ func (c *Compiler) Compile(node ast.Node) error {
 				return err
 			}
 
-			if c.lastInsIsPop() {
+			if c.lastInsIs(code.OpPop) {
 				c.removeLastPop()
 			}
 
 		}
-		afterEBPos := len(c.instructions)
+		afterEBPos := len(c.currentIns())
 		c.changeOperand(jmpPos, afterEBPos)
 
 	case *ast.LetStmt:
@@ -157,7 +171,12 @@ func (c *Compiler) Compile(node ast.Node) error {
 		}
 
 		sm := c.symTable.Define(node.Name.Value)
-		c.emit(code.OpSetGlobal, sm.Index)
+		if sm.Scope == GlobalScope {
+			c.emit(code.OpSetGlobal, sm.Index)
+		} else {
+			c.emit(code.OpSetLocal, sm.Index)
+		}
+		//c.emit(code.OpSetGlobal, sm.Index)
 	case *ast.BlockStmt:
 		for _, st := range node.Stmts {
 			if err := c.Compile(st); err != nil {
@@ -169,15 +188,17 @@ func (c *Compiler) Compile(node ast.Node) error {
 		if !ok {
 			return fmt.Errorf("undefined variable %s", node.Value)
 		}
-
-		c.emit(code.OpGetGlobal, s.Index)
+		//	c.emit(code.OpGetGlobal, s.Index)
+		/*if s.Scope == GlobalScope {
+			c.emit(code.OpGetGlobal, s.Index)
+		} else {
+			c.emit(code.OpGetLocal, s.Index)
+		}*/
+		c.loadSymbol(s)
 	case *ast.NumberLit:
 		i := &object.Number{Value: node.Value}
 		c.emit(code.OpConstant, c.addConst(i))
-		//fmt.Println(object.Number { Value: node.Value })
-		//switch node := node.(type){
 
-		//}
 	case *ast.Boolean:
 		if node.Value {
 			c.emit(code.OpTrue)
@@ -228,20 +249,78 @@ func (c *Compiler) Compile(node ast.Node) error {
 		}
 		c.emit(code.OpIndex)
 
+	case *ast.FunctionLit:
+		c.enterScope()
+
+		for _, p := range node.Params {
+			c.symTable.Define(p.Value)
+		}
+
+		if err := c.Compile(node.Body); err != nil {
+			return err
+		}
+
+		if c.lastInsIs(code.OpPop) {
+			c.replaceLastPopWithReturn()
+		}
+		if !c.lastInsIs(code.OpReturnValue) {
+			c.emit(code.OpReturn)
+		}
+		nL := c.symTable.numDef
+		ins := c.exitScope()
+		cFn := &object.CompiledFunc{Instructions: ins, NumLocals: nL, NumParams: len(node.Params)}
+		fnIndex := c.addConst(cFn)
+		c.emit(code.OpClosure, fnIndex, 0)
+	case *ast.ReturnStmt:
+		if err := c.Compile(node.ReturnVal); err != nil {
+			return err
+		}
+		c.emit(code.OpReturnValue)
+	case *ast.CallExpr:
+		if err := c.Compile(node.Func); err != nil {
+			return err
+		}
+		for _, a := range node.Args {
+			if err := c.Compile(a); err != nil {
+				return err
+			}
+		}
+		c.emit(code.OpCall, len(node.Args))
+
 	}
 
 	return nil
 
 }
 
+func (c *Compiler) loadSymbol(s Symbol) {
+	switch s.Scope {
+	case GlobalScope:
+		c.emit(code.OpGetGlobal, s.Index)
+	case LocalScope:
+		c.emit(code.OpGetLocal, s.Index)
+	}
+}
+
+func (c *Compiler) currentIns() code.Instructions {
+	return c.scopes[c.scopeIndex].instructions
+}
+
+func (c *Compiler) replaceLastPopWithReturn() {
+	lastP := c.scopes[c.scopeIndex].lastIns.Pos
+	c.replaceIns(lastP, code.Make(code.OpReturnValue))
+	c.scopes[c.scopeIndex].lastIns.OpCode = code.OpReturnValue
+}
+
 func (c *Compiler) replaceIns(pos int, newIns []byte) {
+	ins := c.currentIns()
 	for i := 0; i < len(newIns); i++ {
-		c.instructions[pos+i] = newIns[i]
+		ins[pos+i] = newIns[i]
 	}
 }
 
 func (c *Compiler) changeOperand(pos int, op int) {
-	o := code.OpCode(c.instructions[pos])
+	o := code.OpCode(c.currentIns()[pos])
 	newIns := code.Make(o, op)
 	c.replaceIns(pos, newIns)
 }
@@ -252,9 +331,13 @@ func (c *Compiler) addConst(o object.Obj) int {
 }
 
 func (c *Compiler) addIns(ins []byte) int {
-	pos := len(c.instructions)
-	c.instructions = append(c.instructions, ins...)
-	return pos
+	posNew := len(c.currentIns())
+	updatedIns := append(c.currentIns(), ins...)
+	c.scopes[c.scopeIndex].instructions = updatedIns
+	// pos := len(c.instructions)
+	// c.instructions = append(c.instructions, ins...)
+	// return pos
+	return posNew
 }
 
 func (c *Compiler) emit(op code.OpCode, oprs ...int) int {
@@ -265,24 +348,57 @@ func (c *Compiler) emit(op code.OpCode, oprs ...int) int {
 }
 
 func (c *Compiler) setLastIns(op code.OpCode, pos int) {
-	prev := c.lastIns
+	prev := c.scopes[c.scopeIndex].lastIns
 	last := EmittedIns{OpCode: op, Pos: pos}
-	c.prevIns = prev
-	c.lastIns = last
+	c.scopes[c.scopeIndex].prevIns = prev
+	c.scopes[c.scopeIndex].lastIns = last
 }
 
-func (c *Compiler) lastInsIsPop() bool {
-	return c.lastIns.OpCode == code.OpPop
+func (c *Compiler) lastInsIs(op code.OpCode) bool {
+	if len(c.currentIns()) == 0 {
+		return false
+	}
+	return c.scopes[c.scopeIndex].lastIns.OpCode == op
 }
 
 func (c *Compiler) removeLastPop() {
-	c.instructions = c.instructions[:c.lastIns.Pos]
-	c.lastIns = c.prevIns
+	last := c.scopes[c.scopeIndex].lastIns
+	prev := c.scopes[c.scopeIndex].prevIns
+
+	old := c.currentIns()
+	nw := old[:last.Pos]
+
+	c.scopes[c.scopeIndex].instructions = nw
+	c.scopes[c.scopeIndex].lastIns = prev
+
+	// c.instructions = c.instructions[:c.lastIns.Pos]
+	// c.lastIns = c.prevIns
+}
+
+func (c *Compiler) enterScope() {
+	scope := CompScope{
+		instructions: code.Instructions{},
+		lastIns:      EmittedIns{},
+		prevIns:      EmittedIns{},
+	}
+
+	c.symTable = NewEncolsedSymbolTable(c.symTable)
+	c.scopes = append(c.scopes, scope)
+	c.scopeIndex++
+}
+
+func (c *Compiler) exitScope() code.Instructions {
+	ins := c.currentIns()
+	c.scopes = c.scopes[:len(c.scopes)-1]
+	c.scopeIndex--
+
+	c.symTable = c.symTable.Outer
+	return ins
 }
 
 func (c *Compiler) ByteCode() *ByteCode {
 	return &ByteCode{
-		Instructions: c.instructions,
+		Instructions: c.currentIns(),
 		Constants:    c.constants,
 	}
 }
