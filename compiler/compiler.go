@@ -252,10 +252,10 @@ func (c *Compiler) Compile(node ast.Node) error {
 
 	case *ast.FunctionLit:
 		c.enterScope()
-		
-		if node.Name != ""{
+
+		if node.Name != "" {
 			c.symTable.DefineFuncName(node.Name)
-		}	
+		}
 
 		for _, p := range node.Params {
 			c.symTable.Define(p.Value)
@@ -274,8 +274,8 @@ func (c *Compiler) Compile(node ast.Node) error {
 		fs := c.symTable.FreeSymbols
 		nL := c.symTable.numDef
 		ins := c.exitScope()
-		
-		for _ , s := range fs{
+
+		for _, s := range fs {
 			c.loadSymbol(s)
 		}
 
@@ -311,7 +311,7 @@ func (c *Compiler) loadSymbol(s Symbol) {
 	case LocalScope:
 		c.emit(code.OpGetLocal, s.Index)
 	case FreeScope:
-		c.emit(code.OpGetFree , s.Index)
+		c.emit(code.OpGetFree, s.Index)
 	case FuncScope:
 		c.emit(code.OpCurrentClosure)
 	}

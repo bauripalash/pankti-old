@@ -190,7 +190,7 @@ func (vm *VM) Run() error {
 			cIndex := code.ReadUint16(ins[ip+1:])
 			nf := code.ReadUint8(ins[ip+3:])
 			vm.currentFrame().ip += 3
-			if err := vm.pushClosure(int(cIndex) , int(nf) ); err != nil {
+			if err := vm.pushClosure(int(cIndex), int(nf)); err != nil {
 				return err
 			}
 			//			if err := vm.push
@@ -225,15 +225,15 @@ func (vm *VM) Run() error {
 			}
 		case code.OpGetFree:
 			fi := code.ReadUint8(ins[ip+1:])
-			vm.currentFrame().ip += 1 
+			vm.currentFrame().ip += 1
 			cc := vm.currentFrame().cl
 
-			if err := vm.push(cc.Free[fi]); err != nil{
+			if err := vm.push(cc.Free[fi]); err != nil {
 				return err
 			}
 		case code.OpCurrentClosure:
 			cc := vm.currentFrame().cl
-			if err := vm.push(cc); err != nil{
+			if err := vm.push(cc); err != nil {
 				return err
 			}
 		case code.OpPop:
@@ -245,26 +245,26 @@ func (vm *VM) Run() error {
 	return nil
 }
 
-func (vm *VM) pushClosure(ci int  , nf int) error {
+func (vm *VM) pushClosure(ci int, nf int) error {
 	c := vm.constants[ci]
 	fn, ok := c.(*object.CompiledFunc)
 	if !ok {
 		return fmt.Errorf("not a function : %+v", c)
 	}
-	
-	free := make([]object.Obj , nf)
-	for i := 0; i < nf ; i++{
-		free[i] = vm.stack[vm.sp - nf + i]
+
+	free := make([]object.Obj, nf)
+	for i := 0; i < nf; i++ {
+		free[i] = vm.stack[vm.sp-nf+i]
 	}
 
-	closure := &object.Closure{Fn: fn , Free: free}
+	closure := &object.Closure{Fn: fn, Free: free}
 	return vm.push(closure)
 }
 
 func (vm *VM) exeCall(n int) error {
-	callee := vm.stack[vm.sp-1-n] 
+	callee := vm.stack[vm.sp-1-n]
 	switch callee.Type() {
-	case object.CLOSURE_OBJ :
+	case object.CLOSURE_OBJ:
 		o := callee.(*object.Closure)
 		return vm.callClosure(o, n)
 	default:

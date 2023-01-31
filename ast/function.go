@@ -12,7 +12,7 @@ type FunctionLit struct {
 	Token  token.Token // The 'fn' token
 	Params []*Identifier
 	Body   *BlockStmt
-	Name string
+	Name   string
 }
 
 func (*FunctionLit) exprNode()           {}
@@ -25,8 +25,8 @@ func (fl *FunctionLit) String() string {
 		params = append(params, p.String())
 	}
 	out.WriteString(fl.TokenLit())
-	if fl.Name != ""{
-		out.WriteString(fmt.Sprintf("<%s>" , fl.Name))
+	if fl.Name != "" {
+		out.WriteString(fmt.Sprintf("<%s>", fl.Name))
 	}
 	out.WriteString("(")
 	out.WriteString(strings.Join(params, ", "))

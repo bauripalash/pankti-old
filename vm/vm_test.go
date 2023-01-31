@@ -73,13 +73,13 @@ func runVmTests(t *testing.T, tests []vmTestCase) {
 			t.Fatalf("compiler error: %s", err)
 		}
 
-		for i , cn := range comp.ByteCode().Constants{
-			fmt.Printf("CONST %d %p (%T):\n" , i , cn , cn)
-			switch cn := cn.(type){
-				case *object.CompiledFunc:
-					fmt.Printf(" INS:\n%s" , cn.Instructions)
-				case *object.Number:
-					fmt.Printf("VAL->%s" , cn.Value.Value.String())
+		for i, cn := range comp.ByteCode().Constants {
+			fmt.Printf("CONST %d %p (%T):\n", i, cn, cn)
+			switch cn := cn.(type) {
+			case *object.CompiledFunc:
+				fmt.Printf(" INS:\n%s", cn.Instructions)
+			case *object.Number:
+				fmt.Printf("VAL->%s", cn.Value.Value.String())
 			}
 
 			fmt.Println("")
@@ -223,33 +223,33 @@ func TestNumber(t *testing.T) {
 			a()
 			`, number.MakeInt(15)},
 			{`ekti kaj() sesh()`, Null},*/
-/*		{`dhori a = 1
-		a
-		`, number.MakeInt(1)},
-		{`dhori one = ekti kaj()
-			dhori one = 1 
-			one
-		  sesh 
-		  one()`, number.MakeInt(1)},
-		{
-			`dhori ab = ekti kaj()
-				dhori a = 1 
-				dhori b = 2
-				a+b 
-			sesh 
-			ab()`,
-			number.MakeInt(3),
-		},
-		{
-			`dhori x = ekti kaj(a) a sesh 
-			x(4)`,
-			number.MakeInt(4),
-		},
-		{
-			`dhori j = ekti kaj (a , b) a + b sesh
-			j(1 , 2)`,
-			number.MakeInt(3),
-		},*/
+		/*		{`dhori a = 1
+				a
+				`, number.MakeInt(1)},
+				{`dhori one = ekti kaj()
+					dhori one = 1
+					one
+				  sesh
+				  one()`, number.MakeInt(1)},
+				{
+					`dhori ab = ekti kaj()
+						dhori a = 1
+						dhori b = 2
+						a+b
+					sesh
+					ab()`,
+					number.MakeInt(3),
+				},
+				{
+					`dhori x = ekti kaj(a) a sesh
+					x(4)`,
+					number.MakeInt(4),
+				},
+				{
+					`dhori j = ekti kaj (a , b) a + b sesh
+					j(1 , 2)`,
+					number.MakeInt(3),
+				},*/
 		{
 			`dhori hello = ekti kaj(x) 
 				jodi (x ==0) tahole 
@@ -279,7 +279,6 @@ func TestNumber(t *testing.T) {
 			fib(15)
 			`,
 			number.MakeInt(610),
-
 		},
 	}
 
