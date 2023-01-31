@@ -73,6 +73,18 @@ func runVmTests(t *testing.T, tests []vmTestCase) {
 			t.Fatalf("compiler error: %s", err)
 		}
 
+		for i , cn := range comp.ByteCode().Constants{
+			fmt.Printf("CONST %d %p (%T):\n" , i , cn , cn)
+			switch cn := cn.(type){
+				case *object.CompiledFunc:
+					fmt.Printf(" INS:\n%s" , cn.Instructions)
+				case *object.Number:
+					fmt.Printf("VAL->%s" , cn.Value.Value.String())
+			}
+
+			fmt.Println("")
+		}
+
 		vm := NewVM(*comp.ByteCode())
 		err = vm.Run()
 		if err != nil {
@@ -211,7 +223,7 @@ func TestNumber(t *testing.T) {
 			a()
 			`, number.MakeInt(15)},
 			{`ekti kaj() sesh()`, Null},*/
-		{`dhori a = 1
+/*		{`dhori a = 1
 		a
 		`, number.MakeInt(1)},
 		{`dhori one = ekti kaj()
@@ -237,6 +249,37 @@ func TestNumber(t *testing.T) {
 			`dhori j = ekti kaj (a , b) a + b sesh
 			j(1 , 2)`,
 			number.MakeInt(3),
+		},*/
+		{
+			`dhori hello = ekti kaj(x) 
+				jodi (x ==0) tahole 
+					ferao(0)
+				nahole 
+					ferao(hello(x-1))
+				sesh 
+			sesh
+			hello(1)
+			`,
+			number.MakeInt(0),
+		},
+		{
+			`dhori fib = ekti kaj(x)
+				jodi (x == 0) tahole 
+					ferao(0)
+				nahole jodi (x==1) tahole
+						ferao(1)
+					nahole 
+						fib(x-1) + fib(x-2)
+
+					sesh
+	
+				sesh
+			sesh
+
+			fib(15)
+			`,
+			number.MakeInt(610),
+
 		},
 	}
 

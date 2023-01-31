@@ -2,6 +2,7 @@ package ast
 
 import (
 	"bytes"
+	"fmt"
 	"strings"
 
 	"go.cs.palashbauri.in/pankti/token"
@@ -11,6 +12,7 @@ type FunctionLit struct {
 	Token  token.Token // The 'fn' token
 	Params []*Identifier
 	Body   *BlockStmt
+	Name string
 }
 
 func (*FunctionLit) exprNode()           {}
@@ -23,6 +25,9 @@ func (fl *FunctionLit) String() string {
 		params = append(params, p.String())
 	}
 	out.WriteString(fl.TokenLit())
+	if fl.Name != ""{
+		out.WriteString(fmt.Sprintf("<%s>" , fl.Name))
+	}
 	out.WriteString("(")
 	out.WriteString(strings.Join(params, ", "))
 	out.WriteString(") ")

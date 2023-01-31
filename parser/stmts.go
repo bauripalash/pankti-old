@@ -58,6 +58,10 @@ func (p *Parser) parseLetStmt() *ast.LetStmt {
 	p.nextToken()
 	stmt.Value = p.parseExpr(LOWEST)
 
+	if fl , ok := stmt.Value.(*ast.FunctionLit); ok{
+		fl.Name = stmt.Name.Value
+	}
+
 	for p.isPeekToken(token.SEMICOLON) {
 		p.nextToken()
 	}

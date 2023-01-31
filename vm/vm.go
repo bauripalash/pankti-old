@@ -188,9 +188,9 @@ func (vm *VM) Run() error {
 			}
 		case code.OpClosure:
 			cIndex := code.ReadUint16(ins[ip+1:])
-			_ = code.ReadUint8(ins[ip+3:])
+			nf := code.ReadUint8(ins[ip+3:])
 			vm.currentFrame().ip += 3
-			if err := vm.pushClosure(int(cIndex)); err != nil {
+			if err := vm.pushClosure(int(cIndex) , int(nf) ); err != nil {
 				return err
 			}
 			//			if err := vm.push
@@ -223,7 +223,19 @@ func (vm *VM) Run() error {
 			if err := vm.push(vm.stack[f.basePointer+int(lindex)]); err != nil {
 				return err
 			}
+		case code.OpGetFree:
+			fi := code.ReadUint8(ins[ip+1:])
+			vm.currentFrame().ip += 1 
+			cc := vm.currentFrame().cl
 
+			if err := vm.push(cc.Free[fi]); err != nil{
+				return err
+			}
+		case code.OpCurrentClosure:
+			cc := vm.currentFrame().cl
+			if err := vm.push(cc); err != nil{
+				return err
+			}
 		case code.OpPop:
 			vm.pop()
 		}
@@ -233,24 +245,30 @@ func (vm *VM) Run() error {
 	return nil
 }
 
-func (vm *VM) pushClosure(ci int) error {
+func (vm *VM) pushClosure(ci int  , nf int) error {
 	c := vm.constants[ci]
 	fn, ok := c.(*object.CompiledFunc)
 	if !ok {
 		return fmt.Errorf("not a function : %+v", c)
 	}
-	closure := &object.Closure{Fn: fn}
+	
+	free := make([]object.Obj , nf)
+	for i := 0; i < nf ; i++{
+		free[i] = vm.stack[vm.sp - nf + i]
+	}
+
+	closure := &object.Closure{Fn: fn , Free: free}
 	return vm.push(closure)
 }
 
 func (vm *VM) exeCall(n int) error {
-	callee := vm.stack[vm.sp-1-n]
-	switch callee := callee.(type) {
-	case *object.Closure:
-		return vm.callClosure(callee, n)
-
+	callee := vm.stack[vm.sp-1-n] 
+	switch callee.Type() {
+	case object.CLOSURE_OBJ :
+		o := callee.(*object.Closure)
+		return vm.callClosure(o, n)
 	default:
-		return fmt.Errorf("calling non-function")
+		return fmt.Errorf("x+calling non-function")
 	}
 }
 

@@ -166,11 +166,12 @@ func (c *Compiler) Compile(node ast.Node) error {
 		c.changeOperand(jmpPos, afterEBPos)
 
 	case *ast.LetStmt:
+
+		sm := c.symTable.Define(node.Name.Value)
 		if err := c.Compile(node.Value); err != nil {
 			return err
 		}
 
-		sm := c.symTable.Define(node.Name.Value)
 		if sm.Scope == GlobalScope {
 			c.emit(code.OpSetGlobal, sm.Index)
 		} else {
@@ -251,6 +252,10 @@ func (c *Compiler) Compile(node ast.Node) error {
 
 	case *ast.FunctionLit:
 		c.enterScope()
+		
+		if node.Name != ""{
+			c.symTable.DefineFuncName(node.Name)
+		}	
 
 		for _, p := range node.Params {
 			c.symTable.Define(p.Value)
@@ -266,11 +271,17 @@ func (c *Compiler) Compile(node ast.Node) error {
 		if !c.lastInsIs(code.OpReturnValue) {
 			c.emit(code.OpReturn)
 		}
+		fs := c.symTable.FreeSymbols
 		nL := c.symTable.numDef
 		ins := c.exitScope()
+		
+		for _ , s := range fs{
+			c.loadSymbol(s)
+		}
+
 		cFn := &object.CompiledFunc{Instructions: ins, NumLocals: nL, NumParams: len(node.Params)}
 		fnIndex := c.addConst(cFn)
-		c.emit(code.OpClosure, fnIndex, 0)
+		c.emit(code.OpClosure, fnIndex, len(fs))
 	case *ast.ReturnStmt:
 		if err := c.Compile(node.ReturnVal); err != nil {
 			return err
@@ -299,6 +310,10 @@ func (c *Compiler) loadSymbol(s Symbol) {
 		c.emit(code.OpGetGlobal, s.Index)
 	case LocalScope:
 		c.emit(code.OpGetLocal, s.Index)
+	case FreeScope:
+		c.emit(code.OpGetFree , s.Index)
+	case FuncScope:
+		c.emit(code.OpCurrentClosure)
 	}
 }
 

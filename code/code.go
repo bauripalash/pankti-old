@@ -37,6 +37,8 @@ const (
 	OpGetLocal
 	OpSetLocal
 	OpClosure
+	OpGetFree
+	OpCurrentClosure
 )
 
 type Definition struct {
@@ -72,6 +74,8 @@ var definitions = map[OpCode]*Definition{
 	OpGetLocal:      {"OpGetLocal", []int{1}},
 	OpSetLocal:      {"OpSetLocal", []int{1}},
 	OpClosure:       {"OpClosure", []int{2, 1}},
+	OpGetFree : { "OpGetFree" , []int{1} },
+	OpCurrentClosure : {"OpCurrentClosure" , []int{}},
 }
 
 func (ins Instructions) String() string {
