@@ -7,6 +7,10 @@ Pankti is an interpreted dynamically typed programming language for programming 
 ## Why
 My mother tongue is Bengali. Previously there have been few attempts to build a Bengali programming language but most of them have no practical usage, so I ventured into the dark world of language design.
 
+## Roadmap & Future
+* [ ] Bytecode Compiler and VM (work in progress [in Rust](https://git.sr.ht/~bauripalash/pankti) and [In C](https://github.com/bauripalash/cpank)
+* [ ] Rewrite in C (Work In progress : [cpank](https://github.com/bauripalash/cpank)
+
 ## Language Features
 ###  Data Types:
 * Strings : `"পলাশ বাউরি"` , `"ভাবনা"`...
